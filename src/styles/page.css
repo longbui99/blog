@@ -54,27 +54,6 @@ li {
     margin-bottom: 0.5em;
 }
 
-code {
-    background-color: #f6f8fa;
-    border-radius: 3px;
-    padding: 0.2em 0.4em;
-    font-size: 85%;
-    font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
-}
-
-pre {
-    background-color: #f6f8fa;
-    border-radius: 3px;
-    padding: 16px;
-    overflow: auto;
-    font-size: 85%;
-    line-height: 1.45;
-}
-
-pre code {
-    background-color: transparent;
-    padding: 0;
-}
 
 section {
     margin-bottom: 2em;

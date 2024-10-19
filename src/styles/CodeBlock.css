@@ -5,8 +5,8 @@
 }
 
 .code-block-container pre {
-  background-color: #f4f4f4;
-  border: 1px solid #ddd;
+  background-color: #f0f0f0; /* Lighter gray background */
+  border: 1px solid #d0d0d0; /* Slightly darker border */
   border-radius: 4px;
   padding: 1em;
   overflow-x: auto;
@@ -17,11 +17,12 @@ code {
   font-family: 'Courier New', Courier, monospace;
   font-size: 0.9em;
   line-height: 1.6;
+  color: #333; /* Darker text color for better contrast */
 }
 
 /* Inline code */
 code {
-  background-color: #f4f4f4;
+  background-color: transparent; /* Matching background for inline code */
   padding: 2px 4px;
   border-radius: 3px;
 }
@@ -31,8 +32,8 @@ code {
   position: absolute;
   top: 0.5em;
   right: 0.5em;
-  background-color: #f0f0f0;
-  border: 1px solid #ddd;
+  background-color: #e0e0e0; /* Slightly darker button */
+  border: 1px solid #ccc;
   border-radius: 4px;
   padding: 0.3em 0.6em;
   font-size: 0.8em;
@@ -41,7 +42,7 @@ code {
 }
 
 .copy-button:hover {
-  background-color: #e0e0e0;
+  background-color: #d0d0d0; /* Darker on hover */
 }
 
 /* Language-specific styles */
@@ -81,21 +82,29 @@ code {
 .language-html .attr-value { color: #008000; }
 
 /* Dark mode styles */
-.dark-mode .code-block-container pre,
-.dark-mode code {
-  background-color: #2a2a2a;
+.dark-mode .code-block-container pre {
+  background-color: #2d2d2d; /* Lighter background for dark mode */
   border-color: #444;
-  color: #f0f0f0;
+}
+
+.dark-mode .code-block-container code,
+.dark-mode code {
+  color: #e0e0e0; /* Lighter text color for dark mode */
+}
+
+/* Inline code in dark mode */
+.dark-mode code {
+  background-color: #3a3a3a; /* Slightly lighter background for inline code */
 }
 
 .dark-mode .copy-button {
-  background-color: #3a3a3a;
+  background-color: #4a4a4a; /* Lighter button background */
   border-color: #555;
-  color: #f0f0f0;
+  color: #e0e0e0;
 }
 
 .dark-mode .copy-button:hover {
-  background-color: #4a4a4a;
+  background-color: #5a5a5a; /* Even lighter on hover */
 }
 
 /* Dark mode language-specific styles */
