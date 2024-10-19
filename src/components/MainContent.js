@@ -1,9 +1,12 @@
 import React from 'react';
+import BottomNav from './BottomNav';
 
-function MainContent({ children }) {
+function MainContent({ children, className }) {
   return (
-    <main className="main-content" id="main-content">
-      {children}
+    <main className={`main-content ${className}`} id="main-content">
+      <div className="content-wrapper">
+        {children}
+      </div>
     </main>
   );
 }

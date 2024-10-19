@@ -1,28 +1,50 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
+import SidebarSearch from './SidebarSearch';
 
-function Sidebar() {
+function Sidebar({ isOpen, toggleSidebar, className }) {
+  const location = useLocation();
+
+  const isActive = (path) => {
+    return location.pathname.startsWith(path);
+  };
+
   return (
-    <aside className="sidebar">
-      <nav className="multi-level-nav">
+    <aside className={`sidebar ${isOpen ? 'open' : ''} ${className}`}>
+      <SidebarSearch />
+      <nav className="sidebar-nav">
         <ul>
-          <li><NavLink to="/" className="nav-link">Home</NavLink></li>
-          <li className="has-children">
-            <NavLink to="/about" className="nav-link">About</NavLink>
+          <li className={location.pathname === "/" ? "active" : ""}>
+            <NavLink to="/" end>Home</NavLink>
+          </li>
+          <li className={isActive("/api-protocol") ? "active-parent" : ""}>
+            <NavLink to="/api-protocol">API Protocol</NavLink>
             <ul>
-              <li><NavLink to="/team" className="nav-link">Our Team</NavLink></li>
-              <li><NavLink to="/mission" className="nav-link">Our Mission</NavLink></li>
+              <li className={location.pathname === "/restful-api" ? "active" : ""}>
+                <NavLink to="/restful-api">Restful API</NavLink>
+              </li>
+              <li className={location.pathname === "/mission" ? "active" : ""}>
+                <NavLink to="/mission">Our Mission</NavLink>
+              </li>
             </ul>
           </li>
-          <li className="has-children">
-            <NavLink to="/posts" className="nav-link">Posts</NavLink>
+          <li className={isActive("/posts") ? "active-parent" : ""}>
+            <NavLink to="/posts">Posts</NavLink>
             <ul>
-              <li><NavLink to="/recent" className="nav-link">Recent Posts</NavLink></li>
-              <li><NavLink to="/popular" className="nav-link">Popular Posts</NavLink></li>
-              <li><NavLink to="/categories" className="nav-link">Categories</NavLink></li>
+              <li className={location.pathname === "/recent" ? "active" : ""}>
+                <NavLink to="/recent">Recent Posts</NavLink>
+              </li>
+              <li className={location.pathname === "/popular" ? "active" : ""}>
+                <NavLink to="/popular">Popular Posts</NavLink>
+              </li>
+              <li className={location.pathname === "/categories" ? "active" : ""}>
+                <NavLink to="/categories">Categories</NavLink>
+              </li>
             </ul>
           </li>
-          <li><NavLink to="/contact" className="nav-link">Contact</NavLink></li>
+          <li className={location.pathname === "/contact" ? "active" : ""}>
+            <NavLink to="/contact">Contact</NavLink>
+          </li>
         </ul>
       </nav>
     </aside>

@@ -1,0 +1,1320 @@
+/* Copy the contents of your existing CSS file here */
+/* You may need to adjust some selectors to work with React components */
+:root {
+    --background-light: #ffffff;
+    --background-dark: #1e1e1e;
+    --text-light: #4d4d4d;
+    --text-dark: #f0f0f0;
+    --link-light: #ff6b6b; /* Light red color for light mode */
+    --link-dark: #b39800; /* Blue color for dark mode */
+    --sidebar-light: #f8f8f8;
+    --sidebar-dark: #2a2a2a;
+    --transition-speed: 0.3s;
+    --color-primary: var(--link-light);
+    --color-primary-dark: #0056b3; /* A darker shade of the primary color for dark mode */
+}
+
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+    background-color: var(--background-light);
+    color: var(--text-light);
+    transition: background-color var(--transition-speed), color var(--transition-speed);
+    line-height: 1.6;
+}
+
+.logo {
+    color: var(--link-dark);
+}
+
+.container {
+    display: flex;
+    min-height: calc(100vh - 70px); /* Subtract the approximate height of the top header */
+    padding-bottom: 40px; /* Adjust this value based on your BottomNav height */
+}
+
+.sidebar {
+    width: auto;
+    min-width: 200px; /* Minimum width to ensure readability */
+    max-width: 300px; /* Maximum width to prevent it from getting too wide */
+    transition: all 0.3s ease;
+    overflow-y: auto;
+    flex-shrink: 0;
+    background-color: transparent; /* Remove background color */
+    padding: 10px; /* Reduced overall sidebar padding */
+    margin-top: 2rem;
+}
+
+.sidebar-nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-nav li {
+    margin: 10px 0;
+}
+
+.sidebar-nav a,
+.sidebar-nav span {
+    display: block;
+    padding: 10px;
+    color: #333; /* Dark gray text */
+    text-decoration: none;
+    transition: color 0.3s;
+    border-radius: 5px;
+}
+
+.sidebar-nav a:hover,
+.sidebar-nav span:hover {
+    color: var(--color-primary);
+}
+
+.sidebar-nav li.active > a {
+    color: var(--color-primary);
+}
+
+.sidebar-nav li.active-parent > span {
+    color: var(--color-primary);
+    text-decoration: underline;
+}
+
+.sidebar-nav li > ul {
+    margin-left: 20px;
+}
+
+/* Dark mode adjustments */
+.dark-mode .sidebar {
+    background-color: #2a2a2a; /* Dark gray background for dark mode */
+}
+
+.dark-mode .sidebar-nav a,
+.dark-mode .sidebar-nav span {
+    color: #f0f0f0; /* Light gray text for dark mode */
+}
+
+.dark-mode .sidebar-nav a:hover,
+.dark-mode .sidebar-nav span:hover {
+    color: var(--color-primary);
+}
+
+.dark-mode .sidebar-nav li.active > a {
+    color: var(--color-primary);
+}
+
+.dark-mode .sidebar-nav li.active-parent > span {
+    color: var(--color-primary);
+    text-decoration: underline;
+}
+
+.main-content {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    overflow-y: auto;
+    transition: margin-left 0.3s ease;
+    position: relative; /* Add this */
+}
+
+.main-content.full-width {
+    margin-left: 0;
+}
+
+.content-wrapper {
+    flex-grow: 1;
+    padding: 20px;
+}
+
+main h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+}
+
+main h2 {
+    font-size: 2rem;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
+#theme-toggle {
+    background-color: transparent;
+    border: 2px solid var(--text-light);
+    color: var(--text-light);
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color var(--transition-speed), color var(--transition-speed);
+    margin-top: 2rem;
+}
+
+#theme-toggle:hover,
+#theme-toggle:focus {
+    background-color: var(--text-light);
+    color: var(--background-light);
+}
+
+.dark-mode {
+    background-color: var(--background-dark);
+    color: var(--text-dark);
+    --color-primary: var(--link-dark);
+}
+
+.dark-mode .sidebar {
+    background-color: var(--sidebar-dark);
+}
+
+.dark-mode .sidebar nav ul li a {
+    color: var(--link-dark);
+}
+
+.dark-mode .sidebar nav ul li a:hover,
+.dark-mode .sidebar nav ul li a:focus {
+    color: var(--text-dark);
+}
+
+.dark-mode #theme-toggle {
+    border-color: var(--text-dark);
+    color: var(--text-dark);
+}
+
+.dark-mode #theme-toggle:hover,
+.dark-mode #theme-toggle:focus {
+    background-color: var(--text-dark);
+    color: var(--background-dark);
+}
+
+/* Updated styles for the top header */
+.top-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: var(--sidebar-light);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    font-size: 50%; /* Reduce font size to 50% of original */
+    z-index: 1000; /* Ensure header is above other elements */
+    height: 70px; /* Set a fixed height for the header */
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+}
+
+.logo {
+    max-height: 50px;
+    width: auto;
+    margin-right: 1rem;
+}
+
+.site-title {
+    font-size: 1.5rem;
+    margin: 0;
+    color: var(--text-light);
+}
+
+.motto {
+    flex: 1 1 auto;
+    text-align: center;
+    font-style: italic;
+    margin: 0 1rem;
+    font-size: 0.8rem; /* Adjust as needed */
+}
+
+.top-nav {
+    display: flex;
+    align-items: center;
+}
+
+.top-nav a {
+    text-decoration: none;
+    color: var(--link-light);
+    font-weight: 500;
+    transition: color var(--transition-speed);
+    margin-right: 1rem;
+    font-size: 0.9rem; /* Adjust as needed */
+}
+
+.top-nav a:hover,
+.top-nav a:focus {
+    color: var(--text-light);
+    text-decoration: underline;
+}
+
+/* Theme toggle styles */
+.theme-toggle-container {
+    display: flex;
+    align-items: center;
+}
+
+.theme-toggle-label {
+    position: relative;
+    display: inline-block;
+    width: 30px; /* Adjust from 60px */
+    height: 17px; /* Adjust from 34px */
+}
+
+.theme-toggle-input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.theme-toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.theme-toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 13px; /* Adjust from 26px */
+    width: 13px; /* Adjust from 26px */
+    left: 2px; /* Adjust from 4px */
+    bottom: 2px; /* Adjust from 4px */
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+.theme-toggle-input:checked + .theme-toggle-slider {
+    background-color: var(--link-light);
+}
+
+.theme-toggle-input:checked + .theme-toggle-slider:before {
+    transform: translateX(13px); /* Adjust from translateX(26px) */
+}
+
+.dark-mode .theme-toggle-input:checked + .theme-toggle-slider {
+    background-color: var(--link-dark);
+}
+
+/* Dark mode styles for the top header */
+.dark-mode .top-header {
+    background-color: var(--sidebar-dark);
+}
+
+.dark-mode .site-title {
+    color: var(--text-dark);
+}
+
+.dark-mode .top-nav a {
+    color: var(--link-dark);
+}
+
+.dark-mode .top-nav a:hover,
+.dark-mode .top-nav a:focus {
+    color: var(--text-dark);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        max-width: none;
+        transform: translateX(-100%);
+    }
+
+    .sidebar.hidden {
+        transform: translateX(0);
+    }
+
+    .main-content {
+        margin-left: 0;
+        padding: 1rem;
+    }
+
+    .top-header {
+        flex-direction: column;
+        padding: 1rem;
+    }
+
+    .logo-container,
+    .motto,
+    .top-nav {
+        margin-bottom: 0.5rem;
+    }
+
+    .container {
+        min-height: calc(100vh - 120px); /* Adjust for the taller top header on mobile */
+    }
+
+    .top-header {
+        flex-direction: column;
+        padding: 1rem;
+    }
+
+    .logo-container {
+        margin-bottom: 0.5rem;
+    }
+
+    .site-title {
+        font-size: 1.2rem;
+    }
+
+    .motto,
+    .top-nav {
+        margin-bottom: 0.5rem;
+    }
+
+    .container {
+        min-height: calc(100vh - 150px); /* Adjust for the taller top header on mobile */
+    }
+
+    .top-header,
+    .bottom-nav {
+        font-size: 62.5%; /* Slightly larger on mobile */
+    }
+
+    .top-nav a,
+    .bottom-nav .nav-button {
+        font-size: 0.8rem;
+    }
+
+    .motto {
+        font-size: 0.7rem;
+    }
+}
+
+/* Multi-level Navigator Styles */
+.multi-level-nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.multi-level-nav li {
+    margin: 10px 0;
+}
+
+.multi-level-nav a {
+    color: var(--text-light);
+    text-decoration: none;
+    transition: color var(--transition-speed);
+    display: block;
+    padding: 5px 10px;
+}
+
+.multi-level-nav a:hover,
+.multi-level-nav a:focus {
+    color: var(--color-primary);
+}
+
+.multi-level-nav a.active,
+.multi-level-nav li.active-parent > a {
+    color: var(--color-primary);
+    font-weight: bold;
+}
+
+.multi-level-nav ul ul {
+    margin-left: 20px;
+}
+
+.multi-level-nav ul ul li {
+    margin: 5px 0;
+}
+
+.multi-level-nav ul ul a {
+    font-size: 0.9em;
+}
+
+/* Dark mode adjustments */
+.dark-mode .multi-level-nav a {
+    color: var(--text-dark);
+}
+
+.dark-mode .multi-level-nav a:hover,
+.dark-mode .multi-level-nav a:focus,
+.dark-mode .multi-level-nav a.active,
+.dark-mode .multi-level-nav li.active-parent > a {
+    color: var(--color-primary);
+}
+
+/* Navigation Controls */
+.nav-controls {
+    margin-bottom: 1rem;
+}
+
+.nav-controls button {
+    width: 100%;
+    background-color: var(--sidebar-bg);
+    color: var(--link-light);
+    border: 1px solid var(--link-light);
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.nav-controls button:hover {
+    background-color: var(--link-light);
+    color: var(--sidebar-bg);
+}
+
+.dark-mode .nav-controls button {
+    color: var(--link-dark);
+    border-color: var(--link-dark);
+}
+
+.dark-mode .nav-controls button:hover {
+    background-color: var(--link-dark);
+    color: var(--sidebar-dark);
+}
+
+/* Content Section Styles */
+.content-section {
+    display: none;
+}
+
+.content-section.active {
+    display: block;
+}
+
+/* Bottom Navigation Styles */
+.bottom-nav {
+    background-color: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+    padding: 5px 15px;
+    height: 30px; /* Adjust as needed */
+    font-size: 0.8em;
+}
+
+.bottom-nav .nav-button {
+    text-decoration: none;
+    color: #495057; /* Adjust this color as needed */
+    display: flex;
+    align-items: center;
+    padding: 5px 10px; /* Reduced padding */
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+.bottom-nav .nav-button:hover {
+    background-color: #e9ecef; /* Adjust this color as needed */
+}
+
+.bottom-nav .nav-button .page-title {
+    margin: 0 5px; /* Reduced margin */
+}
+
+/* Dark mode styles */
+.dark-mode .bottom-nav {
+    background-color: var(--sidebar-dark);
+}
+
+.dark-mode .bottom-nav .nav-button {
+    color: var(--link-dark);
+}
+
+.dark-mode .bottom-nav .nav-button:hover {
+    color: var(--text-dark);
+}
+
+/* Social Links Styles */
+.social-links {
+    display: flex;
+    align-items: center;
+    margin-right: 1rem;
+}
+
+.social-links a {
+    color: var(--link-light);
+    font-size: 1rem; /* Adjust from 1.5rem */
+    margin-left: 1rem;
+    transition: color var(--transition-speed);
+}
+
+.social-links a:hover {
+    color: var(--text-light);
+}
+
+.dark-mode .social-links a {
+    color: var(--link-dark);
+}
+
+.dark-mode .social-links a:hover {
+    color: var(--text-dark);
+}
+
+/* Adjust top-nav to accommodate new elements */
+.top-nav {
+    display: flex;
+    align-items: center;
+}
+
+/* Add these new styles for the sidebar */
+.sidebar {
+    background-color: var(--sidebar-light);
+    padding: 2rem;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    transition: transform var(--transition-speed), background-color var(--transition-speed);
+    position: fixed;
+    top: 70px; /* Adjust based on your header height */
+    bottom: 0;
+    left: 0;
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+.sidebar.hidden {
+    transform: translateX(-300px);
+}
+
+/* Adjust main content for sidebar */
+.main-content {
+    margin-left: 300px;
+    transition: margin-left var(--transition-speed);
+}
+
+.main-content.full-width {
+    margin-left: 0;
+}
+
+/* Sidebar toggle button */
+.sidebar-toggle {
+    position: fixed;
+    bottom: 40px; /* Adjusted to be just above the new bottom nav height */
+    left: 20px;
+    z-index: 1002;
+    background-color: var(--background-light);
+    border: none;
+    color: var(--text-light);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: left var(--transition-speed), background-color var(--transition-speed), color var(--transition-speed);
+}
+
+.sidebar-toggle:hover {
+    background-color: var(--color-primary);
+    color: var(--background-light);
+}
+
+.dark-mode .sidebar-toggle {
+    background-color: var(--background-dark);
+    color: var(--text-dark);
+}
+
+.dark-mode .sidebar-toggle:hover {
+    background-color: var(--color-primary);
+    color: var(--background-dark);
+}
+
+/* Adjust the position when sidebar is open */
+.sidebar:not(.hidden) + .sidebar-toggle {
+    left: 270px; /* 250px (sidebar width) + 20px */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .top-header {
+        flex-direction: column;
+        height: auto;
+        padding: 0.5rem 1rem;
+    }
+
+    .container {
+        margin-top: 120px; /* Adjust based on the new header height on mobile */
+    }
+
+    .sidebar {
+        top: 120px; /* Adjust based on the new header height on mobile */
+        height: calc(100vh - 120px);
+    }
+
+    .main-content {
+        margin-top: 120px; /* Adjust based on the new header height on mobile */
+    }
+
+    .sidebar-toggle {
+        top: 130px; /* Adjust based on the new header height on mobile + desired spacing */
+    }
+
+    .bottom-nav {
+        flex-wrap: wrap;
+        height: auto; /* Allow height to adjust based on content */
+        padding: 5px; /* Further reduced padding for mobile */
+    }
+
+    .nav-button {
+        font-size: 0.7em; /* Even smaller font size for mobile */
+        padding: 3px 6px; /* Further reduced padding for mobile */
+    }
+
+    .nav-button .page-title {
+        display: none; /* Optionally hide text on mobile, showing only icons */
+    }
+}
+
+/* Updated styles for fixed layout */
+.top-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 70px;
+  z-index: 1001;
+  /* ... (keep other header styles) ... */
+}
+
+.container {
+  margin-top: 70px;
+  min-height: calc(100vh - 70px);
+  display: flex;
+}
+
+.sidebar {
+  position: fixed;
+  top: 70px;
+  left: 0;
+  bottom: 60px; /* Account for bottom nav */
+  width: 250px;
+  overflow-y: auto;
+  background-color: #f0f0f0; /* Default gray color */
+  transition: transform var(--transition-speed);
+  z-index: 1000;
+}
+
+.sidebar.hidden {
+  transform: translateX(-250px);
+}
+
+.main-content {
+  margin-left: 250px;
+  flex-grow: 1;
+  padding: 20px;
+  padding-bottom: 80px; /* Account for bottom nav */
+  transition: margin-left var(--transition-speed);
+}
+
+.main-content.full-width {
+  margin-left: 0;
+}
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  z-index: 1000;
+  /* ... (keep other bottom nav styles) ... */
+}
+
+/* Sidebar toggle button */
+.sidebar-toggle {
+  position: fixed;
+  bottom: 80px; /* Position above bottom nav */
+  left: 20px;
+  z-index: 1002;
+  background-color: var(--background-light);
+  border: none;
+  color: var(--text-light);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: left var(--transition-speed), background-color var(--transition-speed), color var(--transition-speed);
+}
+
+.sidebar.hidden + .sidebar-toggle {
+  left: 20px;
+}
+
+/* Updated multi-level navigator styles */
+.multi-level-nav a {
+  color: var(--text-light);
+  transition: color var(--transition-speed);
+}
+
+.multi-level-nav a:hover,
+.multi-level-nav a:focus {
+  color: var(--color-primary);
+}
+
+.multi-level-nav a.active,
+.multi-level-nav a.active-parent {
+  color: var(--color-primary);
+  font-weight: bold;
+}
+
+.multi-level-nav ul ul {
+  display: none;
+}
+
+.multi-level-nav li.active > ul,
+.multi-level-nav li.active-parent > ul {
+  display: block;
+}
+
+/* Dark mode adjustments */
+.dark-mode .sidebar {
+  background-color: #2a2a2a;
+}
+
+.dark-mode .multi-level-nav a {
+  color: var(--text-dark);
+}
+
+.dark-mode .multi-level-nav a:hover,
+.dark-mode .multi-level-nav a:focus,
+.dark-mode .multi-level-nav a.active,
+.dark-mode .multi-level-nav a.active-parent {
+  color: var(--color-primary);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    transform: translateX(-100%);
+  }
+
+  .sidebar.hidden {
+    transform: translateX(0);
+  }
+
+  .main-content {
+    margin-left: 0;
+  }
+
+  .sidebar-toggle {
+    left: 20px;
+  }
+}
+
+/* Code block styles */
+pre {
+  background-color: #f4f4f4;
+  padding: 15px;
+  border-radius: 5px;
+  overflow-x: auto;
+  border: 1px solid #ddd;
+  margin: 15px 0;
+}
+
+code {
+  background-color: #f4f4f4;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-size: 0.9em;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+/* Dark mode adjustments for code blocks */
+.dark-mode pre {
+  background-color: #2d2d2d;
+  border-color: #444;
+}
+
+.dark-mode code {
+  background-color: #2d2d2d;
+  color: #e0e0e0;
+}
+
+/* Header styles */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-light);
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+h1 {
+  font-size: 2.5em;
+  border-bottom: 2px solid var(--color-primary);
+  padding-bottom: 0.3em;
+}
+
+h2 {
+  font-size: 2em;
+}
+
+h3 {
+  font-size: 1.75em;
+}
+
+h4 {
+  font-size: 1.5em;
+}
+
+h5 {
+  font-size: 1.25em;
+}
+
+h6 {
+  font-size: 1em;
+  text-transform: uppercase;
+}
+
+/* Dark mode adjustments for headers */
+.dark-mode h1,
+.dark-mode h2,
+.dark-mode h3,
+.dark-mode h4,
+.dark-mode h5,
+.dark-mode h6 {
+  color: var(--text-dark);
+}
+
+.dark-mode h1 {
+  border-bottom-color: var(--color-primary);
+}
+
+/* Main content typography improvements */
+.main-content {
+  font-size: 18px; /* Increase base font size for better readability */
+  line-height: 1.8; /* Improve line spacing */
+  color: var(--text-light);
+  margin-left: 300px;
+}
+
+.main-content p {
+  margin-bottom: 1.5em; /* Add more space between paragraphs */
+}
+
+/* Header styles */
+.main-content h1, 
+.main-content h2, 
+.main-content h3, 
+.main-content h4, 
+.main-content h5, 
+.main-content h6 {
+  color: var(--text-light);
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  line-height: 1.3; /* Tighter line height for headers */
+}
+
+.main-content h1 {
+  font-size: 2.5em;
+  border-bottom: 2px solid var(--color-primary);
+  padding-bottom: 0.3em;
+}
+
+.main-content h2 {
+  font-size: 2em;
+}
+
+.main-content h3 {
+  font-size: 1.75em;
+}
+
+.main-content h4 {
+  font-size: 1.5em;
+}
+
+.main-content h5 {
+  font-size: 1.25em;
+}
+
+.main-content h6 {
+  font-size: 1em;
+  text-transform: uppercase;
+}
+
+/* Improve list readability */
+.main-content ul, 
+.main-content ol {
+  margin-bottom: 1.5em;
+  padding-left: 2em;
+}
+
+.main-content li {
+  margin-bottom: 0.5em;
+}
+
+/* Improve blockquote styling */
+.main-content blockquote {
+  font-style: italic;
+  border-left: 4px solid var(--color-primary);
+  padding-left: 1em;
+  margin-left: 0;
+  margin-right: 0;
+  margin-bottom: 1.5em;
+  color: var(--text-light);
+}
+
+/* Code block styles */
+.main-content pre {
+  background-color: #f4f4f4;
+  padding: 1em;
+  border-radius: 5px;
+  overflow-x: auto;
+  border: 1px solid #ddd;
+  margin: 1.5em 0;
+  font-size: 0.9em; /* Slightly smaller font for code blocks */
+}
+
+.main-content code {
+  background-color: #f4f4f4;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-size: 0.9em;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+/* Dark mode adjustments */
+.dark-mode .main-content {
+  color: var(--text-dark);
+}
+
+.dark-mode .main-content h1,
+.dark-mode .main-content h2,
+.dark-mode .main-content h3,
+.dark-mode .main-content h4,
+.dark-mode .main-content h5,
+.dark-mode .main-content h6 {
+  color: var(--text-dark);
+}
+
+.dark-mode .main-content h1 {
+  border-bottom-color: var(--color-primary);
+}
+
+.dark-mode .main-content blockquote {
+  color: var(--text-dark);
+}
+
+.dark-mode .main-content pre {
+  background-color: #2d2d2d;
+  border-color: #444;
+}
+
+.dark-mode .main-content code {
+  background-color: #2d2d2d;
+  color: #e0e0e0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .main-content {
+    font-size: 16px; /* Slightly smaller font size on mobile */
+  }
+  
+  .main-content h1 {
+    font-size: 2em;
+  }
+  
+  .main-content h2 {
+    font-size: 1.75em;
+  }
+  
+  .main-content h3 {
+    font-size: 1.5em;
+  }
+  
+  .main-content h4 {
+    font-size: 1.25em;
+  }
+  
+  .main-content h5 {
+    font-size: 1.1em;
+  }
+  
+  .main-content h6 {
+    font-size: 1em;
+  }
+}
+
+/* Add these styles to your existing styles.css file */
+
+.App {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.container {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.sidebar {
+  width: auto;
+  min-width: 200px; /* Minimum width to ensure readability */
+  max-width: 300px; /* Maximum width to prevent it from getting too wide */
+  transition: all 0.3s ease;
+  overflow-y: auto;
+  flex-shrink: 0;
+  background-color: transparent; /* Remove background color */
+}
+
+.sidebar.hidden {
+  width: 0;
+  min-width: 0;
+  max-width: 0;
+  overflow: hidden;
+}
+
+.main-content {
+  flex-grow: 1;
+  overflow-y: auto;
+  transition: margin-left 0.3s ease;
+}
+
+.main-content.full-width {
+  margin-left: 0;
+}
+
+/* Adjust the sidebar toggle button */
+.sidebar-toggle {
+  position: fixed;
+  left: 10px;
+  bottom: 70px; /* Adjust based on your BottomNav height */
+  z-index: 1000;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    max-width: none;
+    height: auto;
+  }
+
+  .sidebar.hidden {
+    display: none;
+  }
+
+  .main-content {
+    margin-left: 0 !important;
+  }
+
+  .sidebar-toggle {
+    top: 70px; /* Adjust based on your Header height */
+    bottom: auto;
+  }
+}
+
+/* Sidebar Search Styles */
+.sidebar-search {
+  padding: 15px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.sidebar-search form {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.sidebar-search input {
+  flex-grow: 1;
+  padding: 12px 16px;
+  padding-right: 40px; /* Make room for the button */
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.2s;
+  width: 100%;
+}
+
+.sidebar-search input:focus {
+  border-color: #80bdff;
+  box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+
+.sidebar-search button {
+  background-color: transparent;
+  color: inherit; /* Inherit color from parent */
+  border: none;
+  padding: 12px 16px;
+  cursor: pointer;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.sidebar-search button:hover {
+  opacity: 0.7; /* Slight opacity change on hover for feedback */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .sidebar-search {
+    padding: 10px;
+  }
+
+  .sidebar-search input {
+    font-size: 16px;
+  }
+
+  .sidebar-search button {
+    padding: 12px 14px;
+  }
+}
+
+/* Dark mode styles */
+.dark-mode .sidebar-search input {
+  background-color: #2c3e50;
+  border-color: #34495e;
+  color: #ecf0f1;
+}
+
+/* Remove specific color for dark mode button */
+.dark-mode .sidebar-search button {
+  color: inherit;
+}
+
+/* Sidebar Styles */
+.sidebar {
+  width: auto;
+  min-width: 200px;
+  max-width: 300px;
+  transition: all 0.3s ease;
+  overflow-y: auto;
+  flex-shrink: 0;
+  background-color: transparent;
+  padding: 10px; /* Reduced overall sidebar padding */
+}
+
+/* Sidebar Search Styles */
+.sidebar-search {
+  padding: 10px 5px; /* Reduced padding */
+  border-bottom: 1px solid #e9ecef;
+  margin-bottom: 10px; /* Add some space between search and nav */
+}
+
+.sidebar-search form {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.sidebar-search input {
+  flex-grow: 1;
+  padding: 8px 12px; /* Reduced padding */
+  padding-right: 30px; /* Make room for the button */
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 14px; /* Slightly smaller font size */
+  outline: none;
+  transition: border-color 0.2s;
+  width: 100%;
+}
+
+.sidebar-search input:focus {
+  border-color: #80bdff;
+  box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+
+.sidebar-search button {
+  background-color: transparent;
+  color: inherit;
+  border: none;
+  padding: 8px; /* Reduced padding */
+  cursor: pointer;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.sidebar-search button:hover {
+  opacity: 0.7;
+}
+
+/* Sidebar Navigation Styles */
+.sidebar-nav {
+  padding: 0 5px;
+}
+
+.sidebar-nav ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-nav li {
+  margin: 5px 0;
+}
+
+.sidebar-nav a {
+  display: block;
+  padding: 5px 8px;
+  color: inherit;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: color 0.2s;
+}
+
+.sidebar-nav a:hover,
+.sidebar-nav a.active {
+  color: var(--color-primary); /* Use primary color for both hover and active states */
+}
+
+.sidebar-nav ul ul {
+  margin-left: 15px;
+}
+
+/* Dark mode styles */
+.dark-mode .sidebar-nav a:hover,
+.dark-mode .sidebar-nav a.active {
+  color: var(--color-primary-dark); /* Use a different shade of primary color for dark mode */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .sidebar {
+    padding: 5px; /* Further reduced padding for mobile */
+  }
+
+  .sidebar-search {
+    padding: 5px 3px;
+  }
+
+  .sidebar-search input {
+    font-size: 16px; /* Larger font size for better touch interaction on mobile */
+  }
+
+  .sidebar-search button {
+    padding: 8px 10px;
+  }
+}
+
+/* Dark mode styles */
+.dark-mode .sidebar-search input {
+  background-color: #2c3e50;
+  border-color: #34495e;
+  color: #ecf0f1;
+}
+
+.dark-mode .sidebar-nav a:hover,
+.dark-mode .sidebar-nav a.active {
+  background-color: rgba(255, 255, 255, 0.1);
+}

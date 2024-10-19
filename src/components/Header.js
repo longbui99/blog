@@ -24,18 +24,6 @@ function Header({ toggleDarkMode, isDarkMode }) {
             <FontAwesomeIcon icon={faGithub} />
           </a>
         </div>
-        <div className="theme-toggle-container">
-          <label htmlFor="theme-toggle" className="theme-toggle-label">
-            <input
-              type="checkbox"
-              id="theme-toggle"
-              className="theme-toggle-input"
-              checked={isDarkMode}
-              onChange={toggleDarkMode}
-            />
-            <span className="theme-toggle-slider"></span>
-          </label>
-        </div>
       </nav>
     </header>
   );

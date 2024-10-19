@@ -1,0 +1,130 @@
+/* Base styles for code blocks */
+.code-block-container {
+  position: relative;
+  margin: 1em 0;
+}
+
+.code-block-container pre {
+  background-color: #f4f4f4;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 1em;
+  overflow-x: auto;
+}
+
+.code-block-container code,
+code {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.9em;
+  line-height: 1.6;
+}
+
+/* Inline code */
+code {
+  background-color: #f4f4f4;
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+
+/* Copy button styles */
+.copy-button {
+  position: absolute;
+  top: 0.5em;
+  right: 0.5em;
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 0.3em 0.6em;
+  font-size: 0.8em;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.copy-button:hover {
+  background-color: #e0e0e0;
+}
+
+/* Language-specific styles */
+
+/* Python */
+.language-python .keyword { color: #0000FF; }
+.language-python .string { color: #008000; }
+.language-python .number { color: #0000FF; }
+.language-python .comment { color: #808080; font-style: italic; }
+
+/* JavaScript */
+.language-javascript .keyword { color: #0000FF; }
+.language-javascript .string { color: #008000; }
+.language-javascript .number { color: #0000FF; }
+.language-javascript .comment { color: #808080; font-style: italic; }
+
+/* Bash */
+.language-bash .keyword { color: #0000FF; }
+.language-bash .string { color: #008000; }
+.language-bash .variable { color: #B58900; }
+.language-bash .comment { color: #808080; font-style: italic; }
+
+/* Go */
+.language-go .keyword { color: #0000FF; }
+.language-go .string { color: #008000; }
+.language-go .number { color: #0000FF; }
+.language-go .comment { color: #808080; font-style: italic; }
+
+/* XML */
+.language-xml .tag { color: #0000FF; }
+.language-xml .attr-name { color: #FF0000; }
+.language-xml .attr-value { color: #008000; }
+
+/* HTML */
+.language-html .tag { color: #0000FF; }
+.language-html .attr-name { color: #FF0000; }
+.language-html .attr-value { color: #008000; }
+
+/* Dark mode styles */
+.dark-mode .code-block-container pre,
+.dark-mode code {
+  background-color: #2a2a2a;
+  border-color: #444;
+  color: #f0f0f0;
+}
+
+.dark-mode .copy-button {
+  background-color: #3a3a3a;
+  border-color: #555;
+  color: #f0f0f0;
+}
+
+.dark-mode .copy-button:hover {
+  background-color: #4a4a4a;
+}
+
+/* Dark mode language-specific styles */
+.dark-mode .language-python .keyword,
+.dark-mode .language-javascript .keyword,
+.dark-mode .language-bash .keyword,
+.dark-mode .language-go .keyword { color: #569CD6; }
+
+.dark-mode .language-python .string,
+.dark-mode .language-javascript .string,
+.dark-mode .language-bash .string,
+.dark-mode .language-go .string { color: #CE9178; }
+
+.dark-mode .language-python .number,
+.dark-mode .language-javascript .number,
+.dark-mode .language-go .number { color: #B5CEA8; }
+
+.dark-mode .language-python .comment,
+.dark-mode .language-javascript .comment,
+.dark-mode .language-bash .comment,
+.dark-mode .language-go .comment { color: #6A9955; }
+
+.dark-mode .language-bash .variable { color: #9CDCFE; }
+
+.dark-mode .language-xml .tag,
+.dark-mode .language-html .tag { color: #569CD6; }
+
+.dark-mode .language-xml .attr-name,
+.dark-mode .language-html .attr-name { color: #9CDCFE; }
+
+.dark-mode .language-xml .attr-value,
+.dark-mode .language-html .attr-value { color: #CE9178; }
