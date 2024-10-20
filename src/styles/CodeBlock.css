@@ -35,7 +35,7 @@ code {
   background: rgba(255, 255, 255, 0.1);
   border: none;
   border-radius: 3px;
-  color: #fff;
+  color: var(--code-color-light);
   padding: 5px 10px;
   font-size: 0.8em;
   cursor: pointer;
@@ -144,6 +144,15 @@ code {
 .dark-mode .language-html .attr-value { color: #CE9178; }
 
 /* New styles */
+:root {
+  --code-bg-light: #b7b7b7;
+  --code-bg-dark: #2d2d2d;
+  --code-color-light: #333;
+  --code-color-dark: #f8f8f2;
+  --inline-code-bg-light: #e8e8e8;
+  --inline-code-bg-dark: #3a3a3a;
+}
+
 .code-block-wrapper {
   position: relative;
   margin: 1em 0;
@@ -167,10 +176,10 @@ code {
   position: absolute;
   top: 5px;
   right: 5px;
-  background: rgba(255, 255, 255, 0.7);
-  border: 1px solid #ddd;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
   border-radius: 3px;
-  color: #333;
+  color: var(--code-color-light);
   padding: 5px 10px;
   font-size: 0.8em;
   cursor: pointer;
@@ -178,9 +187,49 @@ code {
 }
 
 .copy-button:hover {
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .copy-button:active {
-  background: rgba(255, 255, 255, 1);
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.inline-code {
+  background-color: var(--inline-code-bg-light);
+  color: var(--code-color-light);
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.9em;
+}
+
+pre {
+  background-color: var(--code-bg-light);
+  color: var(--code-color-light);
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 1em;
+  overflow-x: auto;
+}
+
+pre code {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.9em;
+  line-height: 1.4;
+}
+
+/* Dark mode styles */
+.dark-mode .inline-code {
+  background-color: var(--inline-code-bg-dark);
+  color: var(--code-color-dark);
+}
+
+.dark-mode pre {
+  background-color: var(--code-bg-dark);
+  color: var(--code-color-dark);
+  border-color: #444;
+}
+
+.dark-mode .copy-button {
+  color: var(--code-color-dark);
 }
