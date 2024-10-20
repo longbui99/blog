@@ -6,7 +6,7 @@ import MainContent from './components/MainContent';
 import './styles/styles.css'; 
 import './styles/page.css'; 
 import './styles/App.css';
-import routes from './routes';
+import { routeStructure } from './const/routes';
 
 function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
@@ -47,11 +47,8 @@ function App() {
         />
         <MainContent isSidebarOpen={isSidebarOpen}>
           <Routes>
-            {routes.map(route => (
-              <Route key={route.id} path={route.path} element={route.element} />
-            ))}
-            {routes.flatMap(route => route.children || []).map(childRoute => (
-              <Route key={childRoute.id} path={childRoute.path} element={childRoute.element} />
+            {routeStructure.map(route => (
+              <Route key={route.path} path={route.path} element={<route.component />} />
             ))}
           </Routes>
         </MainContent>

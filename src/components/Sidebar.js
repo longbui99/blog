@@ -3,13 +3,13 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import SidebarSearch from './SidebarSearch';
-import initialRoutes from '../routes';
+import { routeStructure } from '../const/routes';
 
 const ItemTypes = {
   MENU_ITEM: 'menuItem'
 };
 
-const MenuItem = ({ id, content, path, index, moveItem, children }) => {
+const MenuItem = ({ id, title, path, index, moveItem, children }) => {
   const location = useLocation();
   const [, drag] = useDrag({
     type: ItemTypes.MENU_ITEM,
@@ -40,18 +40,29 @@ const MenuItem = ({ id, content, path, index, moveItem, children }) => {
 
   return (
     <li ref={ref} className={isActive ? "active" : ""}>
-      <NavLink to={path}>{content}</NavLink>
+      <NavLink to={path}>{title}</NavLink>
       {children && <ul>{children.map((child, index) => (
-        <MenuItem key={child.id} {...child} index={index} moveItem={moveItem} />
+        <MenuItem key={child.path} {...child} index={index} moveItem={moveItem} />
       ))}</ul>}
     </li>
   );
 };
 
 function Sidebar({ isOpen, toggleSidebar, className }) {
-  const [menuItems, setMenuItems] = useState(initialRoutes);
+  const [menuItems, setMenuItems] = useState(() => {
+    const buildTree = (items, parent = null) => {
+      return items
+        .filter(item => item.parent === parent)
+        .sort((a, b) => a.sequence - b.sequence)
+        .map(item => ({
+          ...item,
+          children: buildTree(items, item.path)
+        }));
+    };
+    return buildTree(routeStructure);
+  });
+
   const [searchTerm, setSearchTerm] = useState(() => {
-    // Initialize searchTerm from localStorage or empty string
     return localStorage.getItem('sidebarSearchTerm') || '';
   });
 
@@ -69,7 +80,7 @@ function Sidebar({ isOpen, toggleSidebar, className }) {
 
     const filterItems = (items) => {
       return items.filter(item => {
-        const matchesSearch = item.content.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesSearch = item.title.toLowerCase().includes(searchTerm.toLowerCase());
         const hasMatchingChildren = item.children && filterItems(item.children).length > 0;
         return matchesSearch || hasMatchingChildren;
       }).map(item => ({
@@ -86,7 +97,6 @@ function Sidebar({ isOpen, toggleSidebar, className }) {
     localStorage.setItem('sidebarSearchTerm', term);
   };
 
-  // Effect to update localStorage when searchTerm changes
   useEffect(() => {
     localStorage.setItem('sidebarSearchTerm', searchTerm);
   }, [searchTerm]);
@@ -98,7 +108,7 @@ function Sidebar({ isOpen, toggleSidebar, className }) {
         <nav className="sidebar-nav">
           <ul>
             {filteredMenuItems.map((item, index) => (
-              <MenuItem key={item.id} {...item} index={index} moveItem={moveItem} />
+              <MenuItem key={item.path} {...item} index={index} moveItem={moveItem} />
             ))}
           </ul>
         </nav>
