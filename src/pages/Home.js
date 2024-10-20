@@ -1,12 +1,14 @@
 import React from 'react';
+import { parseContent } from '../utils/contentParser';
 
 function Home() {
-  return (
-    <div>
-      <h1>Welcome to My Blog</h1>
-      <p>This is the home page of my blog.</p>
-    </div>
-  );
+  const content = `
+    <h1>Welcome to Our Website</h1>
+    <p>Discover our latest updates and features.</p>
+    <!-- Add more content here -->
+  `;
+
+  return <div className="content-wrapper">{parseContent(content)}</div>;
 }
 
 export default Home;
