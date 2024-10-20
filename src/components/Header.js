@@ -1,10 +1,16 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLinkedin, faGithub } from '@fortawesome/free-brands-svg-icons';
 import { ReactComponent as Logo } from '../static/logo.svg';
 
 function Header({ toggleDarkMode, isDarkMode }) {
+  const navigate = useNavigate();
+
+  const openAdminPage = () => {
+    navigate('/admin');
+  };
+
   return (
     <header className="top-header">
       <div className="logo-container">
@@ -24,6 +30,9 @@ function Header({ toggleDarkMode, isDarkMode }) {
             <FontAwesomeIcon icon={faGithub} />
           </a>
         </div>
+        <button onClick={openAdminPage} className="admin-button">
+          Administrator
+        </button>
       </nav>
     </header>
   );

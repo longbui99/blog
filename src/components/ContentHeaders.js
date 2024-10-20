@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FaLink } from 'react-icons/fa';
+import NotificationBanner from './NotificationBanner';
 import '../styles/ContentHeaders.css';
 
 // Import ThemeContext if it exists, otherwise create a dummy context
@@ -14,6 +15,7 @@ try {
 function createHeaderComponent(level) {
   return function Header({ children, currentRoute }) {
     const [showCopy, setShowCopy] = useState(false);
+    const [showNotification, setShowNotification] = useState(false);
     const location = useLocation();
     const theme = useContext(ThemeContext);
     const isDarkMode = theme ? theme.isDarkMode : false;
@@ -23,32 +25,43 @@ function createHeaderComponent(level) {
     const copyLink = (e) => {
       e.preventDefault();
       navigator.clipboard.writeText(window.location.origin + link);
-      alert('Link copied to clipboard!');
+      setShowNotification(true);
     };
 
     const Tag = `h${level}`;
 
     return (
-      <Tag
-        id={id}
-        className={`content-header ${isDarkMode ? 'dark-mode' : ''}`}
-        onMouseEnter={() => setShowCopy(true)}
-        onMouseLeave={() => setShowCopy(false)}
-      >
-        <div className="header-wrapper">
-          <button 
-            onClick={copyLink} 
-            className="copy-link-button" 
-            title="Copy link to this section"
-            style={{ opacity: showCopy ? 1 : 0 }}
-          >
-            <FaLink />
-          </button>
-          <Link to={link} className="header-link">
-            <span className="header-text">{children}</span>
-          </Link>
-        </div>
-      </Tag>
+      <>
+        <Tag
+          id={id}
+          className={`content-header ${isDarkMode ? 'dark-mode' : ''}`}
+          onMouseEnter={() => setShowCopy(true)}
+          onMouseLeave={() => setShowCopy(false)}
+        >
+          <div className="header-wrapper">
+            <button 
+              onClick={copyLink} 
+              className="copy-link-button" 
+              title="Copy link to this section"
+              style={{ opacity: showCopy ? 1 : 0 }}
+            >
+              <FaLink />
+            </button>
+            <Link to={link} className="header-link">
+              <span className="header-text">{children}</span>
+            </Link>
+          </div>
+        </Tag>
+        {showNotification && (
+          <NotificationBanner
+            duration={2}
+            type="info"
+            title="Link Copied"
+            message="The link has been copied to your clipboard."
+            onClose={() => setShowNotification(false)}
+          />
+        )}
+      </>
     );
   };
 }

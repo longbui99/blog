@@ -39,7 +39,7 @@ function App() {
   return (
     <Router>
       <div className={`App ${isSidebarOpen ? 'sidebar-open' : ''}`}>
-        <Header />
+        <Header toggleDarkMode={toggleDarkMode} isDarkMode={isDarkMode} />
         <Sidebar 
           isOpen={isSidebarOpen} 
           toggleSidebar={toggleSidebar} 
