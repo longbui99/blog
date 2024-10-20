@@ -50,6 +50,9 @@ body {
   background-color: var(--main-bg);
   color: var(--main-text);
   padding: 20px;
+  flex-grow: 1;
+  overflow-y: auto;
+  transition: padding-left 0.3s ease;
 }
 
 /* Footer styles */
@@ -98,9 +101,9 @@ body {
   height: 100vh;
 }
 
-.main-content {
-  flex-grow: 1;
-  overflow-y: auto;
+.main-content.sidebar-hidden {
+  margin-left: 15px;
+  padding: 0px;
 }
 
 .toggle-container {
@@ -178,9 +181,6 @@ body {
   left: 0; /* Show the sidebar when open */
 }
 
-.App.sidebar-open .main-content {
-  margin-left: 250px; /* Adjust main content when sidebar is open */
-}
 
 @media (max-width: 768px) {
   .sidebar {
@@ -200,4 +200,16 @@ body {
 .content-wrapper {
   margin: 0 auto;
   padding: 20px;
+  padding-right: 200px;
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    padding-left: 0;
+  }
+}
+
+html {
+  scroll-padding-top: 60px; /* Adjust based on your header height */
+  scroll-behavior: smooth;
 }

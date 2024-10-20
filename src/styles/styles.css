@@ -52,7 +52,8 @@ body {
 }
 
 .sidebar-nav li {
-    margin: 10px 0;
+    margin: 5px 0;
+    cursor: move;
 }
 
 .sidebar-nav a,
@@ -109,20 +110,55 @@ body {
 
 .main-content {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     flex-grow: 1;
     overflow-y: auto;
     transition: margin-left 0.3s ease;
-    position: relative; /* Add this */
-}
-
-.main-content.full-width {
-    margin-left: 0;
+    position: relative;
 }
 
 .content-wrapper {
     flex-grow: 1;
     padding: 20px;
+    padding-right: 270px; /* Adjust this value based on the width of your table of contents */
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.table-of-contents {
+    position: fixed;
+    top: 15px; /* Adjust this value to match your header height */
+    right: 0;
+    width: 250px;
+    height: calc(100vh - 15px); /* Adjust this value to match your header height */
+    overflow-y: auto;
+    background-color: #f8f8f8;
+    border-left: 1px solid #e0e0e0;
+    padding: 15px;
+    font-size: 14px;
+    z-index: 1000;
+}
+
+/* Responsive styles */
+@media (max-width: 1200px) {
+    .content-wrapper {
+        padding-right: 20px; /* Reset padding when table of contents is hidden */
+    }
+
+    .table-of-contents {
+        display: none;
+    }
+}
+
+/* Adjust for mobile view */
+@media (max-width: 768px) {
+    .main-content {
+        flex-direction: column;
+    }
+
+    .content-wrapper {
+        padding: 15px;
+    }
 }
 
 main h1 {
@@ -1111,7 +1147,7 @@ h6 {
   font-size: 16px;
   outline: none;
   transition: border-color 0.2s;
-  width: 100%;
+  width: -webkit-fill-available;
 }
 
 .sidebar-search input:focus {
@@ -1196,7 +1232,7 @@ h6 {
   font-size: 14px; /* Slightly smaller font size */
   outline: none;
   transition: border-color 0.2s;
-  width: 100%;
+  width: -webkit-fill-available;
 }
 
 .sidebar-search input:focus {
@@ -1289,3 +1325,57 @@ h6 {
 .dark-mode .sidebar-nav a.active {
   background-color: rgba(255, 255, 255, 0.1);
 }
+
+.sidebar-handle {
+  cursor: move;
+  background-color: #f0f0f0;
+  padding: 5px;
+  text-align: center;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.dark-mode .sidebar-handle {
+  background-color: #2a2a2a;
+  border-bottom-color: #3a3a3a;
+}
+
+.App {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  position: fixed;
+  top: 15px; /* Adjust based on your header height */
+  left: 0;
+  bottom: 60px; /* Account for bottom nav */
+  width: 250px;
+  z-index: 1000;
+  transition: transform 0.3s ease;
+}
+
+.sidebar.open {
+  transform: translateX(0);
+}
+
+.main-content {
+  flex-grow: 1;
+  margin-left: 250px;
+  transition: margin-left 0.3s ease;
+}
+
+.main-content.sidebar-hidden {
+  margin-left: 0;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    max-width: 250px;
+  }
+
+  .main-content {
+    margin-left: 0;
+  }
+}
+

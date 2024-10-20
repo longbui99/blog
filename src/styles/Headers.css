@@ -1,0 +1,49 @@
+.content-header {
+  position: relative;
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+}
+
+.header-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.header-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.copy-link-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  opacity: 0.3;
+  transition: opacity 0.3s ease;
+  padding: 0;
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.content-header:hover .copy-link-button {
+  opacity: 0.7;
+}
+
+.copy-link-button:hover {
+  opacity: 1 !important;
+}
+
+.copy-link-button svg {
+  width: 0.8em;
+  height: 0.8em;
+}
+
+/* Adjust icon size for different header levels */
+h1 .copy-link-button svg { width: 0.7em; height: 0.7em; }
+h2 .copy-link-button svg { width: 0.65em; height: 0.65em; }
+h3 .copy-link-button svg { width: 0.6em; height: 0.6em; }
+h4 .copy-link-button svg,
+h5 .copy-link-button svg,
+h6 .copy-link-button svg,
+h7 .copy-link-button svg { width: 0.55em; height: 0.55em; }

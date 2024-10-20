@@ -1,24 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-function SidebarSearch() {
-  const [searchTerm, setSearchTerm] = useState('');
+function SidebarSearch({ onSearch, initialSearchTerm }) {
+  const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
+
+  useEffect(() => {
+    setSearchTerm(initialSearchTerm);
+  }, [initialSearchTerm]);
 
   const handleSearch = (e) => {
-    e.preventDefault();
-    // Implement your search logic here
-    console.log('Searching for:', searchTerm);
+    const term = e.target.value;
+    setSearchTerm(term);
+    onSearch(term);
   };
 
   return (
     <div className="sidebar-search">
-      <form onSubmit={handleSearch}>
-        <input
-          type="text"
-          placeholder="Type to Search..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-      </form>
+      <input
+        type="text"
+        placeholder="Search menu..."
+        value={searchTerm}
+        onChange={handleSearch}
+      />
     </div>
   );
 }

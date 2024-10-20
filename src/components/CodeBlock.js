@@ -1,55 +1,37 @@
 import React, { useState } from 'react';
+import { FaCopy } from 'react-icons/fa';
 import '../styles/CodeBlock.css';
 
-const CodeBlock = ({ code, language, inline = false }) => {
-  const [isCopied, setIsCopied] = useState(false);
+function CodeBlock({ code, language, inline }) {
+  const [copied, setCopied] = useState(false);
+  const lines = code.split('\n');
+  const isMultiLine = lines.length > 1;
 
-  const copyToClipboard = async () => {
-    try {
-      await navigator.clipboard.writeText(code);
-      setIsCopied(true);
-      setTimeout(() => setIsCopied(false), 2000);
-    } catch (err) {
-      console.error('Failed to copy text: ', err);
-    }
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(code).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
   };
 
-  const getLanguageClass = () => {
-    switch (language.toLowerCase()) {
-      case 'python':
-        return 'language-python';
-      case 'javascript':
-      case 'js':
-        return 'language-javascript';
-      case 'bash':
-      case 'shell':
-        return 'language-bash';
-      case 'go':
-      case 'golang':
-        return 'language-go';
-      case 'xml':
-        return 'language-xml';
-      case 'html':
-        return 'language-html';
-      default:
-        return 'language-python';
-    }
-  };
-
-  if (inline) {
-    return <code className={getLanguageClass()}>{code}</code>;
+  if (inline || !isMultiLine) {
+    return (
+      <code className={`inline-code language-${language}`}>
+        {code}
+      </code>
+    );
   }
 
   return (
-    <div className="code-block-container">
-      <pre className={getLanguageClass()}>
+    <div className="code-block-wrapper">
+      <button className="copy-button" onClick={copyToClipboard}>
+        {copied ? 'Copied!' : <FaCopy />}
+      </button>
+      <pre className={`language-${language}`}>
         <code>{code}</code>
       </pre>
-      <button className="copy-button" onClick={copyToClipboard}>
-        {isCopied ? 'Copied!' : 'Copy'}
-      </button>
     </div>
   );
-};
+}
 
 export default CodeBlock;

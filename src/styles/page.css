@@ -11,7 +11,7 @@ body {
 }
 
 .content-wrapper {
-    width: 100%;
+    width: calc(100% - 270px); /* Reduce width to accommodate Table of Contents */
     max-width: none;
     margin: 0;
     padding: 20px;
@@ -76,4 +76,13 @@ section {
     h3 {
         font-size: 1.2em;
     }
+}
+
+@media (max-width: 1200px) {
+    .content-wrapper {
+        width: 100%; /* Full width when Table of Contents is hidden */
+        padding: 15px;
+    }
+
+    /* ... other responsive styles ... */
 }

@@ -3,19 +3,10 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import MainContent from './components/MainContent';
-import BottomNav from './components/BottomNav';
-import Home from './pages/Home';
-import About from './pages/About';
-import Team from './pages/Team';
-import RestAPI from './pages/RestAPI';
-import Mission from './pages/Mission';
-import RecentPosts from './pages/RecentPosts';
-import PopularPosts from './pages/PopularPosts';
-import Categories from './pages/Categories';
-import Contact from './pages/Contact';
 import './styles/styles.css'; 
 import './styles/page.css'; 
 import './styles/App.css';
+import routes from './routes';
 
 function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
@@ -49,18 +40,19 @@ function App() {
     <Router>
       <div className={`App ${isSidebarOpen ? 'sidebar-open' : ''}`}>
         <Header />
-        <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-        <MainContent>
+        <Sidebar 
+          isOpen={isSidebarOpen} 
+          toggleSidebar={toggleSidebar} 
+          className={isDarkMode ? 'dark-mode' : ''}
+        />
+        <MainContent isSidebarOpen={isSidebarOpen}>
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/team" element={<Team />} />
-            <Route path="/restful-api" element={<RestAPI />} />
-            <Route path="/mission" element={<Mission />} />
-            <Route path="/recent" element={<RecentPosts />} />
-            <Route path="/popular" element={<PopularPosts />} />
-            <Route path="/categories" element={<Categories />} />
-            <Route path="/contact" element={<Contact />} />
+            {routes.map(route => (
+              <Route key={route.id} path={route.path} element={route.element} />
+            ))}
+            {routes.flatMap(route => route.children || []).map(childRoute => (
+              <Route key={childRoute.id} path={childRoute.path} element={childRoute.element} />
+            ))}
           </Routes>
         </MainContent>
         <div className="toggle-container">

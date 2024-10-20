@@ -30,19 +30,24 @@ code {
 /* Copy button styles */
 .copy-button {
   position: absolute;
-  top: 0.5em;
-  right: 0.5em;
-  background-color: #e0e0e0; /* Slightly darker button */
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  padding: 0.3em 0.6em;
+  top: 5px;
+  right: 5px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 3px;
+  color: #fff;
+  padding: 5px 10px;
   font-size: 0.8em;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background 0.3s ease;
 }
 
 .copy-button:hover {
-  background-color: #d0d0d0; /* Darker on hover */
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.copy-button:active {
+  background: rgba(255, 255, 255, 0.3);
 }
 
 /* Language-specific styles */
@@ -137,3 +142,45 @@ code {
 
 .dark-mode .language-xml .attr-value,
 .dark-mode .language-html .attr-value { color: #CE9178; }
+
+/* New styles */
+.code-block-wrapper {
+  position: relative;
+  margin: 1em 0;
+}
+
+.code-block-wrapper pre {
+  background-color: #f4f4f4;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 1em;
+  overflow-x: auto;
+}
+
+.code-block-wrapper code {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.9em;
+  line-height: 1.4;
+}
+
+.copy-button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  color: #333;
+  padding: 5px 10px;
+  font-size: 0.8em;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.copy-button:hover {
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.copy-button:active {
+  background: rgba(255, 255, 255, 1);
+}

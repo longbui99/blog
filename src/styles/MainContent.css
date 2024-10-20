@@ -1,0 +1,21 @@
+.main-content {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  margin-left: 250px; /* Adjust based on your sidebar width */
+  transition: margin-left 0.3s ease;
+}
+
+.main-content.sidebar-hidden {
+  margin-left: 0;
+}
+
+.content {
+  flex: 1;
+  margin-bottom: 20px;
+}
+
+/* Adjust TableOfContents styles if needed */
+.table-of-contents {
+  margin-top: 20px;
+}
