@@ -1,36 +1,38 @@
-:root {
-  --primary-color-light: #007bff; /* Example primary color for light theme */
-  --primary-color-dark: #45a0ff; /* Example primary color for dark theme */
-}
+
 
 .content-header {
   position: relative;
-  display: inline-flex;
-  align-items: center;
   margin-top: 1em;
   margin-bottom: 0.5em;
-  max-width: 100%;
+  width: 100%;
+}
+
+.header-wrapper {
+  display: flex;
+  align-items: center;
 }
 
 .header-link {
   text-decoration: none;
   color: inherit;
-  white-space: nowrap;
+  flex-grow: 1;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.copy-link-button {
+.copy-link-button {    
   background: none;
   border: none;
   cursor: pointer;
   padding: 0;
-  margin-left: 10px;
+  /* margin-right: 50px; */
   display: flex;
   align-items: center;
   opacity: 0;
   transition: opacity 0.3s ease;
   flex-shrink: 0;
+  position: absolute;
+  left: -25px;
 }
 
 .content-header:hover .copy-link-button {
@@ -38,8 +40,9 @@
 }
 
 .copy-link-button svg {
-  width: 2em !important; /* Increase size to 200% */
-  height: 2em !important; /* Increase size to 200% */
+  width: 1.2em !important;
+  height: 1.2em !important;
+  margin-right: 0.5em;
   color: var(--link-light); /* Default to light theme color */
 }
 

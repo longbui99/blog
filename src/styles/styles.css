@@ -921,29 +921,29 @@ h6 {
 }
 
 .main-content h1 {
-  font-size: 2.5em;
+  font-size: 2em;
   border-bottom: 2px solid var(--color-primary);
   padding-bottom: 0.3em;
 }
 
 .main-content h2 {
-  font-size: 2em;
-}
-
-.main-content h3 {
   font-size: 1.75em;
 }
 
-.main-content h4 {
+.main-content h3 {
   font-size: 1.5em;
 }
 
-.main-content h5 {
+.main-content h4 {
   font-size: 1.25em;
 }
 
-.main-content h6 {
+.main-content h5 {
   font-size: 1em;
+}
+
+.main-content h6 {
+  font-size: 0.75em;
   text-transform: uppercase;
 }
 
