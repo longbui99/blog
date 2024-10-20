@@ -56,6 +56,18 @@
   color: #f0f0f0;
 }
 
+.dark-mode .table-of-contents h2 {
+  color: #e0e0e0;
+}
+
+.dark-mode .toc-link {
+  color: #b0b0b0;
+}
+
+.dark-mode .toc-link:hover {
+  color: #ffffff;
+}
+
 /* Responsive styles */
 @media (max-width: 1200px) {
   .table-of-contents {
