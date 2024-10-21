@@ -1,0 +1,8 @@
+fastapi
+tortoise-orm
+asyncpg
+python-jose[cryptography]
+passlib[bcrypt]
+python-multipart
+bcrypt
+openai

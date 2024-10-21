@@ -1,0 +1,18 @@
+name: "longbui-blog"
+services:
+  postgres:
+    image: postgres:${POSTGRES_VERSION:-13}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: longbui
+      POSTGRES_PASSWORD: longbui
+    tty: true
+
+volumes:
+  odoo_data:
+  postgres_data:

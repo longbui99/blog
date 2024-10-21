@@ -1,0 +1,201 @@
+.top-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5em 0em 1em 0.5em;
+  background-color: var(--sidebar-bg);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  height: 15px;
+  position: fixed;
+  width: 100vw;
+  top: 0;
+  z-index: 200000;
+}
+
+.logo-container {
+display: flex;
+justify-content: space-between;
+align-items: center;
+flex-flow: row;
+}
+
+.logo {
+  width: 50px;
+  height: 50px;
+  margin-right: 1rem;
+}
+
+.site-title {
+    font-size: 1.5rem;
+    margin: 0;
+    color: var(--text-dark);
+}
+
+.motto {
+  font-style: italic;
+  color: #6c757d;
+}
+
+.top-nav {
+  display: flex;
+  align-items: center;
+}
+
+.top-nav a {
+  margin-left: 1rem;
+  text-decoration: none;
+  font-size: 1rem;
+  color: var(--link-light);
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.top-nav a::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  bottom: -4px;
+  left: 0;
+  background-color: var(--link-light);
+  visibility: hidden;
+  transform: scaleX(0);
+  transition: all 0.3s ease-in-out;
+}
+
+.top-nav a:hover {
+  color: var(--link-light);
+}
+
+.top-nav a:hover::after {
+  visibility: visible;
+  transform: scaleX(1);
+}
+
+/* Dark mode styles */
+.dark-mode .top-nav a {
+  color: var(--text-dark);
+}
+
+.dark-mode .top-nav a::after {
+  background-color: var(--link-dark);
+}
+
+.dark-mode .top-nav a:hover {
+  color: var(--text-dark);
+}
+
+.social-links {
+  display: flex;
+  margin-left: 1rem;
+}
+
+.social-links a {
+  margin-left: 0.5rem;
+  font-size: 1.2rem;
+}
+
+.admin-button {
+  margin-left: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.admin-button:hover {
+  background-color: #218838;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .top-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-flow: row;
+        height: 30px;
+    }
+  
+    .motto {
+      margin: 0.5rem 0;
+    }
+  
+    .top-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-flow: row;
+    }
+  
+    .top-nav a {
+      margin: 0.5rem 0;
+    }
+  
+    .social-links {
+      margin: 0.5rem 0;
+    }
+  
+    .social-links a {
+      margin-right: 0.5rem;
+      margin-left: 0;
+    }
+  
+    .admin-button {
+      margin: 0.5rem 0;
+    }
+    .sidebar.open{
+        top: 45px;
+    }
+  }
+
+.header-left {
+  display: flex;
+  align-items: center;
+}
+
+.user-name {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.add-page-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.add-page-button:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+}
+
+.content-actions {
+  display: flex;
+  gap: 10px;
+  margin-left: 20px;
+}
+
+.edit-button,
+.delete-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-color);
+}
+
+.edit-button:hover,
+.delete-button:hover {
+  color: var(--primary-color);
+}

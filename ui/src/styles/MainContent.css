@@ -1,0 +1,215 @@
+.main-content {
+  flex-grow: 1;
+  margin-left: 10px;
+  margin-right: 10px;
+  padding: 20px;
+  padding-bottom: 80px; /* Account for bottom nav */
+  transition: margin-left 0.3s ease-in-out;
+  overflow-y: auto;
+  font-size: 18px;
+  line-height: 1.8;
+  color: var(--text-light);
+  position: relative;
+}
+
+.main-content.sidebar-open {
+  margin-left: 250px;
+}
+
+.main-content.toc-open {
+  margin-right: 250px;
+}
+
+.main-content p {
+  margin-bottom: 1.5em; /* Add more space between paragraphs */
+}
+
+/* Header styles */
+.main-content h1, 
+.main-content h2, 
+.main-content h3, 
+.main-content h4, 
+.main-content h5, 
+.main-content h6 {
+  color: var(--text-light);
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  line-height: 1.3; /* Tighter line height for headers */
+  border: none;
+}
+
+.main-content h1 {
+  font-size: 2em;
+  padding-bottom: 0.3em;
+}
+
+.main-content h2 {
+  font-size: 1.75em;
+}
+
+.main-content h3 {
+  font-size: 1.5em;
+}
+
+.main-content h4 {
+  font-size: 1.25em;
+}
+
+.main-content h5 {
+  font-size: 1em;
+}
+
+.main-content h6 {
+  font-size: 0.75em;
+  text-transform: uppercase;
+}
+
+/* Improve list readability */
+.main-content ul, 
+.main-content ol {
+  margin-bottom: 1.5em;
+  padding-left: 2em;
+}
+
+.main-content li {
+  margin-bottom: 0.5em;
+}
+
+.content-wrapper {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  width: 100%;
+}
+
+/* Dark mode adjustments */
+.dark-mode .main-content {
+  color: var(--text-dark);
+}
+
+.dark-mode .main-content h1,
+.dark-mode .main-content h2,
+.dark-mode .main-content h3,
+.dark-mode .main-content h4,
+.dark-mode .main-content h5,
+.dark-mode .main-content h6 {
+  color: var(--text-dark);
+}
+
+.dark-mode .main-content h1 {
+  border-bottom-color: var(--color-primary-dark);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .main-content,
+  .main-content.sidebar-hidden,
+  .main-content.toc-open {
+    margin-left: 10px;
+    margin-right: 10px;
+    padding: 15px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .main-content.toc-open{
+    padding-right: 10px;
+  }
+}
+
+/* .edit-button {
+  position: absolute;
+  top: 80px;
+  right: 50px;
+  display: flex;
+  align-items: center;
+  background-color: #a3a3a3;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  z-index: 1000000000;
+}
+
+.delete-button {
+  position: absolute;
+  top: 80px;
+  right: -30px;
+  display: flex;
+  align-items: center;
+  background-color: #a3a3a3;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  z-index: 1000000000;
+} */
+
+.edit-button svg {
+}
+
+.editable-content {
+}
+
+.editable-content textarea {
+  width: 100%;
+  min-height: 300px;
+  margin-bottom: 10px;
+  font-family: monospace;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.edit-buttons {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.edit-buttons button {
+  cursor: pointer;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.edit-buttons button:hover {
+  background-color: #e0e0e0;
+}
+
+/* New styles for content actions */
+.content-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.edit-button,
+.delete-button {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  margin-left: 0.5rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s ease;
+}
+
+.edit-button {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.delete-button {
+  background-color: #f44336;
+  color: white;
+}
+
+.edit-button:hover,
+.delete-button:hover {
+  opacity: 0.8;
+}
+
+.edit-button svg,
+.delete-button svg {
+  margin-right: 0.5rem;
+}
