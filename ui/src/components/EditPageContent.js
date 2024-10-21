@@ -2,9 +2,11 @@ import React, { useState, useEffect, useMemo } from 'react';
 import Select from 'react-select';
 import '../styles/EditPageContent.css';
 import { chatGPTProcessor } from '../processor/chatGPTProcessor';
+import { blogMenuProcessor } from '../processor/blogMenuProcessor';
+import { parseContent } from '../utils/contentParser';
 
 function EditPageContent({ routes, onSave, onCancel, initialContent, currentPath }) {
-  const [content, setContent] = useState(initialContent);
+  const [content, setContent] = useState('');
   const [title, setTitle] = useState('');
   const [urlPath, setUrlPath] = useState(currentPath);
   const [parent, setParent] = useState(null);
@@ -13,16 +15,47 @@ function EditPageContent({ routes, onSave, onCancel, initialContent, currentPath
   const [chatgptInput, setChatgptInput] = useState('');
   const [isChatGPTLoading, setIsChatGPTLoading] = useState(false);
   const [chatGPTError, setChatGPTError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    setContent(initialContent);
-    const currentRoute = routes.find(route => route.path === currentPath);
-    setTitle(currentRoute?.title || '');
-    setUrlPath(currentPath);
-    setParent(currentRoute?.parent || null);
-    setPrevious(currentRoute?.previous || null);
-    setNext(currentRoute?.next || null);
-  }, [initialContent, currentPath, routes]);
+    const fetchBlogContent = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const path = currentPath.trimStart("/");
+        const blogPost = await blogMenuProcessor.createBlogMenuContentByPath(path);
+        
+        if (blogPost && blogPost.content) {
+          const parsedContent = parseContent(blogPost.content, path);
+          setContent(blogPost.content); // We set the unparsed content for editing
+          setTitle(blogPost.title || 'page');
+          
+          // Update other fields based on the current route
+          const currentRoute = routes.find(route => route.path === currentPath);
+          setUrlPath(currentPath);
+          setParent(currentRoute?.parent || null);
+          setPrevious(currentRoute?.previous || null);
+          setNext(currentRoute?.next || null);
+        } else {
+          setContent('');
+          setTitle('page');
+          setUrlPath(currentPath);
+          setParent(null);
+          setPrevious(null);
+          setNext(null);
+        }
+      } catch (error) {
+        console.error('Error fetching blog content:', error);
+        setError('Error loading blog content. Please try again later.');
+        setContent('');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchBlogContent();
+  }, [currentPath, routes]);
 
   const handleContentChange = (e) => setContent(e.target.value);
   const handleTitleChange = (e) => setTitle(e.target.value);
@@ -70,21 +103,31 @@ function EditPageContent({ routes, onSave, onCancel, initialContent, currentPath
 
   return (
     <div className="edit-page-content">
+      {isLoading && <p>Loading content...</p>}
+      {error && <p className="error">{error}</p>}
+      <input
+        type="text"
+        value={title}
+        onChange={handleTitleChange}
+        placeholder="Enter page title"
+        className="title-input"
+      />
+      <input
+        type="text"
+        value={urlPath}
+        onChange={handleUrlPathChange}
+        placeholder="Enter URL path"
+        className="url-path-input"
+      />
+      <textarea
+        value={content}
+        onChange={handleContentChange}
+        placeholder="Enter page content"
+        rows={10}
+        cols={50}
+        className="content-textarea"
+      />
       <div className="edit-controls">
-        <input
-          type="text"
-          value={title}
-          onChange={handleTitleChange}
-          placeholder="Enter page title"
-          className="page-title-input"
-        />
-        <input
-          type="text"
-          value={urlPath}
-          onChange={handleUrlPathChange}
-          placeholder="Enter URL path"
-          className="url-path-input"
-        />
         <div className="select-container">
           <label>Parent:</label>
           <Select
@@ -123,11 +166,6 @@ function EditPageContent({ routes, onSave, onCancel, initialContent, currentPath
         <button onClick={handleSave}>Save</button>
         <button onClick={onCancel}>Cancel</button>
       </div>
-      <textarea
-        value={content}
-        onChange={handleContentChange}
-        placeholder="Edit your content here..."
-      />
       <div className="chatgpt-input">
         <input
           type="text"
@@ -139,7 +177,6 @@ function EditPageContent({ routes, onSave, onCancel, initialContent, currentPath
           {isChatGPTLoading ? 'Searching...' : 'Search ChatGPT'}
         </button>
       </div>
-      {chatGPTError && <p className="error">{chatGPTError}</p>}
     </div>
   );
 }

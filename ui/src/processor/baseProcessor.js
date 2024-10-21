@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { API_ENDPOINTS } from '../const/apiEndpoints';
 
 export class BaseProcessor {
   constructor() {
@@ -7,7 +8,7 @@ export class BaseProcessor {
 
   Config = class {
     constructor() {
-      this.backendDomain = 'http://localhost:8000'; // Default backend domain
+      this.backendDomain = API_ENDPOINTS.BACKEND_DOMAIN;
     }
 
     setBackendDomain(domain) {

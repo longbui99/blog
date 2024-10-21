@@ -126,7 +126,7 @@ function MainContent({
               onSave={handleSave} 
               onCancel={handleCancel}
               initialContent={editableContent}
-              currentPath={currentPath}
+              currentPath={location.pathname}
             />
           ) : (
             <BlogContent 
