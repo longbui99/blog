@@ -46,6 +46,10 @@ async def update_or_create_blog_content(blog_content_data: BlogContentUpdate):
             component="BlogContent",  # Default component, adjust if needed
             short_name=blog_content_data.title[:50]  # Use first 50 chars of title as short_name
         )
+    else:
+        if blog_menu.title != blog_content_data.title:
+            blog_menu.title = blog_content_data.title
+            await blog_menu.save()
 
     # Check if the content already exists for this blog menu
     existing_content = await BlogContent.get_or_none(blog_menu=blog_menu)
@@ -60,34 +64,42 @@ async def update_or_create_blog_content(blog_content_data: BlogContentUpdate):
         content_data['blog_menu'] = blog_menu
         content = await BlogContent.create(**content_data)
     
+    # Get the original blog_menu
+    original_blog_menu = await BlogMenu.get(id=blog_menu.id)
+    sequence_changed = False
+
     # Handle parent assignment
     if blog_content_data.parent:
         parent_menu = await get_blog_menu_by_path(blog_content_data.parent)
         if not parent_menu:
             raise HTTPException(status_code=404, detail="Parent menu not found")
-        blog_menu.parent = parent_menu.path
-    else:
+        if blog_menu.parent != parent_menu.path:
+            blog_menu.parent = parent_menu.path
+            sequence_changed = True
+    elif blog_menu.parent is not None:
         blog_menu.parent = None
-    
-    # Handle sequencing
-    if blog_content_data.previous:
-        previous_menu = await get_blog_menu_by_path(blog_content_data.previous)
-        if not previous_menu:
-            raise HTTPException(status_code=404, detail="Previous menu not found")
-        blog_menu.sequence = previous_menu.sequence + 1
-        # Resequence subsequent items
-        await BlogMenu.filter(parent=blog_menu.parent, sequence__gt=blog_menu.sequence).update(sequence=F('sequence') + 1)
-    elif blog_content_data.next:
-        next_menu = await get_blog_menu_by_path(blog_content_data.next)
-        if not next_menu:
-            raise HTTPException(status_code=404, detail="Next menu not found")
-        blog_menu.sequence = next_menu.sequence
-        # Resequence subsequent items
-        await BlogMenu.filter(parent=blog_menu.parent, sequence__gte=blog_menu.sequence).update(sequence=F('sequence') + 1)
-    else:
-        # If no previous or next, add to the end of the parent's children
-        max_sequence = await BlogMenu.filter(parent=blog_menu.parent).order_by('-sequence').first()
-        blog_menu.sequence = (max_sequence.sequence if max_sequence else 0) + 1
+        sequence_changed = True
+
+    # Handle sequencing only if parent, previous, or next has changed
+    if sequence_changed or blog_content_data.previous or blog_content_data.next:
+        if blog_content_data.previous:
+            previous_menu = await get_blog_menu_by_path(blog_content_data.previous)
+            if not previous_menu:
+                raise HTTPException(status_code=404, detail="Previous menu not found")
+            blog_menu.sequence = previous_menu.sequence + 1
+            # Resequence subsequent items
+            await BlogMenu.filter(parent=blog_menu.parent, sequence__gt=blog_menu.sequence).update(sequence=F('sequence') + 1)
+        elif blog_content_data.next:
+            next_menu = await get_blog_menu_by_path(blog_content_data.next)
+            if not next_menu:
+                raise HTTPException(status_code=404, detail="Next menu not found")
+            blog_menu.sequence = next_menu.sequence
+            # Resequence subsequent items
+            await BlogMenu.filter(parent=blog_menu.parent, sequence__gte=blog_menu.sequence).update(sequence=F('sequence') + 1)
+        else:
+            # If no previous or next, add to the end of the parent's children
+            max_sequence = await BlogMenu.filter(parent=blog_menu.parent).order_by('-sequence').first()
+            blog_menu.sequence = (max_sequence.sequence if max_sequence else 0) + 1
     
     await blog_menu.save()
     await content.save()
