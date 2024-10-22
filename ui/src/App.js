@@ -1,5 +1,6 @@
 import React, { useState, useEffect} from 'react';
-import { BrowserRouter as Router, Route, Routes} from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
+import ReactGA from "react-ga4";
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import MainContent from './components/MainContent';
@@ -7,16 +8,16 @@ import TOCToggle from './components/TOCToggle';
 import SidebarToggle from './components/SidebarToggle';
 import LoginToggle from './components/LoginToggle';
 import LoginModal from './components/LoginModal';
-import EditPageContent from './components/EditPageContent';
 import './styles/styles.css'; 
 import './styles/page.css'; 
 import './styles/App.css';
 import './styles/Toggle.css';
 import { fetchRouteMap } from './const/routes';
 import { loginProcessor } from './processor/loginProcessor';
-import { v4 as uuidv4 } from 'uuid';
-import GoogleAnalytics from './GoogleAnalytics';
 
+
+// Initialize GA with your measurement ID
+ReactGA.initialize("G-9VQG6QJLEK");
 
 function App() {
   const [routes, setRoutes] = useState([]);
@@ -133,7 +134,7 @@ function App() {
 
   return (
     <Router>
-      <GoogleAnalytics />
+      <RouteTracker />
       <div className="App">
         <Header 
           isLoggedIn={isLoggedIn} 
@@ -178,6 +179,17 @@ function App() {
       </div>
     </Router>
   );
+}
+
+// Create a separate component for route tracking
+function RouteTracker() {
+  const location = useLocation();
+
+  useEffect(() => {
+    ReactGA.send({ hitType: "pageview", page: location.pathname + location.search });
+  }, [location]);
+
+  return null;
 }
 
 export default App;
