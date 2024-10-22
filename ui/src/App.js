@@ -15,6 +15,7 @@ import './styles/Toggle.css';
 import { fetchRouteMap } from './const/routes';
 import { loginProcessor } from './processor/loginProcessor';
 import { v4 as uuidv4 } from 'uuid';
+import GoogleAnalytics from './GoogleAnalytics';
 
 
 function App() {
@@ -132,6 +133,7 @@ function App() {
 
   return (
     <Router>
+      <GoogleAnalytics />
       <div className="App">
         <Header 
           isLoggedIn={isLoggedIn} 
