@@ -46,7 +46,7 @@ async def update_or_create_blog_content(blog_content_data: BlogContentUpdate, cu
             parent=blog_content_data.parent,
             sequence=new_sequence,
             component="BlogContent",  # Default component, adjust if needed
-            short_name=blog_content_data.title[:50]  # Use first 50 chars of title as short_name
+            short_name=blog_content_data.title[:50]  
         )
     else:
         if blog_menu.title != blog_content_data.title:
