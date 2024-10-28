@@ -1,10 +1,9 @@
 import { BaseProcessor } from './baseProcessor';
-import { API_ENDPOINTS } from '../const/apiEndpoints';
 
 class BlogContentProcessor extends BaseProcessor {
   constructor() {
     super();
-    this.baseEndpoint = API_ENDPOINTS.BLOG_CONTENT;
+    this.baseEndpoint = `${process.env.REACT_APP_BLOG_CONTENT_PATH}`;
   }
 
   async getBlogContents() {

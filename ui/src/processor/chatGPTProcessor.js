@@ -1,10 +1,9 @@
 import { BaseProcessor } from './baseProcessor';
-import { API_ENDPOINTS } from '../const/apiEndpoints';
 
 class ChatGPTProcessor extends BaseProcessor {
   constructor() {
     super();
-    this.baseEndpoint = API_ENDPOINTS.CHATGPT;
+    this.baseEndpoint = `${process.env.REACT_APP_CHATGPT_PATH}`;
   }
 
   async getChatGPTResponse(message) {

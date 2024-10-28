@@ -62,3 +62,8 @@ async def remove_user(username: str, current_user: Annotated[User, Depends(get_c
         raise HTTPException(status_code=404, detail="User not found")
     await delete_user(username)
     return {"detail": "User successfully deleted"}
+
+
+@router.post("/test", response_model=UserInDB)
+async def test_authentication(_: Annotated[User, Depends(get_current_user)]):
+    return True

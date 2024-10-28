@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { FaUser, FaLock, FaTimes } from 'react-icons/fa';
 import '../styles/LoginModal.css';
 import { loginProcessor } from '../processor/loginProcessor';
 
@@ -15,6 +16,7 @@ function LoginModal({ isOpen, onClose, onSubmit, isPopup = false }) {
     if (result.success) {
       onSubmit(result.username);
       onClose();
+      window.location.reload();
     } else {
       setError(result.error);
     }
@@ -27,25 +29,36 @@ function LoginModal({ isOpen, onClose, onSubmit, isPopup = false }) {
   return (
     <div className={`login-overlay ${isPopup ? 'popup' : ''}`}>
       <div className={modalClass}>
-        <h2>Login</h2>
+        <button className="close-button" onClick={onClose}>
+          <FaTimes />
+        </button>
+        <h2>Welcome Back</h2>
+        {error && <div className="error-message">{error}</div>}
         <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
+          <div className="input-group">
+            <FaUser className="input-icon" />
+            <input
+              type="text"
+              placeholder="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+          </div>
+          <div className="input-group">
+            <FaLock className="input-icon" />
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
           <div className="login-buttons">
-            <button type="submit">Submit</button>
-            <button type="button" onClick={onClose}>Close</button>
+            <button type="submit" className="submit-button">
+              Sign In
+            </button>
           </div>
         </form>
       </div>

@@ -14,6 +14,8 @@ import './styles/App.css';
 import './styles/Toggle.css';
 import { fetchRouteMap } from './const/routes';
 import { loginProcessor } from './processor/loginProcessor';
+import { NotificationProvider } from './contexts/NotificationContext';
+import { ConfirmationProvider } from './contexts/ConfirmationContext';
 
 
 // Initialize GA with your measurement ID
@@ -91,16 +93,7 @@ function App() {
 
   const handleLoginClick = () => {
     console.log('Login button clicked');
-    if (isLoggedIn) {
-      // Handle logout
-      const result = loginProcessor.logout();
-      if (result.success) {
-        setIsLoggedIn(false);
-      }
-    } else {
-      setIsLoginModalOpen(true);
-      setIsLoginPopup(true);
-    }
+    setIsLoginModalOpen(true);
   };
 
   const handleLoginSubmit = async (username, password) => {
@@ -133,51 +126,55 @@ function App() {
   };
 
   return (
-    <Router>
-      <RouteTracker />
-      <div className="App">
-        <Header 
-          isLoggedIn={isLoggedIn} 
-          onAddPage={handleAddPage}/>
-        <Sidebar 
-          isOpen={isSidebarOpen} 
-          toggleSidebar={toggleSidebar} 
-          className={isDarkMode ? 'dark-mode' : ''}
-          routes={routes}
-        />
-        <MainContent 
-          isSidebarOpen={isSidebarOpen} 
-          isTOCOpen={isTOCOpen}
-          isLoggedIn={isLoggedIn}
-          routes={routes}
-          onRoutesUpdate={handleRoutesUpdate}
-          isEditing={isEditing}
-          setIsEditing={setIsEditing}
-          currentPath={currentPath}
-          setCurrentPath={setCurrentPath}
-        >
-          <Routes>
-            {routes.map(route => (
-              <Route key={route.path} path={route.path} element={<route.component />} />
-            ))}
-          </Routes>
-        </MainContent>
-        <div className="toggle-container">
-          <SidebarToggle isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-          <TOCToggle isOpen={isTOCOpen} toggleTOC={toggleTOC} />
-          <LoginToggle isLoggedIn={isLoggedIn} onLoginClick={handleLoginClick} />
-          <button className="theme-toggle" onClick={toggleDarkMode}>
-            {isDarkMode ? '☀️' : '🌙'}
-          </button>
+    <NotificationProvider>
+      <ConfirmationProvider>
+        <Router>
+          <RouteTracker />
+        <div className="App">
+          <Header 
+            isLoggedIn={isLoggedIn} 
+            onAddPage={handleAddPage}/>
+          <Sidebar 
+            isOpen={isSidebarOpen} 
+            toggleSidebar={toggleSidebar} 
+            className={isDarkMode ? 'dark-mode' : ''}
+            routes={routes}
+          />
+          <MainContent 
+            isSidebarOpen={isSidebarOpen} 
+            isTOCOpen={isTOCOpen}
+            isLoggedIn={isLoggedIn}
+            routes={routes}
+            onRoutesUpdate={handleRoutesUpdate}
+            isEditing={isEditing}
+            setIsEditing={setIsEditing}
+            currentPath={currentPath}
+            setCurrentPath={setCurrentPath}
+          >
+            <Routes>
+              {routes.map(route => (
+                <Route key={route.path} path={route.path} element={<route.component />} />
+              ))}
+            </Routes>
+          </MainContent>
+          <div className="toggle-container">
+            <SidebarToggle isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+            <TOCToggle isOpen={isTOCOpen} toggleTOC={toggleTOC} />
+            <LoginToggle isLoggedIn={isLoggedIn} onLoginClick={handleLoginClick} />
+            <button className="theme-toggle" onClick={toggleDarkMode}>
+              {isDarkMode ? '☀️' : '🌙'}
+            </button>
+          </div>
+          <LoginModal 
+            isOpen={isLoginModalOpen}
+            onClose={handleLoginModalClose} 
+            onSubmit={handleLoginSubmit} 
+            isPopup={isLoginPopup}
+          />
         </div>
-        <LoginModal 
-          isOpen={isLoginModalOpen}
-          onClose={handleLoginModalClose} 
-          onSubmit={handleLoginSubmit} 
-          isPopup={isLoginPopup}
-        />
-      </div>
-    </Router>
+        </Router>
+      </ConfirmationProvider>
+    </NotificationProvider>
   );
 }
 

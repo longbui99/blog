@@ -9,7 +9,7 @@
   position: fixed;
   width: 100vw;
   top: 0;
-  z-index: 200000;
+  z-index: 1000;
 }
 
 .logo-container {
@@ -175,27 +175,4 @@ flex-flow: row;
 .add-page-button:hover {
   background-color: rgba(0, 0, 0, 0.1);
   border-radius: 50%;
-}
-
-.content-actions {
-  display: flex;
-  gap: 10px;
-  margin-left: 20px;
-}
-
-.edit-button,
-.delete-button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-color);
-}
-
-.edit-button:hover,
-.delete-button:hover {
-  color: var(--primary-color);
 }

@@ -15,9 +15,6 @@ function MainContent({
   isTOCOpen, 
   isLoggedIn, 
   routes, 
-  onRoutesUpdate, 
-  currentPath,
-  setCurrentPath
 }) {
   const [tocItems, setTocItems] = useState([]);
   const [editableContent, setEditableContent] = useState('');
@@ -55,6 +52,21 @@ function MainContent({
       }, 100);
     }
   }, [location]);
+  const navigate = useNavigate();
+
+
+  useEffect(() => {
+    const hash = location.hash.slice(1);
+    if (hash) {
+      setTimeout(() => {
+        const element = document.getElementById(hash);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
+    }
+  }, [location]);
+
 
   return (
     <>

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import DOMPurify from 'dompurify';
 import '../styles/HtmlComposer.css';
+import { COLOR_PALETTE } from '../const/colors';
 
 const SLASH_COMMANDS = [
     { id: 'h1', label: 'Heading 1', icon: 'H1', command: 'h1' },
@@ -8,26 +9,67 @@ const SLASH_COMMANDS = [
     { id: 'h3', label: 'Heading 3', icon: 'H3', command: 'h3' },
     { id: 'h4', label: 'Heading 4', icon: 'H4', command: 'h4' },
     { id: 'h5', label: 'Heading 5', icon: 'H5', command: 'h5' },
-    { id: 'code', label: 'Code Block', icon: '⌨️', command: 'pre' },
-    { id: 'red', label: 'Red Text', icon: '🔴', command: 'color-red' },
-    { id: 'blue', label: 'Blue Text', icon: '🔵', command: 'color-blue' },
-    { id: 'green', label: 'Green Text', icon: '🟢', command: 'color-green' },
+    { 
+        id: 'color',
+        label: 'Text Color',
+        icon: '🎨',
+        command: 'color',
+        showColorPicker: true,
+        colors: COLOR_PALETTE
+    },
+    { 
+        id: 'code-inline', 
+        label: 'Inline Code', 
+        icon: '`', 
+        command: 'code-inline' 
+    },
+    { 
+        id: 'code-block', 
+        label: 'Code Block', 
+        icon: '```', 
+        command: 'code-block' 
+    }
 ];
+
+// Color Picker Component
+const ColorPicker = ({ colors, onSelectColor }) => {
+    return (
+        <div className="color-picker">
+            {Object.entries(colors).map(([category, colorList]) => (
+                <div key={category} className="color-category">
+                    <div className="category-label">{category}</div>
+                    <div className="color-grid">
+                        {colorList.map((color) => (
+                            <button
+                                key={color.id}
+                                className="color-option"
+                                style={{ backgroundColor: color.value }}
+                                onClick={() => onSelectColor(color)}
+                                title={color.label}
+                            >
+                                <span className="color-label">{color.label}</span>
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            ))}
+        </div>
+    );
+};
 
 const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
     const editorRef = useRef(null);
-    const [rawHtml, setRawHtml] = useState('');
     const [showSlashMenu, setShowSlashMenu] = useState(false);
     const [slashMenuPosition, setSlashMenuPosition] = useState({ x: 0, y: 0 });
     const [selectedCommandIndex, setSelectedCommandIndex] = useState(0);
     const [currentSelection, setCurrentSelection] = useState(null);
     const [commandFilter, setCommandFilter] = useState('');
+    const [showColorPicker, setShowColorPicker] = useState(false);
 
     useEffect(() => {
         if (editorRef.current && initialContent) {
             const sanitizedContent = DOMPurify.sanitize(initialContent);
             editorRef.current.innerHTML = sanitizedContent;
-            setRawHtml(sanitizedContent);
         }
     }, [initialContent]);
 
@@ -35,7 +77,6 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
         if (editorRef.current) {
             const newContent = editorRef.current.innerHTML;
             const sanitizedContent = DOMPurify.sanitize(newContent);
-            setRawHtml(sanitizedContent);
             onChange(sanitizedContent);
         }
     };
@@ -79,14 +120,9 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
             e.preventDefault();
             const selectionInfo = getEditorSelection();
             if (!selectionInfo) return;
-            const base_rect = editorRef.current.getBoundingClientRect();
             const { range, rect } = selectionInfo;
             
             setShowSlashMenu(true);
-            setSlashMenuPosition({
-                x: Math.max(0, Math.max(rect.x, base_rect.x) - base_rect.x),
-                y: Math.max(0, Math.max(rect.y, base_rect.y) - 4*rect.height + window.scrollY - base_rect.y)
-            });
             setCurrentSelection(selectionInfo.range.cloneRange());
             setCommandFilter('');
             return;
@@ -105,7 +141,12 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
                     cmd.command.toLowerCase().includes(commandFilter.toLowerCase())
                 );
                 if (filteredCommands.length > 0) {
-                    executeCommand(filteredCommands[selectedCommandIndex]);
+                    if (filteredCommands[selectedCommandIndex].showColorPicker) {
+                        // If this command should show color picker, show it instead of executing immediately
+                        setShowColorPicker(true);
+                    } else {
+                        executeCommand(filteredCommands[selectedCommandIndex]);
+                    }
                 }
                 break;
             case 'Escape':
@@ -120,7 +161,7 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
                 break;
             default:
                 // Only handle alphanumeric input
-                if (e.key.length === 1 && /[a-zA-Z0-9]/.test(e.key)) {
+                if (e.key.length === 1 && /[a-zA-Z0-9 ]/.test(e.key)) {
                     setCommandFilter(prev => prev + e.key);
                 }
                 break;
@@ -128,13 +169,18 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
     };
 
     const executeCommand = (commandItem) => {
-        if (!currentSelection) return;
+        // Clone the current selection to avoid modifying the actual cursor
+        if (commandFilter.length > 0) {
+            const selectionInfo = getEditorSelection();
+            var { range, rect } = selectionInfo;
+            if (!selectionInfo) return;
+        } else {
+            if (!currentSelection) return;
+            var range = currentSelection.cloneRange();
+        }
 
         closeSlashMenu();
         
-        // Clone the current selection to avoid modifying the actual cursor
-        const selectionInfo = getEditorSelection();
-        const { range, rect } = selectionInfo;
         
         try {
             // Move selection one character back to include the slash and command text
@@ -164,12 +210,35 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
                     code.textContent = content || '\u200B';
                     newElement.appendChild(code);
                     break;
-                case 'color-red':
-                case 'color-blue':
-                case 'color-green':
+                case 'color':
                     newElement = document.createElement('span');
-                    newElement.style.color = commandItem.command.split('-')[1];
+                    newElement.style.color = commandItem.color.value;
                     newElement.textContent = content || '\u200B';
+                    break;
+                case 'code-inline':
+                    newElement = document.createElement('code');
+                    newElement.className = 'inline-code';
+                    newElement.textContent = content || '\u200B';
+                    break;
+                case 'code-block':
+                    newElement = document.createElement('pre');
+                    const codeElement = document.createElement('code');
+                    codeElement.className = 'language-javascript'; // Default to JavaScript
+                    codeElement.textContent = content || '\u200B';
+                    newElement.appendChild(codeElement);
+                    
+                    // Add copy button container
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'code-block-wrapper';
+                    
+                    // Add copy button
+                    const copyButton = document.createElement('button');
+                    copyButton.className = 'copy-button';
+                    copyButton.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>';
+                    
+                    wrapper.appendChild(copyButton);
+                    wrapper.appendChild(newElement);
+                    newElement = wrapper;
                     break;
                 default:
                     break;
@@ -191,7 +260,6 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
                 selection.removeAllRanges();
                 selection.addRange(newRange);
 
-                handleInput();
             }
         } catch (error) {
             console.error('Range error:', error);
@@ -219,6 +287,16 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
         cmd.command.toLowerCase().includes(commandFilter.toLowerCase())
     );
 
+    const handleCommandClick = (command) => {
+        if (command.showColorPicker) {
+            // If this command should show color picker, show it instead of executing immediately
+            setShowColorPicker(true);
+        } else {
+            // Otherwise execute the command directly
+            executeCommand(command);
+        }
+    };
+
     return (
         <div className="html-composer">
             <div
@@ -234,11 +312,6 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
             {showSlashMenu && (
                 <div 
                     className="slash-menu"
-                    style={{
-                        position: 'absolute',
-                        left: `${slashMenuPosition.x}px`,
-                        top: `${slashMenuPosition.y}px`,
-                    }}
                 >
                     <div className="command-input">
                         /{commandFilter}
@@ -248,13 +321,26 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
                             <div
                                 key={command.id}
                                 className={`slash-menu-item ${index === selectedCommandIndex ? 'selected' : ''}`}
-                                onClick={() => executeCommand(command)}
+                                onClick={() => handleCommandClick(command)}
                             >
                                 <span className="slash-menu-icon">{command.icon}</span>
                                 <span className="slash-menu-label">{command.label}</span>
                             </div>
                         ))}
                     </div>
+                    
+                    {showColorPicker && (
+                        <ColorPicker
+                            colors={SLASH_COMMANDS.find(cmd => cmd.id === 'color').colors}
+                            onSelectColor={(color) => {
+                                executeCommand({
+                                    command: 'color',
+                                    color: color
+                                });
+                                setShowColorPicker(false);
+                            }}
+                        />
+                    )}
                 </div>
             )}
         </div>

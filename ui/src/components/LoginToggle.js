@@ -1,9 +1,8 @@
 import React from 'react';
-import { FaSignInAlt, FaUserAlt } from 'react-icons/fa';
-import { ALLOWED_DOMAIN } from '../const/constants';
+import { FaUserAlt } from 'react-icons/fa';
 
 function LoginToggle({ isLoggedIn, onLoginClick }) {
-  const showLoginButton = window.location.hostname === ALLOWED_DOMAIN;
+  const showLoginButton = window.location.hostname === process.env.REACT_APP_ADMIN_DOMAIN;
 
   if (!showLoginButton) {
     return null;

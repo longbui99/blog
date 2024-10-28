@@ -6,6 +6,17 @@
   background-color: var(--background-color);
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  background: white;
+  border-radius: 12px;
+  padding: 32px;
+  box-shadow: 
+    0 4px 6px -1px rgba(0, 0, 0, 0.2),
+    0 2px 4px -1px rgba(0, 0, 0, 0.16),
+    0 0 0 1px rgba(0, 0, 0, 0.15);
+  animation: shadowAppear 0.3s ease-out forwards;
+  transform-origin: top;
+  border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .edit-controls {
@@ -68,8 +79,6 @@
   padding: 8px 16px;
   border: none;
   border-radius: 4px;
-  background-color: var(--secondary-color);
-  color: var(--text-color);
   font-size: 14px;
   cursor: pointer;
   transition: background-color 0.2s;
@@ -77,7 +86,6 @@
 
 .chatgpt-input button:hover,
 .edit-actions button:hover {
-  background-color: var(--primary-color-hover);
 }
 
 .edit-actions {
@@ -90,7 +98,6 @@
   padding: 8px 16px;
   border: none;
   border-radius: 4px;
-  background-color: var(--secondary-color);
   color: var(--text-color);
   font-size: 14px;
   cursor: pointer;
@@ -175,24 +182,25 @@ textarea {
 .dark-mode .edit-page-content {
   background-color: var(--background-dark);
   color: var(--text-light);
+  border-color: rgba(255, 255, 255, 0.05);
+  box-shadow: 
+    0 4px 6px -1px rgba(255, 255, 255, 0.2),
+    0 2px 4px -1px rgba(0, 0, 0, 0.1),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
 }
 
 .dark-mode .page-title-input,
 .dark-mode .url-path-input,
-.dark-mode .chatgpt-input input,
 .dark-mode textarea {
   background-color: var(--background-dark);
   color: var(--text-light);
   border-color: var(--border-dark);
 }
 
-.dark-mode .chatgpt-input button,
 .dark-mode .edit-actions button {
-  background-color: var(--secondary-color-dark);
-  color: var(--text-light);
+  color: white;
 }
 
-.dark-mode .chatgpt-input button:hover,
 .dark-mode .edit-actions button:hover {
   background-color: var(--primary-color-dark-hover);
 }
@@ -226,10 +234,8 @@ textarea {
 /* Focus styles */
 .page-title-input:focus,
 .url-path-input:focus,
-.chatgpt-input input:focus,
 textarea:focus,
 .small-select .react-select__control:focus-within,
-.chatgpt-input button:focus,
 .edit-actions button:focus {
   outline: none;
   box-shadow: 0 0 0 2px var(--focus-shadow);
@@ -238,14 +244,12 @@ textarea:focus,
 /* Placeholder styles */
 .page-title-input::placeholder,
 .url-path-input::placeholder,
-.chatgpt-input input::placeholder,
 textarea::placeholder {
   color: var(--placeholder-color);
 }
 
 .dark-mode .page-title-input::placeholder,
 .dark-mode .url-path-input::placeholder,
-.dark-mode .chatgpt-input input::placeholder,
 .dark-mode textarea::placeholder {
   color: var(--placeholder-color-dark);
 }
@@ -256,11 +260,6 @@ textarea::placeholder {
   color: var(--text-color) !important;
 }
 
-.content-actions {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 1rem;
-}
 
 .icon-button {
   background: none;
@@ -275,77 +274,98 @@ textarea::placeholder {
 
 .edit-header {
   display: flex;
-  justify-content: space-between;
+  gap: 16px;
   align-items: center;
-  margin-bottom: 1.5rem;
-  gap: 1rem;
 }
 
 .edit-title-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
   flex: 1;
+  display: flex;
+  gap: 16px;
 }
 
 .title-input,
 .url-path-input {
-  padding: 0.5rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 1rem;
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: all 0.2s;
 }
 
 .title-input {
-  font-size: 1.2rem;
-  font-weight: bold;
+  flex: 2;
+  min-width: 200px;
+}
+
+.url-path-input {
+  flex: 3;
+  font-family: monospace;
+}
+
+.title-input:focus,
+.url-path-input:focus {
+  outline: none;
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
 }
 
 .edit-actions {
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
 }
 
 .save-button,
 .cancel-button {
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
+  padding: 12px 24px;
   border: none;
-  cursor: pointer;
+  border-radius: 8px;
+  font-size: 14px;
   font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
 .save-button {
-  background-color: #4CAF50;
+  background-color: #2563eb;
   color: white;
+}
+
+.save-button:hover {
+  background-color: #1d4ed8;
+}
+
+.save-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
 }
 
 .cancel-button {
-  background-color: #f44336;
-  color: white;
+  background-color: #f3f4f6;
+  color: #374151;
 }
 
-.edit-navigation {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+.cancel-button:hover {
+  background-color: #e5e7eb;
 }
 
 .navigation-row {
   display: flex;
-  gap: 1rem;
+  gap: 24px;
 }
 
 .select-container {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
   flex: 1;
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
 }
 
 .select-container label {
-  min-width: 80px;
+  font-size: 14px;
   font-weight: 500;
+  color: #6b7280;
 }
 
 .small-select {
@@ -355,9 +375,9 @@ textarea::placeholder {
 /* Dark mode styles */
 .dark-mode .title-input,
 .dark-mode .url-path-input {
-  background-color: #2d2d2d;
-  border-color: #444;
-  color: #fff;
+  background-color: #374151;
+  border-color: #4b5563;
+  color: #f3f4f6;
 }
 
 .dark-mode .save-button {
@@ -366,4 +386,95 @@ textarea::placeholder {
 
 .dark-mode .cancel-button {
   background-color: #d32f2f;
+}
+
+.dark-mode .select-container label {
+  color: #9ca3af;
+}
+
+.route-select {
+  flex: 3;
+}
+
+/* Custom styles for react-select */
+.route-select .select__control {
+  padding: 2px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  min-height: 42px;
+  box-shadow: none;
+  transition: all 0.2s;
+}
+
+.route-select .select__control:hover {
+  border-color: #60a5fa;
+}
+
+.route-select .select__control--is-focused {
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+}
+
+.route-select .select__menu {
+  border-radius: 8px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.route-select .select__option {
+  padding: 12px;
+  font-size: 14px;
+}
+
+/* Dark mode styles */
+.dark-mode .route-select .select__control {
+  background-color: #374151;
+  border-color: #4b5563;
+}
+
+.dark-mode .route-select .select__single-value {
+  color: #f3f4f6;
+}
+
+.dark-mode .route-select .select__menu {
+  background-color: #1f2937;
+  border: 1px solid #4b5563;
+}
+
+.dark-mode .route-select .select__option {
+  background-color: #1f2937;
+  color: #f3f4f6;
+}
+
+.dark-mode .route-select .select__option--is-focused {
+  background-color: #374151;
+}
+
+.dark-mode .route-select .select__option--is-selected {
+  background-color: #2563eb;
+}
+
+.dark-mode .cancel-button {
+  background-color: #374151;
+  color: #f3f4f6;
+}
+
+/* Shadow animation keyframes */
+@keyframes shadowAppear {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+    box-shadow: 
+      0 0 0 -1px rgba(0, 0, 0, 0.1),
+      0 0 0 -1px rgba(0, 0, 0, 0.06),
+      0 0 0 1px rgba(0, 0, 0, 0.05);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    box-shadow: 
+      0 4px 6px -1px rgba(0, 0, 0, 0.1),
+      0 2px 4px -1px rgba(0, 0, 0, 0.06),
+      0 0 0 1px rgba(0, 0, 0, 0.05);
+  }
 }

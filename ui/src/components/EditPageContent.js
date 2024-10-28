@@ -1,11 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import Select from 'react-select';
 import '../styles/EditPageContent.css';
-import { blogMenuProcessor } from '../processor/blogMenuProcessor';
-import { parseContent } from '../utils/contentParser';
 
-function EditPageContent({ onSave, onCancel, currentPath, routes }) {
-  const [content, setContent] = useState('');
+function EditPageContent({ onSave, onCancel, currentPath, routes}) {
   const [title, setTitle] = useState('');
   const [urlPath, setUrlPath] = useState(currentPath);
   const [parent, setParent] = useState(null);
@@ -19,22 +16,17 @@ function EditPageContent({ onSave, onCancel, currentPath, routes }) {
       setIsLoading(true);
       setError(null);
       try {
-        const path = currentPath.trimStart("/");
-        const blogPost = await blogMenuProcessor.createBlogMenuContentByPath(path);
         
-        if (blogPost && blogPost.content) {
-          // const parsedContent = parseContent(blogPost.content, path);
-          setContent(blogPost.content); // We set the unparsed content for editing
-          setTitle(blogPost.title || 'page');
-          
-          // Update other fields based on the current route
+        if (routes) {
           const currentRoute = routes.find(route => route.path === currentPath);
-          setUrlPath(currentPath);
-          setParent(currentRoute?.parent || null);
-          setPrevious(currentRoute?.previous || null);
-          setNext(currentRoute?.next || null);
+          if (currentRoute) {
+            setUrlPath(currentPath);
+            setTitle(currentRoute.title || 'page');
+            setParent(currentRoute?.parent || null);
+            setPrevious(currentRoute?.previous || null);
+            setNext(currentRoute?.next || null);
+          }
         } else {
-          setContent('');
           setTitle('page');
           setUrlPath(currentPath);
           setParent(null);
@@ -44,7 +36,6 @@ function EditPageContent({ onSave, onCancel, currentPath, routes }) {
       } catch (error) {
         console.error('Error fetching blog content:', error);
         setError('Error loading blog content. Please try again later.');
-        setContent('');
       } finally {
         setIsLoading(false);
       }
@@ -53,7 +44,6 @@ function EditPageContent({ onSave, onCancel, currentPath, routes }) {
     fetchBlogContent();
   }, [currentPath, routes]);
 
-  const handleContentChange = (e) => setContent(e.target.value);
   const handleTitleChange = (e) => setTitle(e.target.value);
   const handleUrlPathChange = (e) => setUrlPath(e.target.value);
 
@@ -77,7 +67,7 @@ function EditPageContent({ onSave, onCancel, currentPath, routes }) {
   };
 
   const handleSave = () => {
-    onSave(urlPath, content, { title, parent, previous, next });
+    onSave(urlPath, { title, parent, previous, next });
   };
 
   return (
@@ -104,7 +94,6 @@ function EditPageContent({ onSave, onCancel, currentPath, routes }) {
         </div>
         <div className="edit-actions">
           <button onClick={handleSave} className="save-button">Save</button>
-          <button onClick={onCancel} className="cancel-button">Cancel</button>
         </div>
       </div>
 
@@ -116,22 +105,18 @@ function EditPageContent({ onSave, onCancel, currentPath, routes }) {
               options={routeOptions}
               value={routeOptions.find(option => option.value === parent)}
               onChange={handleParentChange}
-              placeholder="Select parent"
               isClearable
-              className="small-select"
+              className="route-select"
             />
           </div>
-        </div>
-        <div className="navigation-row">
           <div className="select-container">
             <label>Previous:</label>
             <Select
               options={routeOptions}
               value={routeOptions.find(option => option.value === previous)}
               onChange={handlePreviousChange}
-              placeholder="Select previous"
               isClearable
-              className="small-select"
+              className="route-select"
             />
           </div>
           <div className="select-container">
@@ -140,9 +125,8 @@ function EditPageContent({ onSave, onCancel, currentPath, routes }) {
               options={routeOptions}
               value={routeOptions.find(option => option.value === next)}
               onChange={handleNextChange}
-              placeholder="Select next"
               isClearable
-              className="small-select"
+              className="route-select"
             />
           </div>
         </div>

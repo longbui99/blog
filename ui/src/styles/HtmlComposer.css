@@ -55,14 +55,17 @@
 }
 
 /* Slash Menu Styles */
-.slash-menu {
-    position: absolute;
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-    font-size: 0.75em;
+.slash-menu {    
+  position: fixed;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1001;
+  top: 11px;
+  right: 0px;
+  font-size: 0.75em;
+  width: 500px;
 }
 
 .slash-menu-items {
@@ -185,36 +188,80 @@
     background: #888;
 }
 
-.color-picker-popup {
-    position: absolute;
-    right: -220px;
-    top: 0;
+.color-picker {
+    padding: 12px;
+    max-height: 300px;
+    overflow-y: auto;
     background: white;
-    border: 1px solid #ddd;
     border-radius: 6px;
-    padding: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    z-index: 1001;
+}
+
+.color-category {
+    margin-bottom: 16px;
+}
+
+.category-label {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #666;
+    margin-bottom: 8px;
 }
 
 .color-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(6, 1fr);
     gap: 4px;
-    padding: 4px;
 }
 
 .color-option {
-    width: 24px;
-    height: 24px;
+    width: 32px;
+    height: 32px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    position: relative;
     transition: transform 0.1s;
 }
 
 .color-option:hover {
     transform: scale(1.1);
+    z-index: 1;
+}
+
+.color-option:focus {
+    outline: 2px solid #3B82F6;
+    outline-offset: 2px;
+}
+
+.color-label {
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+}
+
+.color-option:hover .color-label {
+    opacity: 1;
+}
+
+/* Dark mode styles */
+.dark-mode .color-picker {
+    background: #1F2937;
+}
+
+.dark-mode .category-label {
+    color: #9CA3AF;
 }
 
 .close-picker {
@@ -235,11 +282,6 @@
 }
 
 /* Dark mode styles */
-.dark-mode .color-picker-popup {
-    background: #2d2d2d;
-    border-color: #444;
-}
-
 .dark-mode .close-picker {
     background: #444;
     color: #fff;
@@ -255,4 +297,91 @@
 .dark-mode .command-input {
     border-color: #444;
     color: #999;
+}
+
+/* Inline Code */
+.inline-code {
+    background-color: #f1f5f9;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.9em;
+    color: #334155;
+}
+
+/* Code Block */
+.code-block-wrapper {
+    position: relative;
+    margin: 1em 0;
+    background-color: #1e293b;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.code-block-wrapper pre {
+    margin: 0;
+    padding: 1em;
+    overflow-x: auto;
+}
+
+.code-block-wrapper code {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.9em;
+    line-height: 1.5;
+    color: #e2e8f0;
+}
+
+.copy-button {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    padding: 6px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 4px;
+    color: #94a3b8;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s, background-color 0.2s;
+}
+
+.code-block-wrapper:hover .copy-button {
+    opacity: 1;
+}
+
+.copy-button:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #e2e8f0;
+}
+
+/* Dark Mode */
+.dark-mode .inline-code {
+    background-color: #1e293b;
+    color: #e2e8f0;
+}
+
+.dark-mode .code-block-wrapper {
+    background-color: #0f172a;
+}
+
+/* Language-specific syntax highlighting */
+.language-javascript {
+    color: #e2e8f0;
+}
+
+.language-javascript .keyword {
+    color: #93c5fd;
+}
+
+.language-javascript .string {
+    color: #86efac;
+}
+
+.language-javascript .number {
+    color: #fca5a5;
+}
+
+.language-javascript .comment {
+    color: #64748b;
+    font-style: italic;
 }

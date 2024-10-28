@@ -1,16 +1,27 @@
+from typing import List
 from pydantic_settings import BaseSettings
+from functools import lru_cache
 
 class Settings(BaseSettings):
-    PROJECT_NAME: str = "BlogAPI"
-    DATABASE_URL: str = "postgres://longbui:longbui@localhost:5432/blogdb"
-    SECRET_KEY: str = "your-secret-key"
-    ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
-    ALLOWED_ORIGINS: list = ["http://localhost:3000"]  # Add your frontend URL here
-    OPENAI_API_KEY: str = "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"
+    PROJECT_NAME: str
+    DATABASE_URL: str
+    SECRET_KEY: str
+    ALGORITHM: str
+    ACCESS_TOKEN_EXPIRE_MINUTES: int
+    ALLOWED_ORIGINS: str  # Will be converted to list in get_settings()
+    OPENAI_API_KEY: str
 
     class Config:
         env_file = ".env"
+        env_file_encoding = 'utf-8'
+        case_sensitive = True
 
-settings = Settings()
+@lru_cache()
+def get_settings() -> Settings:
+    settings = Settings()
+    # Convert ALLOWED_ORIGINS string to list
+    settings.ALLOWED_ORIGINS = [origin.strip() for origin in settings.ALLOWED_ORIGINS.split(',')]
+    return settings
 
+# Create settings instance
+settings = get_settings()

@@ -1,10 +1,9 @@
 import { BaseProcessor } from './baseProcessor';
-import { API_ENDPOINTS } from '../const/apiEndpoints';
 
 class BlogMenuProcessor extends BaseProcessor {
   constructor() {
     super();
-    this.baseEndpoint = API_ENDPOINTS.BLOG_MENU;
+    this.baseEndpoint = `${process.env.REACT_APP_BLOG_MENU_PATH}`;
   }
 
   async getBlogMenus() {

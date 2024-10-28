@@ -59,6 +59,7 @@ async def update_or_create_blog_content(blog_content_data: BlogContentUpdate, cu
     if existing_content:
         # Update existing content
         blog_content_data.author = current_user.username
+        print(blog_content_data.dict(exclude={'path', 'parent', 'previous', 'next'}))
         await existing_content.update_from_dict(blog_content_data.dict(exclude={'path', 'parent', 'previous', 'next'}))
         content = existing_content
     else:

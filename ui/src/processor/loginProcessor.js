@@ -1,10 +1,9 @@
 import { BaseProcessor } from './baseProcessor';
-import { API_ENDPOINTS } from '../const/apiEndpoints';
 
 class LoginProcessor extends BaseProcessor {
   constructor() {
     super();
-    this.baseEndpoint = API_ENDPOINTS.AUTH;
+    this.baseEndpoint = `${process.env.REACT_APP_AUTH_PATH}`;
   }
 
   async login(username, password) {
@@ -12,7 +11,7 @@ class LoginProcessor extends BaseProcessor {
       const formData = new FormData();
       formData.append('username', username);
       formData.append('password', password);
-
+      console.log(this.baseEndpoint);
       const response = await this.makeRequest('post', this.baseEndpoint, formData, {
         headers: {
           // Remove Content-Type header to let the browser set it automatically with the boundary
@@ -29,6 +28,34 @@ class LoginProcessor extends BaseProcessor {
     } catch (error) {
       console.error('Login error:', error);
       return { success: false, message: 'An error occurred during login' };
+    }
+  }
+
+  async validateToken() {
+    try {
+      if (!this.isLoggedIn()) return false;
+      
+      const response = await this.testAuthentication();
+      return response.authenticated === true;
+    } catch (error) {
+      console.error('Token validation error:', error);
+      // If validation fails, clear the token
+      this.logout();
+      return false;
+    }
+  }
+
+  async testAuthentication() {
+    try {
+      const response = await this.makeRequest('post', `${this.baseEndpoint}/test`, null, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        }
+      });
+      return response;
+    } catch (error) {
+      console.error('Authentication test failed:', error);
+      return { authenticated: false };
     }
   }
 
