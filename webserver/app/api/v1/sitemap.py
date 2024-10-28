@@ -76,6 +76,6 @@ async def get_sitemap(response: Response):
 async def get_robots():
     robots_content = f"""User-agent: *
 Allow: /
-Sitemap: https://blog.longbui.net/api/v1/sitemap.xml
+Sitemap: https://blog.longbui.net/sitemap.xml
 """
     return PlainTextResponse(content=robots_content)
