@@ -328,7 +328,6 @@
     font-family: 'Fira Code', monospace;
     font-size: 0.9em;
     line-height: 1.5;
-    color: #e2e8f0;
 }
 
 .copy-button {
@@ -351,13 +350,11 @@
 
 .copy-button:hover {
     background-color: rgba(255, 255, 255, 0.2);
-    color: #e2e8f0;
 }
 
 /* Dark Mode */
 .dark-mode .inline-code {
     background-color: #1e293b;
-    color: #e2e8f0;
 }
 
 .dark-mode .code-block-wrapper {
@@ -366,7 +363,6 @@
 
 /* Language-specific syntax highlighting */
 .language-javascript {
-    color: #e2e8f0;
 }
 
 .language-javascript .keyword {
