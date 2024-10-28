@@ -13,7 +13,7 @@ from app.models.user import User
 router = APIRouter()
 
 @router.post("/", response_model=BlogContentSchema)
-async def create_blog_content(blog_content_data: BlogContentCreate):
+async def create_blog_content(blog_content_data: BlogContentCreate, current_user: Annotated[User, Depends(get_current_user)]):
     blog_menu = await BlogMenu.get_or_none(id=blog_content_data.blog_menu_id)
     if not blog_menu:
         raise HTTPException(status_code=404, detail="Blog menu not found")
@@ -120,7 +120,7 @@ async def read_blog_content(content_id: int):
     return await BlogContentSchema.from_tortoise_orm(content)
 
 @router.put("/{content_id}", response_model=BlogContentSchema)
-async def update_blog_content(content_id: int, blog_content_data: BlogContentUpdate):
+async def update_blog_content(content_id: int, blog_content_data: BlogContentUpdate, current_user: Annotated[User, Depends(get_current_user)]):
     content = await BlogContent.get_or_none(id=content_id)
     if not content:
         raise HTTPException(status_code=404, detail="Blog content not found")
@@ -140,7 +140,7 @@ async def update_blog_content(content_id: int, blog_content_data: BlogContentUpd
     return await BlogContentSchema.from_tortoise_orm(content)
 
 @router.delete("/{content_id}", response_model=dict)
-async def delete_blog_content(content_id: int):
+async def delete_blog_content(content_id: int, current_user: Annotated[User, Depends(get_current_user)]):
     content = await BlogContent.get_or_none(id=content_id)
     if not content:
         raise HTTPException(status_code=404, detail="Blog content not found")
@@ -156,7 +156,7 @@ async def read_blog_content_by_menu(menu_id: int):
 
 @router.delete("/delete_by_path/{path}")
 @atomic()
-async def delete_blog_content_by_path(path: str):
+async def delete_blog_content_by_path(path: str, current_user: Annotated[User, Depends(get_current_user)]):
     print(f"Deleting blog content by path: {path}")
     # Find blog_menu by path
     blog_menu = await get_blog_menu_by_path("/"+path)
