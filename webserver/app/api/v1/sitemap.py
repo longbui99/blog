@@ -2,7 +2,7 @@ from fastapi import APIRouter, Response, HTTPException
 from fastapi.responses import PlainTextResponse
 from app.core.responses import XMLResponse  # Use our custom XMLResponse
 from datetime import datetime
-from typing import List
+from typing import List, Dict
 from app.core.config import settings
 from app.utils.sitemap import SitemapGenerator
 from app.models.blog_menu import BlogMenu
@@ -13,8 +13,17 @@ import logging
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
-@lru_cache(maxsize=1)
-async def get_cached_sitemap(timestamp: str) -> str:
+# Cache the generated sitemap content instead of the coroutine
+class SitemapCache:
+    def __init__(self):
+        self.content: str = ""
+        self.timestamp: str = ""
+
+# Create a single cache instance
+sitemap_cache = SitemapCache()
+
+async def generate_sitemap() -> str:
+    """Generate the sitemap content."""
     try:
         generator = SitemapGenerator(base_url="https://blog.longbui.net")
         
@@ -48,11 +57,11 @@ async def get_cached_sitemap(timestamp: str) -> str:
 @atomic()  # Use transaction if needed
 async def get_sitemap(response: Response):
     try:
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H")
-        logger.info(f"Generating sitemap for timestamp: {timestamp}")
+        current_timestamp = datetime.now().strftime("%Y-%m-%d-%H")
+        logger.info(f"Generating sitemap for timestamp: {current_timestamp}")
         
         response.headers["Cache-Control"] = "public, max-age=3600"
-        sitemap_content = await get_cached_sitemap(timestamp)
+        sitemap_content = await generate_sitemap()
         
         logger.info("Sitemap generated successfully")
         return XMLResponse(content=sitemap_content)
