@@ -231,7 +231,11 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
                                 new Date(lastUpdated).toLocaleDateString('en-US', {
                                     year: 'numeric',
                                     month: 'long',
-                                    day: 'numeric'
+                                    day: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit',
+                                    timeZone: 'Asia/Saigon',
+                                    timeZoneName: 'short',
                                 }) : 
                                 'Unknown date'
                             }
