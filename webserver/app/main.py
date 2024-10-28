@@ -1,14 +1,10 @@
-from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse, StreamingResponse
-from starlette.responses import Response
-from starlette.middleware.base import BaseHTTPMiddleware
+from fastapi import FastAPI
 from app.api.v1 import auth, blog_menu, blog_content, chatgpt
 from app.core.database import init_db
 from app.core.cors import setup_cors
-import traceback
+from app.api.v1 import sitemap
 import logging
 import sys
-import json
 from typing import Union
 
 # Set up logging
@@ -28,6 +24,7 @@ app = FastAPI()
 setup_cors(app)
 
 # Include routers
+app.include_router(sitemap.router, tags=["sitemap"])
 app.include_router(auth.router, prefix="/api/v1/auth", tags=["auth"])
 app.include_router(blog_menu.router, prefix="/api/v1/blog-menu", tags=["blog menu"])
 app.include_router(blog_content.router, prefix="/api/v1/blog-content", tags=["blog content"])
