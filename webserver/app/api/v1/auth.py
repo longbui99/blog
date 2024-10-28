@@ -47,7 +47,7 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     return user
 
 @router.post("/users", response_model=UserInDB)
-async def create_new_user(user: UserCreate):
+async def create_new_user(user: UserCreate, _: Annotated[User, Depends(get_current_user)]):
     db_user = await get_user_by_username(user.username)
     if db_user:
         raise HTTPException(status_code=400, detail="Username already registered")
