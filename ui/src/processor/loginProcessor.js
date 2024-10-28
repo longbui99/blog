@@ -11,7 +11,6 @@ class LoginProcessor extends BaseProcessor {
       const formData = new FormData();
       formData.append('username', username);
       formData.append('password', password);
-      console.log(this.baseEndpoint);
       const response = await this.makeRequest('post', this.baseEndpoint, formData, {
         headers: {
           // Remove Content-Type header to let the browser set it automatically with the boundary

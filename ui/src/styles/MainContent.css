@@ -200,3 +200,33 @@
 .delete-button svg {
   margin-right: 0.5rem;
 }
+
+/* Smooth scroll behavior */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Highlight effect for scrolled elements */
+@keyframes highlight {
+    0% {
+        background-color: transparent;
+    }
+    20% {
+        background-color: rgba(255, 255, 0, 0.2);
+    }
+    80% {
+        background-color: rgba(255, 255, 0, 0.2);
+    }
+    100% {
+        background-color: transparent;
+    }
+}
+
+.highlight {
+    animation: highlight 2s ease-out;
+}
+
+/* Adjust header offset */
+:target {
+    scroll-margin-top: 80px; /* Adjust based on your header height */
+}

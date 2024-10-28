@@ -92,12 +92,10 @@ function App() {
   };
 
   const handleLoginClick = () => {
-    console.log('Login button clicked');
     setIsLoginModalOpen(true);
   };
 
   const handleLoginSubmit = async (username, password) => {
-    console.log('Login submitted:', username, password);
     const result = await loginProcessor.login(username, password);
     if (result.success) {
       setIsLoggedIn(true);
@@ -114,7 +112,6 @@ function App() {
   };
 
   useEffect(() => {
-    console.log('App rendered. isLoginModalOpen:', isLoginModalOpen, 'isLoginPopup:', isLoginPopup);
   }, [isLoginModalOpen, isLoginPopup]);
 
   if (isLoading) {

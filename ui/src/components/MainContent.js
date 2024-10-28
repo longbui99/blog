@@ -3,12 +3,26 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import TableOfContents from './TableOfContents';
 import { generateTOC } from '../utils/contentUtils';
 import '../styles/MainContent.css';
-import EditIcon from '../icons/EditIcon';
 import BlogContent from '../pages/BlogContent';
-import EditPageContent from './EditPageContent';
-import { blogContentProcessor } from '../processor/blogContentProcessor';
-import { fetchRouteMap } from '../const/routes';
 import Header from './Header';
+
+// Add scroll helper function
+const scrollToElement = (elementId, offset = 80) => {
+    const element = document.getElementById(elementId);
+    if (element) {
+        const elementPosition = element.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - offset;
+        
+        window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+        });
+        
+        // Optional: Add highlight effect
+        element.classList.add('highlight');
+        setTimeout(() => element.classList.remove('highlight'), 2000);
+    }
+};
 
 function MainContent({ 
   isSidebarOpen, 
@@ -20,15 +34,13 @@ function MainContent({
   const [editableContent, setEditableContent] = useState('');
   const location = useLocation();
   const contentRef = useRef(null);
+  const [isContentLoaded, setIsContentLoaded] = useState(false);
 
   const updateTOC = useCallback(() => {
     const items = generateTOC(contentRef);
     setTocItems(items);
   }, []);
 
-  const updateEditableContent = useCallback((content) => {
-    setEditableContent(content);
-  }, []);
 
   useEffect(() => {
     updateTOC();
@@ -43,30 +55,20 @@ function MainContent({
 
   useEffect(() => {
     const hash = location.hash.slice(1);
-    if (hash) {
-      setTimeout(() => {
-        const element = document.getElementById(hash);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      }, 100);
+    if (hash && isContentLoaded) {
+      // Wait for content to be fully rendered
+      const timeoutId = setTimeout(() => {
+        scrollToElement(hash);
+      }, 300); // Increased timeout for better reliability
+
+      return () => clearTimeout(timeoutId);
     }
-  }, [location]);
-  const navigate = useNavigate();
+  }, [location.hash, isContentLoaded]);
 
-
-  useEffect(() => {
-    const hash = location.hash.slice(1);
-    if (hash) {
-      setTimeout(() => {
-        const element = document.getElementById(hash);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      }, 100);
-    }
-  }, [location]);
-
+  // Add content loaded handler
+  const handleContentLoaded = useCallback(() => {
+    setIsContentLoaded(true);
+  }, []);
 
   return (
     <>
@@ -82,6 +84,7 @@ function MainContent({
             updateMainContentEditableContent={setEditableContent}
             isLoggedIn={isLoggedIn}
             routes={routes}
+            onContentLoaded={handleContentLoaded}
           />
         </div>
         <TableOfContents items={tocItems} isOpen={isTOCOpen} />

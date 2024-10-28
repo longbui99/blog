@@ -10,7 +10,7 @@ import { useNotification } from '../contexts/NotificationContext';
 import { parseContent } from '../utils/contentParser';
 import { useConfirmation } from '../contexts/ConfirmationContext';
 
-function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes }) {
+function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onContentLoaded}) {
     const [content, setContent] = useState('');
     const [rawContent, setRawContent] = useState('');
     const [contentReadonly, setContentReadonly] = useState('');
@@ -54,6 +54,7 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes }) {
             setContent(<p>No content found for this path.</p>);
             updateMainContentEditableContent('');
         }
+        onContentLoaded()
     }
 
     useEffect(() => {
@@ -87,7 +88,6 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes }) {
             await blogContentProcessor.saveOrUpdateContent(blogContentUpdate);
             
             // Debug log
-            console.log('Triggering success notification');
             
             showNotification({
                 type: 'success',
@@ -98,7 +98,12 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes }) {
 
             handleEditToggle()
             setTimeout(() => {
-                window.location.reload();
+                let location = window.location.href;
+                let index = location.indexOf('#');
+                if (index !== -1) {
+                    location = location.substring(0, index);
+                }
+                window.location.href = location;
             }, 1500);
 
 
@@ -106,7 +111,6 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes }) {
             console.error('Error saving content:', error);
             
             // Debug log
-            console.log('Triggering error notification');
             
             showNotification({
                 type: 'error',
