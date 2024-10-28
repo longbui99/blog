@@ -28,7 +28,7 @@ async def create_blog_content(blog_content_data: BlogContentCreate, current_user
 
 @router.get("/", response_model=List[BlogContentSchema])
 async def list_blog_contents():
-    return await BlogContentSchema.from_queryset(BlogContent.all(), current_user: Annotated[User, Depends(get_current_user)])
+    return await BlogContentSchema.from_queryset(BlogContent.all())
 
 @router.put("/update_or_create", response_model=BlogContentSchema)
 @atomic()
@@ -113,7 +113,7 @@ async def update_or_create_blog_content(blog_content_data: BlogContentUpdate, cu
     return BlogContentSchema(**content_dict)
 
 @router.get("/{content_id}", response_model=BlogContentSchema)
-async def read_blog_content(content_id: int, current_user: Annotated[User, Depends(get_current_user)]):
+async def read_blog_content(content_id: int):
     content = await BlogContent.get_or_none(id=content_id)
     if not content:
         raise HTTPException(status_code=404, detail="Blog content not found")
@@ -148,7 +148,7 @@ async def delete_blog_content(content_id: int, current_user: Annotated[User, Dep
     return {"message": "Blog content deleted successfully"}
 
 @router.get("/by-menu/{menu_id}", response_model=BlogContentSchema)
-async def read_blog_content_by_menu(menu_id: int, current_user: Annotated[User, Depends(get_current_user)]):
+async def read_blog_content_by_menu(menu_id: int):
     content = await BlogContent.get_or_none(blog_menu_id=menu_id)
     if not content:
         raise HTTPException(status_code=404, detail="Blog content not found for this menu")
