@@ -1,12 +1,14 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from tortoise.transactions import atomic
 from tortoise.expressions import F
 from tortoise.functions import Max
-from typing import List
+from typing import List, Annotated
 from app.schemas.blog_content import BlogContentCreate, BlogContentUpdate, BlogContent as BlogContentSchema
 from app.models.blog_content import BlogContent
 from app.models.blog_menu import BlogMenu
 from app.crud.blog_menu import get_blog_menu_by_path
+from app.api.v1.auth import get_current_user
+from app.models.user import User
 
 router = APIRouter()
 
@@ -30,7 +32,7 @@ async def list_blog_contents():
 
 @router.put("/update_or_create", response_model=BlogContentSchema)
 @atomic()
-async def update_or_create_blog_content(blog_content_data: BlogContentUpdate):
+async def update_or_create_blog_content(blog_content_data: BlogContentUpdate, current_user: Annotated[User, Depends(get_current_user)]):
     # Check if the blog menu exists
     blog_menu = await get_blog_menu_by_path(blog_content_data.path)
     if not blog_menu:
@@ -56,16 +58,17 @@ async def update_or_create_blog_content(blog_content_data: BlogContentUpdate):
     
     if existing_content:
         # Update existing content
+        blog_content_data.author = current_user.username
         await existing_content.update_from_dict(blog_content_data.dict(exclude={'path', 'parent', 'previous', 'next'}))
         content = existing_content
     else:
         # Create new content
         content_data = blog_content_data.dict(exclude={'path', 'parent', 'previous', 'next'})
         content_data['blog_menu'] = blog_menu
+        content_data['author'] = current_user.username
         content = await BlogContent.create(**content_data)
     
     # Get the original blog_menu
-    original_blog_menu = await BlogMenu.get(id=blog_menu.id)
     sequence_changed = False
 
     # Handle parent assignment

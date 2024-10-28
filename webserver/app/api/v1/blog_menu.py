@@ -5,7 +5,6 @@ from app.schemas.blog_content import BlogContent as BlogContentSchema, BlogConte
 from app.models.blog_content import BlogContent as BlogContentModel
 from app.models.blog_menu import BlogMenu as BlogMenuModel
 from app.crud.blog_menu import create_blog_menu, get_blog_menu, get_blog_menus, update_blog_menu, delete_blog_menu
-from app.crud.blog_content import create_blog_content
 from app.api.v1.auth import get_current_user
 
 router = APIRouter()

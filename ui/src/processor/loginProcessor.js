@@ -4,7 +4,7 @@ import { API_ENDPOINTS } from '../const/apiEndpoints';
 class LoginProcessor extends BaseProcessor {
   constructor() {
     super();
-    this.baseEndpoint = API_ENDPOINTS.LOGIN;
+    this.baseEndpoint = API_ENDPOINTS.AUTH;
   }
 
   async login(username, password) {

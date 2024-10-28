@@ -4,9 +4,14 @@ import { Helmet } from 'react-helmet';
 import '../styles/page.css';
 import { parseContent } from '../utils/contentParser';
 import { blogMenuProcessor } from '../processor/blogMenuProcessor';
+import { blogContentProcessor } from '../processor/blogContentProcessor';
+import EditIcon from '../icons/EditIcon';
+import EditPageContent from '../components/EditPageContent';
+import HTMLComposer from '../components/HTMLComposer';
 
-function BlogContent({ updateMainContentEditableContent }) {
+function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes }) {
     const [content, setContent] = useState(null);
+    const [rawContent, setRawContent] = useState(''); // Add this state for raw HTML
     const location = useLocation();
     const [pageTitle, setPageTitle] = useState("Long Bui's Blog | VectorDI");
     const [pageDescription, setPageDescription] = useState("Explore our latest blog posts on various topics including technology, programming, and web development.");
@@ -21,6 +26,7 @@ function BlogContent({ updateMainContentEditableContent }) {
                 if (blogPost && blogPost.content) {
                     const parsedContent = parseContent(blogPost.content, path);
                     setContent(parsedContent);
+                    setRawContent(blogPost.content); // Store the raw content
                     setPageTitle(`${blogPost.title} | VectorDI`);
                     setPageDescription(blogPost.description || blogPost.excerpt || '');
                     
@@ -28,11 +34,13 @@ function BlogContent({ updateMainContentEditableContent }) {
                     updateMainContentEditableContent(blogPost.content);
                 } else {
                     setContent(<p>No content found for this path.</p>);
+                    setRawContent('');
                     updateMainContentEditableContent('');
                 }
             } catch (error) {
                 console.error('Error fetching blog content:', error);
                 setContent(<p>Error loading blog content. Please try again later.</p>);
+                setRawContent('');
                 updateMainContentEditableContent('');
             }
         };
@@ -40,9 +48,47 @@ function BlogContent({ updateMainContentEditableContent }) {
         fetchBlogContent();
     }, [location.pathname, updateMainContentEditableContent]);
 
+
+    const handleSave = async (path, updatedContent, routeInfo) => {
+        try {
+            const blogContentUpdate = {
+                path: path,
+                content: updatedContent,
+                title: routeInfo.title,
+                parent: routeInfo.parent,
+                previous: routeInfo.previous,
+                next: routeInfo.next
+            };
+
+            await blogContentProcessor.saveOrUpdateContent(blogContentUpdate);
+            // Refresh the content
+            window.location.reload();
+        } catch (error) {
+            console.error('Error saving content:', error);
+        }
+    };
+
+    const handleDelete = async () => {
+        if (window.confirm('Are you sure you want to delete this page?')) {
+            try {
+                await blogContentProcessor.deleteBlogContentByPath(location.pathname);
+                window.location.href = '/';
+            } catch (error) {
+                console.error('Error deleting content:', error);
+            }
+        }
+    };
+
+
+    const handleCancel = () => {
+    };
+    const handleContentChange = (newContent) => {
+    };
+
     if (!content) {
         return <div>Loading...</div>;
     }
+    console.log(isLoggedIn)
 
     return (
         <article className="blog-content">
@@ -84,7 +130,28 @@ function BlogContent({ updateMainContentEditableContent }) {
                 </script>
             </Helmet>
 
-            {content}
+            {isLoggedIn && (
+                <div className="content-actions">
+                    <button onClick={handleDelete} className="icon-button">
+                        🗑️
+                    </button>
+                </div>
+            )}
+
+            {isLoggedIn ? (
+                <EditPageContent 
+                    onSave={handleSave}
+                    onCancel={handleCancel}
+                    currentPath={location.pathname}
+                    routes={routes}
+                />
+            ) : null}
+
+            <HTMLComposer
+                initialContent={rawContent} // Pass the raw HTML content instead of parsed content
+                onChange={handleContentChange}
+                isEditing={isLoggedIn}
+            />
         </article>
     );
 }

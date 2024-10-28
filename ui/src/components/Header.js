@@ -4,10 +4,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLinkedin, faGithub } from '@fortawesome/free-brands-svg-icons';
 import { ReactComponent as Logo } from '../static/logo.svg';
 import '../styles/Header.css';
-import EditIcon from '../icons/EditIcon';
-import TrashIcon from '../icons/TrashIcon';
 
-function Header({ isLoggedIn, onEditClick, onDeleteClick }) {
+function Header({ isLoggedIn }) {
   return (
     <header className="top-header">
       <div className="logo-container">
@@ -27,16 +25,6 @@ function Header({ isLoggedIn, onEditClick, onDeleteClick }) {
             <FontAwesomeIcon icon={faGithub} />
           </a>
         </div>
-        {isLoggedIn && (
-          <div className="content-actions">
-            <button className="edit-button" onClick={onEditClick} title="Edit">
-              <EditIcon />
-            </button>
-            <button className="delete-button" onClick={onDeleteClick} title="Delete">
-              <TrashIcon />
-            </button>
-          </div>
-        )}
       </nav>
     </header>
   );
