@@ -20,7 +20,6 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
     const [pageDescription, setPageDescription] = useState("Explore our latest blog posts on various topics including technology, programming, and web development.");
     const canonicalUrl = `https://blog.longbui.net${location.href}`;
     const { showNotification } = useNotification();
-    const [contentChanged, setContentChanged] = useState(false);
     const [isRawEditor, setIsRawEditor] = useState(false);
     const { showConfirmation } = useConfirmation();
     const [isEditing, setIsEditing] = useState(false);
@@ -29,11 +28,6 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
     const [author, setAuthor] = useState('Long Bui');
     const [lastUpdated, setLastUpdated] = useState(null);
 
-    const loadBlogContent = async () => {
-        var blogData = await blogMenuProcessor.createBlogMenuContentByPath(path);
-        setBlogPost(blogData);
-        return blogData
-    }
     const updateContent = (blogData) => {
         if (!blogData){
             blogData = blogPost
@@ -58,11 +52,17 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
     }
 
     useEffect(() => {
+        const loadBlogContent = async () => {
+            const blogData = await blogMenuProcessor.createBlogMenuContentByPath(path);
+            setBlogPost(blogData);
+            return blogData;
+        };
+
         const fetchBlogContent = async () => {
             try {
-                let blogData =await loadBlogContent()
-                updateContent(blogData)
-                
+                const blogData = await loadBlogContent();
+                updateContent(blogData);
+                onContentLoaded?.();
             } catch (error) {
                 console.error('Error fetching blog content:', error);
                 setContent(<p>Error loading blog content. Please try again later.</p>);
@@ -71,9 +71,8 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
         };
 
         fetchBlogContent();
-    }, [location.pathname, updateMainContentEditableContent]);
-
-
+    }, [path, onContentLoaded, updateMainContentEditableContent]);
+    
     const handleSave = async (path, routeInfo) => {
         try {
             const blogContentUpdate = {
@@ -150,16 +149,10 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
             }
         });
     };
-
-    const handleCancel = () => {
-        
-    };
-
     const handleContentChange = (newContent) => {
         // Update the raw content when HTMLComposer content changes
         if (rawContent !== newContent) {
             setRawContent(newContent);
-            setContentChanged(true)
         }
     };
     const handleEditToggle = async () => {
@@ -324,7 +317,6 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
                                         value={rawContent} 
                                         onChange={(e) => {
                                             setRawContent(e.target.value);
-                                            setContentChanged(true);
                                         }}
                                         placeholder="Enter raw HTML content..."
                                     />

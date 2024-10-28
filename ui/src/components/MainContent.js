@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import TableOfContents from './TableOfContents';
 import { generateTOC } from '../utils/contentUtils';
 import '../styles/MainContent.css';
