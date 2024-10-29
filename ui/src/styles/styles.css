@@ -206,7 +206,6 @@ main h2 {
 
 .motto {
     flex: 1 1 auto;
-    text-align: center;
     font-style: italic;
     margin: 0 1rem;
     font-size: 0.8rem; /* Adjust as needed */
@@ -862,7 +861,6 @@ h6 {
   cursor: move;
   background-color: #f0f0f0;
   padding: 5px;
-  text-align: center;
   border-bottom: 1px solid #e0e0e0;
 }
 

@@ -1,0 +1,42 @@
+pipeline {
+    agent any
+    environment {
+        HOST_BUILD_WORKSPACE = "odoo"
+        HOST_SERVICE_NAME = "blogserver"
+        // --
+        HOST_SSH_CREDENTIAL = "longbui-vm"
+        HOST_SSH_IP = "longbui-vm-ip"
+        HOST_SSH_CREDS = credentials("${env.HOST_SSH_CREDENTIAL}")
+        HOST_SSH_IP = credentials("${env.HOST_SSH_IP}")
+        HOST_SSH_TIMEOUT = 10
+
+    }
+
+    stages {
+        stage('1.SYNC') {
+            steps {
+                echo "============================ 1. SYNC ====================================================="
+                sshagent([env.HOST_SSH_CREDENTIAL]) {
+                    sh """ ssh $HOST_SSH_CREDS_USR@$HOST_SSH_IP -o StrictHostKeyChecking=no -o ConnectTimeout=$HOST_SSH_TIMEOUT 'sudo rm -rf $HOST_BUILD_WORKSPACE/' """
+                    sh """ rsync -avzO --exclude="__pycache__" --exclude=.git -e "ssh -l $HOST_SSH_CREDS_USR -o StrictHostKeyChecking=no" "$env.WORKSPACE/" "$HOST_SSH_CREDS_USR@$HOST_SSH_IP:$HOST_BUILD_WORKSPACE/" """
+                }
+            }
+        }
+        stage("2. Build React App"){
+            steps {
+                echo "============================ 2. BUILD ====================================================="
+                sshagent([env.HOST_SSH_CREDENTIAL]) {
+                    sh """ ssh $HOST_SSH_CREDS_USR@$HOST_SSH_IP -o StrictHostKeyChecking=no -o ConnectTimeout=$HOST_SSH_TIMEOUT 'cd $HOST_BUILD_WORKSPACE/ui && npm install && npm run build' """
+                }
+            }
+        }
+        stage("3. Reload Service"){
+            steps {
+                echo "============================ 6. DEPLOY ====================================================="
+                sshagent([env.HOST_SSH_CREDENTIAL]) {
+                    sh """ ssh $HOST_SSH_CREDS_USR@$HOST_SSH_IP -o StrictHostKeyChecking=no -o ConnectTimeout=$HOST_SSH_TIMEOUT 'sudo systemctl restart $HOST_SERVICE_NAME' """
+                }
+            }
+        }
+    }
+}
