@@ -1,6 +1,8 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import Select from 'react-select';
 import '../styles/EditPageContent.css';
+import debounce from 'lodash/debounce';
+import { blogMenuProcessor } from '../processor/blogMenuProcessor';
 
 function EditPageContent({ onSave, onCancel, currentPath, routes}) {
   const [title, setTitle] = useState('');
@@ -10,6 +12,8 @@ function EditPageContent({ onSave, onCancel, currentPath, routes}) {
   const [next, setNext] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [pathExists, setPathExists] = useState(false);
+  const [isCheckingPath, setIsCheckingPath] = useState(false);
 
   useEffect(() => {
     const fetchBlogContent = async () => {
@@ -45,7 +49,32 @@ function EditPageContent({ onSave, onCancel, currentPath, routes}) {
   }, [currentPath, routes]);
 
   const handleTitleChange = (e) => setTitle(e.target.value);
-  const handleUrlPathChange = (e) => setUrlPath(e.target.value);
+
+  const checkPathExists = useCallback(
+    debounce(async (path) => {
+      if (path === currentPath) {
+        setPathExists(false);
+        return;
+      }
+
+      setIsCheckingPath(true);
+      try {
+        const response = await blogMenuProcessor.checkPathExists(path);
+        setPathExists(response.exists);
+      } catch (error) {
+        console.error('Error checking path:', error);
+      } finally {
+        setIsCheckingPath(false);
+      }
+    }, 300),
+    [currentPath]
+  );
+
+  const handleUrlPathChange = (e) => {
+    const newPath = e.target.value;
+    setUrlPath(newPath);
+    checkPathExists(newPath);
+  };
 
   const routeOptions = useMemo(() => routes.map(route => ({
     value: route.path,
@@ -84,13 +113,25 @@ function EditPageContent({ onSave, onCancel, currentPath, routes}) {
             placeholder="Enter page title"
             className="title-input"
           />
-          <input
-            type="text"
-            value={urlPath}
-            onChange={handleUrlPathChange}
-            placeholder="Enter URL path"
-            className="url-path-input"
-          />
+          <div className="url-input-container">
+            {pathExists && (
+              <span className="path-exists-warning">
+                This path already exists
+              </span>
+            )}
+            <input
+              type="text"
+              value={urlPath}
+              onChange={handleUrlPathChange}
+              placeholder="Enter URL path"
+              className={`url-path-input ${pathExists ? 'path-exists' : ''}`}
+            />
+            {isCheckingPath && (
+              <span className="checking-path">
+                Checking...
+              </span>
+            )}
+          </div>
         </div>
         <div className="edit-actions">
           <button onClick={handleSave} className="save-button">Save</button>

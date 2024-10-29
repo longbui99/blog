@@ -478,3 +478,33 @@ textarea::placeholder {
       0 0 0 1px rgba(0, 0, 0, 0.05);
   }
 }
+
+.url-input-container {
+  position: relative;
+  width: 100%;
+}
+
+.path-exists-warning {
+  position: absolute;
+  top: -20px;
+  left: 0;
+  color: #dc3545;
+  font-size: 12px;
+}
+
+.checking-path {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6c757d;
+  font-size: 12px;
+}
+
+.url-path-input.path-exists {
+  border-color: #dc3545;
+}
+
+.url-path-input.path-exists:focus {
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}

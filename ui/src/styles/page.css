@@ -165,15 +165,39 @@ section {
 }
 
 .action-button.delete-button {
-  height: 33px;
   background-color: #fee2e2;
-  color: #c6c6c6;
+  color: #dc2626;
   border-color: #fecaca;
+  height: 33px;
 }
 
-.action-button.delete-button:hover {
-    background-color: #fecaca;
-    border-color: #ef4444;
+.action-button.delete-button:hover:not(:disabled) {
+  background-color: #fecaca;
+  border-color: #ef4444;
+}
+
+.action-button.delete-button:disabled {
+  background-color: #6c757d;
+  color: #c6c6c6;
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Dark mode styles */
+.dark-mode .action-button.delete-button {
+  background-color: #7f1d1d;
+  color: #fca5a5;
+  border-color: #991b1b;
+}
+
+.dark-mode .action-button.delete-button:hover:not(:disabled) {
+  background-color: #991b1b;
+  color: #fca5a5;
+}
+
+.dark-mode .action-button.delete-button:disabled {
+  background-color: #495057;
+  color: #6c757d;
 }
 
 .action-button:focus {
@@ -475,7 +499,7 @@ section {
 
 .author-name {
     font-weight: 600;
-    color: var(--text-color);
+    color: var(--text-light);
     font-size: 1rem;
 }
 
@@ -494,7 +518,7 @@ section {
 }
 
 .dark-mode .author-name {
-    color: var(--text-light);
+    color: var(--text-dark);
 }
 
 .dark-mode .post-date {
@@ -520,3 +544,40 @@ section {
         font-size: 0.8rem;
     }
 }
+.create-button {
+    background-color: #4CAF50;
+    color: white;
+    height: 33px;
+}
+
+.create-button.active {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.edit-button svg {
+    transition: transform 0.3s ease;
+}
+
+.edit-button.active svg {
+    transform: rotate(180deg);
+}
+
+.create-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: #6c757d; /* Grey out the button */
+}
+
+.create-button:disabled:hover {
+    background-color: #6c757d; /* Prevent hover effect when disabled */
+}
+
+/* Dark mode styles */
+.dark-mode .create-button:disabled {
+    background-color: #495057;
+}
+.delete-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+} 

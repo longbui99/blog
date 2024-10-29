@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import '../styles/page.css';
 import { blogMenuProcessor } from '../processor/blogMenuProcessor';
@@ -27,6 +27,9 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
     const path = location.pathname.trimStart("/");
     const [author, setAuthor] = useState('Long Bui');
     const [lastUpdated, setLastUpdated] = useState(null);
+    const [isCreating, setIsCreating] = useState(false);
+    const [originalContent, setOriginalContent] = useState(null);
+    const navigate = useNavigate();
 
     const updateContent = (blogData) => {
         if (!blogData){
@@ -53,6 +56,10 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
 
     useEffect(() => {
         const loadBlogContent = async () => {
+            if (isCreating) {
+                onContentLoaded?.();
+                return null;
+            }
             const blogData = await blogMenuProcessor.createBlogMenuContentByPath(path);
             setBlogPost(blogData);
             return blogData;
@@ -61,7 +68,9 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
         const fetchBlogContent = async () => {
             try {
                 const blogData = await loadBlogContent();
-                updateContent(blogData);
+                if (!isCreating) {
+                    updateContent(blogData);
+                }
                 onContentLoaded?.();
             } catch (error) {
                 console.error('Error fetching blog content:', error);
@@ -71,7 +80,7 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
         };
 
         fetchBlogContent();
-    }, [path, onContentLoaded, updateMainContentEditableContent]);
+    }, [path, onContentLoaded, updateMainContentEditableContent, isCreating]);
     
     const handleSave = async (path, routeInfo) => {
         try {
@@ -95,7 +104,10 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
                 duration: 1.5
             });
 
-            handleEditToggle()
+            setIsCreating(false);
+            setOriginalContent(null);
+            handleEditToggle();
+            
             setTimeout(() => {
                 let location = window.location.href;
                 let index = location.indexOf('#');
@@ -157,20 +169,84 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
     };
     const handleEditToggle = async () => {
         if (isEditing) {
+            if (isCreating) {
+                // Restore original content
+                setBlogPost(originalContent.blogPost);
+                setRawContent(originalContent.rawContent);
+                setContentReadonly(originalContent.contentReadonly);
+                setContent(originalContent.content);
+                setIsCreating(false);
+                setOriginalContent(null);
+                
+                // Navigate back to the original page
+                navigate(-1); // This will go back to the previous page
+            }
+            
             setIsExiting(true);
-            // Wait for animation to complete before hiding
             setTimeout(async () => {
                 await setIsEditing(false);
-                await updateContent()
+                await updateContent();
                 setIsExiting(false);
-            }, 0); // Match animation duration
+            }, 0);
         } else {
             await setIsEditing(true);
-            await updateContent()
+            await updateContent();
         }
     };
 
-    if (!content) {
+    const handleCreate = () => {
+        // Store original content before creating new
+        setOriginalContent({
+            blogPost,
+            rawContent,
+            contentReadonly,
+            content
+        });
+        
+        // Set empty content
+        setBlogPost({
+            content: '',
+            title: 'New Page',
+            path: '/new-page',
+            parent: '',
+            previous: '',
+            next: ''
+        });
+        setRawContent('');
+        setContentReadonly('');
+        setContent('');
+        setIsEditing(true);
+        setIsCreating(true);
+
+        // Navigate to new-page URL
+        navigate('/new-page');
+    };
+
+    // Add useEffect for keyboard shortcuts
+    useEffect(() => {
+        const handleKeyPress = (event) => {
+            // Only handle shortcuts if logged in
+            if (!isLoggedIn) return;
+
+            if (!isEditing) { // Only handle these shortcuts when not editing
+                if (event.key === 'e') {
+                    handleEditToggle();
+                } else if (event.key === 'c' && !isEditing) { // Prevent create when editing
+                    handleCreate();
+                } 
+            }
+        };
+
+        // Add event listener
+        document.addEventListener('keydown', handleKeyPress);
+
+        // Cleanup
+        return () => {
+            document.removeEventListener('keydown', handleKeyPress);
+        };
+    }, [isEditing, isLoggedIn]); // Add dependencies
+
+    if (!content && !isCreating) {
         return <div>Loading...</div>;
     }
 
@@ -249,9 +325,30 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
                     <div className="content-actions">
                             <div className="content-actions-controllers">
                                 <button 
+                                    onClick={handleCreate}
+                                    className={`action-button create-button ${isCreating ? 'active' : ''}`}
+                                    title={isEditing ? "Finish editing first" : "Create New Page (C)"}
+                                    disabled={isEditing || isCreating}
+                                >
+                                    <svg 
+                                        width="16" 
+                                        height="16" 
+                                        viewBox="0 0 24 24" 
+                                        fill="none" 
+                                        stroke="currentColor" 
+                                        strokeWidth="2" 
+                                        strokeLinecap="round" 
+                                        strokeLinejoin="round"
+                                    >
+                                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                                    </svg>
+                                    <span className="button-text">Create</span>
+                                </button>
+                                <button 
                                     onClick={handleEditToggle} 
                                     className={`action-button edit-button ${isEditing ? 'active' : ''}`}
-                                    title={isEditing ? "Exit Edit Mode" : "Edit Page"}
+                                    title={isEditing ? "Exit Edit Mode (Esc)" : "Edit Page (E)"}
                                 >
                                     <svg 
                                         width="16" 
@@ -273,6 +370,7 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
                                 onClick={handleDelete} 
                                 className="action-button delete-button"
                                 title="Delete page"
+                                disabled={isEditing || isCreating}
                             >
                                 <svg 
                                     width="16" 

@@ -115,3 +115,20 @@ async def add_blog_content_by_menu_id(
 
     new_content = await BlogContentModel.create(**content_data)
     return True
+
+@router.post("/check-path", status_code=status.HTTP_200_OK)
+async def check_path_exists(
+    path: str = Body(..., embed=True),
+    _: dict = Depends(get_current_user)
+) -> dict:
+    # Ensure path starts with /
+    if not path.startswith('/'):
+        path = '/' + path
+        
+    # Check if path exists
+    existing_menu = await BlogMenuModel.get_or_none(path=path)
+    
+    return {
+        "exists": existing_menu is not None,
+        "path": path
+    }

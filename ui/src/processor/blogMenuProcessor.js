@@ -25,6 +25,10 @@ class BlogMenuProcessor extends BaseProcessor {
   async createBlogMenuContentByPath(pathData) {
     return await this.makeRequest('get', `${this.baseEndpoint}/path${pathData}/content`);
   }
+
+  async checkPathExists(path) {
+    return await this.makeRequest('post', `${this.baseEndpoint}/check-path`, { path });
+  }
 }
 
 // Export a singleton instance of the BlogMenuProcessor
