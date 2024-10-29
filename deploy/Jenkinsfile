@@ -16,19 +16,19 @@ pipeline {
         stage('1.SYNC') {
             steps {
                 echo "============================ 1. SYNC ====================================================="
-                    sh """ rsync "$env.WORKSPACE/" "$HOST_BUILD_WORKSPACE/" """
+                    sh """sudo rsync "$env.WORKSPACE/" "$HOST_BUILD_WORKSPACE/" """
             }
         }
         stage("2. Build React App"){
             steps {
                 echo "============================ 2. BUILD ====================================================="
-                sh """ 'cd $HOST_BUILD_WORKSPACE/ui && npm install && npm run build' """
+                sh """sudo cd $HOST_BUILD_WORKSPACE/ui && sudo npm install && sudo npm run build """
             }
         }
         stage("3. Reload Service"){
             steps {
                 echo "============================ 6. DEPLOY ====================================================="
-                sh """ 'sudo systemctl restart $HOST_SERVICE_NAME' """
+                sh """ sudo systemctl restart $HOST_SERVICE_NAME """
             }
         }
     }
