@@ -14,8 +14,9 @@ import './styles/App.css';
 import './styles/Toggle.css';
 import { fetchRouteMap } from './const/routes';
 import { loginProcessor } from './processor/loginProcessor';
-import { NotificationProvider } from './contexts/NotificationContext';
+import { NotificationProvider, useNotification } from './contexts/NotificationContext';
 import { ConfirmationProvider } from './contexts/ConfirmationContext';
+import { initializeBaseProcessor } from './processor/baseProcessor';
 
 
 // Initialize GA with your measurement ID
@@ -48,7 +49,6 @@ function App() {
   const [isLoginPopup, setIsLoginPopup] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [currentPath, setCurrentPath] = useState('/');
-
 
   useEffect(() => {
     const loadRoutes = async () => {
@@ -146,52 +146,53 @@ function App() {
 
   return (
     <NotificationProvider>
+      <ProcessorInitializer />
       <ConfirmationProvider>
         <Router>
           <RouteTracker />
-        <div className="App">
-          <Header 
-            isLoggedIn={isLoggedIn} 
-            onAddPage={handleAddPage}/>
-          <Sidebar 
-            isOpen={isSidebarOpen} 
-            toggleSidebar={toggleSidebar} 
-            className={isDarkMode ? 'dark-mode' : ''}
-            routes={routes}
-          />
-          <MainContent 
-            isSidebarOpen={isSidebarOpen} 
-            isTOCOpen={isTOCOpen}
-            isLoggedIn={isLoggedIn}
-            routes={routes}
-            onRoutesUpdate={handleRoutesUpdate}
-            isEditing={isEditing}
-            setIsEditing={setIsEditing}
-            currentPath={currentPath}
-            setCurrentPath={setCurrentPath}
-          >
-            <Routes>
-              {routes.map(route => (
-                <Route key={route.path} path={route.path} element={<route.component />} />
-              ))}
-            </Routes>
-          </MainContent>
-          <div className="toggle-container">
-            <SidebarToggle isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-            <TOCToggle isOpen={isTOCOpen} toggleTOC={toggleTOC} />
-            <LoginToggle isLoggedIn={isLoggedIn} onLoginClick={handleLoginClick} />
-            <button className="theme-toggle" onClick={toggleDarkMode}>
-              {isDarkMode ? '☀️' : '🌙'}
-            </button>
+          <div className="App">
+            <Header 
+              isLoggedIn={isLoggedIn} 
+              onAddPage={handleAddPage}/>
+            <Sidebar 
+              isOpen={isSidebarOpen} 
+              toggleSidebar={toggleSidebar} 
+              className={isDarkMode ? 'dark-mode' : ''}
+              routes={routes}
+            />
+            <MainContent 
+              isSidebarOpen={isSidebarOpen} 
+              isTOCOpen={isTOCOpen}
+              isLoggedIn={isLoggedIn}
+              routes={routes}
+              onRoutesUpdate={handleRoutesUpdate}
+              isEditing={isEditing}
+              setIsEditing={setIsEditing}
+              currentPath={currentPath}
+              setCurrentPath={setCurrentPath}
+            >
+              <Routes>
+                {routes.map(route => (
+                  <Route key={route.path} path={route.path} element={<route.component />} />
+                ))}
+              </Routes>
+            </MainContent>
+            <div className="toggle-container">
+              <SidebarToggle isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+              <TOCToggle isOpen={isTOCOpen} toggleTOC={toggleTOC} />
+              <LoginToggle isLoggedIn={isLoggedIn} onLoginClick={handleLoginClick} />
+              <button className="theme-toggle" onClick={toggleDarkMode}>
+                {isDarkMode ? '☀️' : '🌙'}
+              </button>
+            </div>
+            <LoginModal 
+              isOpen={isLoginModalOpen}
+              onClose={handleLoginModalClose} 
+              onSubmit={handleLoginSubmit} 
+              isPopup={isLoginPopup}
+              isLoggedIn={isLoggedIn}
+            />
           </div>
-          <LoginModal 
-            isOpen={isLoginModalOpen}
-            onClose={handleLoginModalClose} 
-            onSubmit={handleLoginSubmit} 
-            isPopup={isLoginPopup}
-            isLoggedIn={isLoggedIn}
-          />
-        </div>
         </Router>
       </ConfirmationProvider>
     </NotificationProvider>
@@ -205,6 +206,17 @@ function RouteTracker() {
   useEffect(() => {
     ReactGA.send({ hitType: "pageview", page: location.pathname + location.search });
   }, [location]);
+
+  return null;
+}
+
+// Create a new component to handle the initialization
+function ProcessorInitializer() {
+  const { showNotification } = useNotification();
+
+  useEffect(() => {
+    initializeBaseProcessor(showNotification);
+  }, [showNotification]);
 
   return null;
 }

@@ -275,7 +275,7 @@ textarea::placeholder {
 .edit-header {
   display: flex;
   gap: 16px;
-  align-items: center;
+  align-items: baseline;
 }
 
 .edit-title-group {
@@ -507,4 +507,86 @@ textarea::placeholder {
 
 .url-path-input.path-exists:focus {
   box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+.input-error {
+  border-color: #dc3545 !important;
+  background-color: #fff8f8;
+}
+
+.input-error:focus {
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+}
+
+.validation-error {
+  color: #dc3545;
+  font-size: 12px;
+  margin-top: 4px;
+  display: block;
+}
+
+/* Update existing styles */
+.url-input-container {
+  position: relative;
+  width: 100%;
+  margin-top: 16px;
+}
+
+.title-input,
+.url-path-input {
+  padding: 8px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  width: -webkit-fill-available;
+}
+
+.title-input:focus,
+.url-path-input:focus {
+  border-color: #86b7fe;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+/* Add asterisk to required field placeholders */
+.title-input::placeholder,
+.url-path-input::placeholder {
+  color: #6c757d;
+}
+
+.title-input-container {
+  position: relative;
+  width: 100%;
+}
+
+.title-input-container .validation-error,
+.url-input-container .validation-error {
+  position: absolute;
+  top: -20px;
+  left: 0;
+  color: #dc3545;
+  font-size: 12px;
+}
+
+/* Update existing styles to maintain consistent spacing */
+.edit-title-group {
+  flex: 1;
+  display: flex;
+  gap: 16px;
+}
+
+.title-input-container,
+.url-input-container {
+  position: relative;
+  margin-top: 20px; /* Increased to accommodate error message */
+}
+
+.title-input {
+  flex: 2;
+  min-width: 200px;
+}
+
+.url-path-input {
+  flex: 3;
+  font-family: monospace;
 }

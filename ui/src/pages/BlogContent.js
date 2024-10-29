@@ -121,14 +121,6 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
         } catch (error) {
             console.error('Error saving content:', error);
             
-            // Debug log
-            
-            showNotification({
-                type: 'error',
-                title: 'Error',
-                message: 'Failed to save content. Please try again.' + error,
-                duration: 5
-            });
         }
     };
 

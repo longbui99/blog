@@ -4,12 +4,7 @@
 }
 
 .editor-content {
-    outline: none;
-}
-
-.editor-content.editable {
     border: 1px solid #ddd;
-    border-radius: 4px;
 }
 
 .editor-content:focus {

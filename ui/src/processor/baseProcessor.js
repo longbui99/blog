@@ -1,4 +1,12 @@
 import axios from 'axios';
+import { useNotification } from '../contexts/NotificationContext';
+
+// Create a singleton notification handler
+let notificationHandler = null;
+
+export const initializeBaseProcessor = (showNotification) => {
+  notificationHandler = showNotification;
+};
 
 export class BaseProcessor {
   constructor() {
@@ -19,21 +27,15 @@ export class BaseProcessor {
     if (backendDomain) {
       this.config.setBackendDomain(backendDomain);
     }
-    // You can add more initialization logic here if needed
   }
 
   async makeRequest(method, endpoint, data = null, options = {}) {
     const url = `${this.config.backendDomain}${endpoint}`;
-    
-    // Check if authToken exists in localStorage
     const authToken = localStorage.getItem('authToken');
-    
-    // Prepare headers
     const headers = {
       ...options.headers,
     };
 
-    // If authToken exists, add it to the headers
     if (authToken) {
       headers['Authorization'] = `Bearer ${authToken}`;
     }
@@ -48,7 +50,22 @@ export class BaseProcessor {
       });
       return response.data;
     } catch (error) {
+      const errorMessage = error.response?.data?.detail || 
+                          error.response?.data?.message || 
+                          error.message || 
+                          'An unexpected error occurred';
+
       console.error(`Request failed: ${method} ${endpoint}`, error);
+      
+      if (notificationHandler) {
+        notificationHandler({
+          type: 'error',
+          title: 'Error',
+          message: errorMessage,
+          duration: 5
+        });
+      }
+      
       throw error;
     }
   }

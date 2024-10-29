@@ -14,6 +14,10 @@ function EditPageContent({ onSave, onCancel, currentPath, routes}) {
   const [error, setError] = useState(null);
   const [pathExists, setPathExists] = useState(false);
   const [isCheckingPath, setIsCheckingPath] = useState(false);
+  const [validationErrors, setValidationErrors] = useState({
+    title: false,
+    urlPath: false
+  });
 
   useEffect(() => {
     const fetchBlogContent = async () => {
@@ -96,6 +100,21 @@ function EditPageContent({ onSave, onCancel, currentPath, routes}) {
   };
 
   const handleSave = () => {
+    setValidationErrors({
+      title: false,
+      urlPath: false
+    });
+
+    const errors = {
+      title: !title.trim(),
+      urlPath: !urlPath.trim()
+    };
+
+    if (errors.title || errors.urlPath) {
+      setValidationErrors(errors);
+      return;
+    }
+
     onSave(urlPath, { title, parent, previous, next });
   };
 
@@ -106,25 +125,36 @@ function EditPageContent({ onSave, onCancel, currentPath, routes}) {
       
       <div className="edit-header">
         <div className="edit-title-group">
-          <input
-            type="text"
-            value={title}
-            onChange={handleTitleChange}
-            placeholder="Enter page title"
-            className="title-input"
-          />
+          <div className="title-input-container">
+            {validationErrors.title && (
+              <span className="validation-error">Title is required</span>
+            )}
+            <input
+              type="text"
+              value={title}
+              onChange={handleTitleChange}
+              placeholder="Enter page title *"
+              className={`title-input ${validationErrors.title ? 'input-error' : ''}`}
+            />
+          </div>
+
           <div className="url-input-container">
             {pathExists && (
               <span className="path-exists-warning">
                 This path already exists
               </span>
             )}
+            {validationErrors.urlPath && (
+              <span className="validation-error">URL path is required</span>
+            )}
             <input
               type="text"
               value={urlPath}
               onChange={handleUrlPathChange}
-              placeholder="Enter URL path"
-              className={`url-path-input ${pathExists ? 'path-exists' : ''}`}
+              placeholder="Enter URL path *"
+              className={`url-path-input ${pathExists ? 'path-exists' : ''} ${
+                validationErrors.urlPath ? 'input-error' : ''
+              }`}
             />
             {isCheckingPath && (
               <span className="checking-path">
@@ -134,7 +164,13 @@ function EditPageContent({ onSave, onCancel, currentPath, routes}) {
           </div>
         </div>
         <div className="edit-actions">
-          <button onClick={handleSave} className="save-button">Save</button>
+          <button 
+            onClick={handleSave} 
+            className="save-button"
+            disabled={pathExists}
+          >
+            Save
+          </button>
         </div>
       </div>
 
