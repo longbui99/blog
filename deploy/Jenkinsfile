@@ -16,20 +16,19 @@ pipeline {
         stage('1.SYNC') {
             steps {
                 echo "============================ 1. SYNC ====================================================="
-                sh """rm -rf $HOST_BUILD_WORKSPACE/"""
                 sh """rsync -avzO --exclude="__pycache__" --exclude=.git "$env.WORKSPACE/" "$HOST_BUILD_WORKSPACE/" """
             }
         }
         stage("2. Build React App"){
             steps {
                 echo "============================ 2. BUILD ====================================================="
-                sh """sudo cd $HOST_BUILD_WORKSPACE/ui && sudo npm install && sudo npm run build """
+                sh """cd $HOST_BUILD_WORKSPACE/ui && sudo npm install && sudo npm run build """
             }
         }
         stage("3. Reload Service"){
             steps {
                 echo "============================ 6. DEPLOY ====================================================="
-                sh """ sudo systemctl restart $HOST_SERVICE_NAME """
+                sh """systemctl restart $HOST_SERVICE_NAME """
             }
         }
     }
