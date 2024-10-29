@@ -34,6 +34,7 @@ flex-flow: row;
 .motto {
   font-style: italic;
   color: #6c757d;
+  text-align: center;
 }
 
 .top-nav {
