@@ -16,7 +16,6 @@ pipeline {
         stage('1.SYNC') {
             steps {
                 echo "============================ 1. SYNC ====================================================="
-                    sh """ 'sudo rm -rf $HOST_BUILD_WORKSPACE/' """
                     sh """ rsync -avzO --exclude="__pycache__" --exclude=.git -e "ssh -l $HOST_SSH_CREDS_USR -o StrictHostKeyChecking=no" "$env.WORKSPACE/" "$HOST_BUILD_WORKSPACE/" """
             }
         }
