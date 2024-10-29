@@ -16,8 +16,8 @@ pipeline {
         stage('1.SYNC') {
             steps {
                 echo "============================ 1. SYNC ====================================================="
-                sh """sudo rm -rf $HOST_BUILD_WORKSPACE/"""
-                sh """sudo rsync -avzO --exclude="__pycache__" --exclude=.git "$env.WORKSPACE/" "$HOST_BUILD_WORKSPACE/" """
+                sh """rm -rf $HOST_BUILD_WORKSPACE/"""
+                sh """rsync -avzO --exclude="__pycache__" --exclude=.git "$env.WORKSPACE/" "$HOST_BUILD_WORKSPACE/" """
             }
         }
         stage("2. Build React App"){
