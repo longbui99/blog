@@ -1,10 +1,10 @@
 pipeline {
     agent any
     environment {
-        HOST_BUILD_WORKSPACE = "odoo"
+        HOST_BUILD_WORKSPACE = "/opt/source/porfolio/blogs"
         HOST_SERVICE_NAME = "blogserver"
         // --
-        HOST_SSH_CREDENTIAL = "longbui-vm"
+        HOST_SSH_CREDENTIAL = "longbui_ssh_userpasswd"
         HOST_SSH_IP = "longbui-vm-ip"
         HOST_SSH_CREDS = credentials("${env.HOST_SSH_CREDENTIAL}")
         HOST_SSH_IP = credentials("${env.HOST_SSH_IP}")
