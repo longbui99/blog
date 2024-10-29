@@ -38,7 +38,7 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
             setRawContent(blogData.content);
             setContentReadonly(blogData.content);
             setPageTitle(`${blogData.title} | VectorDI`);
-            setPageDescription(blogData.description || blogData.excerpt || '');
+            setPageDescription(blogData.title || blogData.title || '');
             setAuthor(blogData.author || 'Long Bui');
             setLastUpdated(blogData.lastUpdated || new Date().toISOString());
             
