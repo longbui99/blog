@@ -64,6 +64,10 @@ async def remove_user(username: str, current_user: Annotated[User, Depends(get_c
     return {"detail": "User successfully deleted"}
 
 
-@router.post("/test", response_model=UserInDB)
+@router.post("/test")
 async def test_authentication(_: Annotated[User, Depends(get_current_user)]):
-    return True
+    return {"authenticated": True}
+
+@router.post("/logout")
+async def logout(_: Annotated[User, Depends(get_current_user)]):
+    return {"message": "Logout successful"}

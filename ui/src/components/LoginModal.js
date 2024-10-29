@@ -3,7 +3,7 @@ import { FaUser, FaLock, FaTimes } from 'react-icons/fa';
 import '../styles/LoginModal.css';
 import { loginProcessor } from '../processor/loginProcessor';
 
-function LoginModal({ isOpen, onClose, onSubmit, isPopup = false }) {
+function LoginModal({ isOpen, onClose, onSubmit, isPopup = false, isLoggedIn }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -20,6 +20,14 @@ function LoginModal({ isOpen, onClose, onSubmit, isPopup = false }) {
     } else {
       setError(result.error);
     }
+  };
+
+  const handleCancel = () => {
+    loginProcessor.logout();
+    onClose();
+    if (isLoggedIn) {
+      window.location.reload();
+    } 
   };
 
   if (!isOpen) return null;
@@ -58,6 +66,13 @@ function LoginModal({ isOpen, onClose, onSubmit, isPopup = false }) {
           <div className="login-buttons">
             <button type="submit" className="submit-button">
               Sign In
+            </button>
+            <button 
+              type="button" 
+              className="cancel-button" 
+              onClick={handleCancel}
+            >
+              {isLoggedIn ? 'Logout' : 'Cancel'}
             </button>
           </div>
         </form>

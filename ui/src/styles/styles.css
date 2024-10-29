@@ -516,7 +516,7 @@ main h2 {
 }
 
 .multi-level-nav a.active,
-.multi-level-nav a.active-parent {
+.multi-level-nav li.active-parent > a {
   color: var(--color-primary);
   font-weight: bold;
 }
@@ -542,7 +542,7 @@ main h2 {
 .dark-mode .multi-level-nav a:hover,
 .dark-mode .multi-level-nav a:focus,
 .dark-mode .multi-level-nav a.active,
-.dark-mode .multi-level-nav a.active-parent {
+.dark-mode .multi-level-nav li.active-parent > a {
   color: var(--color-primary);
 }
 
@@ -901,6 +901,109 @@ h6 {
   .main-content {
     margin-left: 0;
   }
+}
+
+/* Updated sidebar navigation styles */
+.sidebar-nav a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 8px;
+  color: inherit;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: color 0.2s;
+  font-size: 0.9rem; /* Reduced font size */
+}
+
+.sidebar-nav ul ul a {
+  font-size: 0.85rem; /* Even smaller font size for nested items */
+}
+
+/* Add expand/collapse indicator only for items with children */
+
+/* Hide children when collapsed */
+.sidebar-nav li.collapsed > ul {
+  display: none;
+}
+
+.sidebar-nav .menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-right: 5px;
+  position: relative; /* For tooltip positioning */
+}
+
+.sidebar-nav .menu-item a {
+  flex: 1;
+  padding: 5px 8px;
+  color: inherit;
+  text-decoration: none;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px; /* Adjust based on your sidebar width */
+}
+
+/* Dark mode tooltip */
+.dark-mode .sidebar-nav .menu-item a:hover::before {
+  background: var(--background-dark);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* Updated menu item styles */
+.sidebar-nav .menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-right: 5px;
+  position: relative;
+}
+
+.sidebar-nav .menu-item a {
+  flex: 1;
+  padding: 5px 8px;
+  color: inherit;
+  text-decoration: none;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+/* Expand icon styles */
+.expand-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0px!important;
+  font-size: 0.8rem;
+  transition: transform 0.3s;
+  color: var(--text-light);
+  border-radius: 3px;
+  margin-left: 4px;
+}
+
+.expand-icon:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Rotate icon when expanded */
+.sidebar-nav li:not(.collapsed) > .menu-item .expand-icon {
+  transform: rotate(90deg);
+}
+
+/* Dark mode styles */
+.dark-mode .expand-icon {
+  color: var(--text-dark);
+}
+
+.dark-mode .expand-icon:hover {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 

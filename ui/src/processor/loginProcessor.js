@@ -11,7 +11,7 @@ class LoginProcessor extends BaseProcessor {
       const formData = new FormData();
       formData.append('username', username);
       formData.append('password', password);
-      const response = await this.makeRequest('post', this.baseEndpoint, formData, {
+      const response = await this.makeRequest('post', `${this.baseEndpoint}/login`, formData, {
         headers: {
           // Remove Content-Type header to let the browser set it automatically with the boundary
         },
@@ -58,7 +58,7 @@ class LoginProcessor extends BaseProcessor {
     }
   }
 
-  logout() {
+  async logout() {
     localStorage.removeItem('authToken');
     return { success: true, message: 'Logout successful' };
   }

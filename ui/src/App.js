@@ -43,7 +43,7 @@ function App() {
     return saved !== null ? JSON.parse(saved) : true;
   });
 
-  const [isLoggedIn, setIsLoggedIn] = useState(loginProcessor.isLoggedIn());
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isLoginPopup, setIsLoginPopup] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -73,6 +73,28 @@ function App() {
   useEffect(() => {
     localStorage.setItem('isTOCOpen', JSON.stringify(isTOCOpen));
   }, [isTOCOpen]);
+
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      const isCurrentlyLoggedIn = loginProcessor.isLoggedIn();
+      
+      if (isCurrentlyLoggedIn) {
+        // Validate token if user appears to be logged in
+        const isValid = await loginProcessor.validateToken();
+        if (!isValid) {
+          // Token is invalid, redirect to login
+          setIsLoggedIn(false);
+          setIsLoginModalOpen(true);
+        } else {
+          setIsLoggedIn(true);
+        }
+      } else {
+        setIsLoggedIn(false);
+      }
+    };
+
+    checkLoginStatus();
+  }, []); // Run on component mount
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -167,6 +189,7 @@ function App() {
             onClose={handleLoginModalClose} 
             onSubmit={handleLoginSubmit} 
             isPopup={isLoginPopup}
+            isLoggedIn={isLoggedIn}
           />
         </div>
         </Router>

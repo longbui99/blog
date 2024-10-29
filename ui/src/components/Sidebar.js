@@ -10,6 +10,8 @@ const ItemTypes = {
 
 const MenuItem = ({ id, title, path, index, moveItem, children }) => {
   const location = useLocation();
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [showFullText, setShowFullText] = useState(false);
   const [, drag] = useDrag({
     type: ItemTypes.MENU_ITEM,
     item: { id, index }
@@ -35,11 +37,28 @@ const MenuItem = ({ id, title, path, index, moveItem, children }) => {
     drag(drop(node));
   }, [drag, drop]);
 
+  const handleExpandCollapse = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsCollapsed(!isCollapsed);
+  };
+
+  const toggleFullText = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setShowFullText(!showFullText);
+  };
+
   const isActive = location.pathname.startsWith(path);
 
   return (
-    <li ref={ref} className={isActive ? "active" : ""}>
-      <NavLink to={path}>{title}</NavLink>
+    <li ref={ref} className={`${isActive ? "active" : ""} ${isCollapsed ? "collapsed" : ""}`}>
+      <div className="menu-item" title={title}>
+        <NavLink to={path} title={title}>{title}</NavLink>
+        {children?.length > 0 && (
+          <span className="expand-icon" onClick={handleExpandCollapse}>❯</span>
+        )}
+      </div>
       {children && <ul>{children.map((child, index) => (
         <MenuItem key={child.path} {...child} index={index} moveItem={moveItem} />
       ))}</ul>}
