@@ -118,7 +118,7 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
                 type: 'success',
                 title: 'Success',
                 message: 'Content saved successfully!',
-                duration: 1.5
+                duration: 1
             });
 
             setIsCreating(false);
@@ -132,7 +132,7 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
                     location = location.substring(0, index);
                 }
                 window.location.href = location;
-            }, 1500);
+            }, 500);
 
 
         } catch (error) {
