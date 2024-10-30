@@ -108,6 +108,17 @@ const SLASH_COMMANDS = [
     },
 ];
 
+const KEYBOARD_SHORTCUTS = {
+    '¡': {tag:"h1", mac: 'cmd+alt+1', windows: 'ctrl+alt+1' },
+    '™': {tag:"h2", mac: 'cmd+alt+2', windows: 'ctrl+alt+2' },
+    '£': {tag:"h3", mac: 'cmd+alt+3', windows: 'ctrl+alt+3' },
+    '¢': {tag:"h4", mac: 'cmd+alt+4', windows: 'ctrl+alt+4' },
+    '∞': {tag:"h5", mac: 'cmd+alt+5', windows: 'ctrl+alt+5' },
+    'º': {tag:"p", mac: 'cmd+alt+0', windows: 'ctrl+alt+0' },
+};
+
+const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+
 const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
     const editorRef = useRef(null);
     const [showSlashMenu, setShowSlashMenu] = useState(false);
@@ -130,7 +141,72 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
         }
     }, [initialContent]);
 
-    const handleInput = () => {
+    const handleInput = (e) => {
+        if (!isEditing) return;
+
+        const selection = window.getSelection();
+        if (!selection.rangeCount) return;
+
+        const range = selection.getRangeAt(0);
+        const container = range.startContainer;
+        
+        // Only process if we're in a text node
+        if (container.nodeType !== Node.TEXT_NODE) return;
+        
+        const text = container.textContent;
+        
+        // Check for unordered list
+        if (text.trim() === '-') {
+            e.preventDefault();
+            const listItem = document.createElement('li');
+            const list = document.createElement('ul');
+            
+            // Remove the dash
+            container.textContent = '';
+            
+            // Create and insert the list
+            listItem.appendChild(document.createElement('br'));
+            list.appendChild(listItem);
+            range.insertNode(list);
+            
+            // Position cursor in list item
+            const newRange = document.createRange();
+            newRange.setStart(listItem, 0);
+            newRange.collapse(true);
+            selection.removeAllRanges();
+            selection.addRange(newRange);
+            
+            handleContentChange();
+            return;
+        }
+        
+        // Check for ordered list
+        const orderedListMatch = text.match(/^(\d+)\.\s*$/);
+        if (orderedListMatch) {
+            e.preventDefault();
+            const listItem = document.createElement('li');
+            const list = document.createElement('ol');
+            
+            // Remove the number and dot
+            container.textContent = '';
+            
+            // Create and insert the list
+            listItem.appendChild(document.createElement('br'));
+            list.appendChild(listItem);
+            range.insertNode(list);
+            
+            // Position cursor in list item
+            const newRange = document.createRange();
+            newRange.setStart(listItem, 0);
+            newRange.collapse(true);
+            selection.removeAllRanges();
+            selection.addRange(newRange);
+            
+            handleContentChange();
+            return;
+        }
+
+        // Call the original handleInput logic
         if (editorRef.current) {
             const newContent = editorRef.current.innerHTML;
             const sanitizedContent = DOMPurify.sanitize(newContent);
@@ -172,6 +248,38 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
 
     const handleKeyDown = (e) => {
         if (!isEditing) return;
+
+        // Handle heading shortcuts
+        const isModifierKey = isMac ? e.metaKey : e.ctrlKey;
+        const isSecondModifier = isMac ? e.shiftKey : e.altKey;
+
+        if (isModifierKey && isSecondModifier && /[1-5]/.test(e.key)) {
+            e.preventDefault();
+            e.stopPropagation();
+            replaceCurrentLineWithElement(`h${e.key}`);
+            return;
+        }
+        if (isModifierKey && e.altKey && KEYBOARD_SHORTCUTS[e.key]?.tag) {
+            const shortcutKey = e.key;
+            const shortcut = KEYBOARD_SHORTCUTS[shortcutKey];
+            
+            if (shortcut) {
+                const tag = shortcut.tag;
+                console.log('Executing shortcut:', tag);
+                e.preventDefault();
+                
+                const selection = window.getSelection();
+                if (!selection.rangeCount) return;
+
+                const range = selection.getRangeAt(0);
+                const headingElement = document.createElement(tag);
+                
+                range.deleteContents();
+                range.insertNode(headingElement);
+                
+                return;
+            }
+        }
 
         if (e.key === '/') {
             e.preventDefault();
@@ -293,8 +401,8 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
                 case 'h3':
                 case 'h4':
                 case 'h5':
-                    newElement = document.createElement(commandItem.command);
-                    newElement.textContent = content || '\u200B';
+                    replaceCurrentLineWithElement(commandItem.command);
+                    closeSlashMenu();
                     break;
                 case 'pre':
                     newElement = document.createElement('pre');
@@ -447,6 +555,56 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
         setShowImageInput(false);
         setImageUrl('');
         setImageAlt('');
+        handleContentChange();
+    };
+
+    useEffect(() => {
+        const editor = editorRef.current;
+        if (editor) {
+            editor.addEventListener('keydown', handleKeyDown);
+            return () => {
+                editor.removeEventListener('keydown', handleKeyDown);
+            };
+        }
+    }, [isEditing]); // Add dependencies as needed
+
+    // Add this function inside your HTMLComposer component
+    const replaceCurrentLineWithElement = (tagName) => {
+        const selection = window.getSelection();
+        if (!selection.rangeCount) return;
+
+        const range = selection.getRangeAt(0);
+        let currentNode = range.startContainer;
+        
+        // If we're in a text node, get its parent
+        if (currentNode.nodeType === Node.TEXT_NODE) {
+            currentNode = currentNode.parentNode;
+        }
+
+        // Find the current block-level element
+        while (currentNode && currentNode !== editorRef.current && 
+               !/^(p|h[1-5]|div)$/i.test(currentNode.nodeName)) {
+            currentNode = currentNode.parentNode;
+        }
+
+        if (!currentNode || currentNode === editorRef.current) {
+            // If no block element found, wrap current selection in new element
+            const newElement = document.createElement(tagName);
+            range.surroundContents(newElement);
+        } else {
+            // Replace the current block element
+            const newElement = document.createElement(tagName);
+            newElement.innerHTML = currentNode.innerHTML;
+            currentNode.parentNode.replaceChild(newElement, currentNode);
+            
+            // Set cursor to end of new element
+            const newRange = document.createRange();
+            newRange.selectNodeContents(newElement);
+            newRange.collapse(false);
+            selection.removeAllRanges();
+            selection.addRange(newRange);
+        }
+
         handleContentChange();
     };
 

@@ -11,7 +11,7 @@
     --sidebar-dark: #2a2a2a;
     --transition-speed: 0.3s;
     --color-primary: var(--link-light);
-    --color-primary-dark: #0056b3; /* A darker shade of the primary color for dark mode */
+    --color-primary-dark: #ffffff; /* A darker shade of the primary color for dark mode */
     --text-secondary: #666666;
     --border-color: #e5e7eb;
     --text-secondary-dark: #9ca3af;
@@ -1008,6 +1008,59 @@ h6 {
 
 .dark-mode .expand-icon:hover {
   background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Sidebar Navigation Styles */
+.sidebar-nav .search-match {
+  background-color: rgba(255, 255, 0, 0.1);
+}
+
+.sidebar-nav .search-match > .menu-item {
+  font-weight: bold;
+}
+
+.sidebar-nav .collapsed:not(.search-match) > ul {
+  display: none;
+}
+
+.sidebar-nav .has-active-child > ul {
+  display: block !important;
+}
+
+.sidebar-nav .has-active-child > .menu-item .expand-icon {
+  transform: rotate(90deg);
+}
+
+/* Optional: Add transition for smooth expand/collapse */
+.sidebar-nav .expand-icon {
+  transition: transform 0.2s ease-in-out;
+}
+
+.sidebar-nav ul {
+  transition: height 0.2s ease-in-out;
+}
+
+/* Sidebar styles */
+.sidebar-nav .collapsed > ul {
+  display: none;
+}
+
+.sidebar-nav .search-match {
+  background-color: rgba(255, 255, 0, 0.1);
+}
+
+.sidebar-nav .expand-icon {
+  transition: transform 0.2s ease-in-out;
+}
+
+.sidebar-nav .expand-icon.expanded {
+  transform: rotate(90deg);
+}
+
+.sidebar-nav .menu-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 

@@ -163,15 +163,13 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
         if (isEditing) {
             if (isCreating) {
                 // Restore original content
+                navigate(-2); // This will go back to the previous page
                 setBlogPost(originalContent.blogPost);
                 setRawContent(originalContent.rawContent);
                 setContentReadonly(originalContent.contentReadonly);
                 setContent(originalContent.content);
                 setIsCreating(false);
                 setOriginalContent(null);
-                
-                // Navigate back to the original page
-                navigate(-1); // This will go back to the previous page
             }
             
             setIsExiting(true);
@@ -220,23 +218,32 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
             // Only handle shortcuts if logged in
             if (!isLoggedIn) return;
 
+            const isModifierKey = navigator.platform.toUpperCase().indexOf('MAC') >= 0 
+                ? event.metaKey  // Command key for Mac
+                : event.ctrlKey; // Control key for Windows/Linux
+            if (!isModifierKey) return
+
             if (!isEditing) { // Only handle these shortcuts when not editing
                 if (event.key === 'e') {
                     handleEditToggle();
-                } else if (event.key === 'c' && !isEditing) { // Prevent create when editing
+                } else if (event.key === 'c' ) { // Updated to require modifier key
+                    event.preventDefault(); // Prevent default copy behavior
                     handleCreate();
-                } 
+                }
+            } else {
+                if (event.key === 'Escape') {
+                    handleEditToggle();
+                } else if (event.key === 'r') {
+                    setIsRawEditor(!isRawEditor);
+                }
             }
         };
 
-        // Add event listener
         document.addEventListener('keydown', handleKeyPress);
-
-        // Cleanup
         return () => {
             document.removeEventListener('keydown', handleKeyPress);
         };
-    }, [isEditing, isLoggedIn]); // Add dependencies
+    }, [isEditing, isLoggedIn]);
 
     if (!content && !isCreating) {
         return <div>Loading...</div>;

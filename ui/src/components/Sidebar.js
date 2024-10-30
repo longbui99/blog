@@ -1,6 +1,6 @@
-import React, { useState, useCallback, useMemo, useEffect } from 'react';
+import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { DndProvider, useDrag, useDrop } from 'react-dnd';
+import { DndProvider} from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import SidebarSearch from './SidebarSearch';
 
@@ -8,60 +8,88 @@ const ItemTypes = {
   MENU_ITEM: 'menuItem'
 };
 
-const MenuItem = ({ id, title, path, index, moveItem, children }) => {
+const MenuItem = ({ id, title, path, index, moveItem, children, searchTerm }) => {
   const location = useLocation();
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [showFullText, setShowFullText] = useState(false);
-  const [, drag] = useDrag({
-    type: ItemTypes.MENU_ITEM,
-    item: { id, index }
-  });
+  const [originalCollapsed, setOriginalCollapsed] = useState(false);
 
-  const [, drop] = useDrop({
-    accept: ItemTypes.MENU_ITEM,
-    hover(item, monitor) {
-      if (!ref.current) {
-        return;
+  // Combine the refs
+  const ref = useRef(null);
+
+  // Check if this item or its children are currently active
+  const isActive = location.pathname === path; // Changed to exact match
+  const hasActiveChild = children?.some(child => 
+    location.pathname === child.path  // Changed to exact match
+  );
+
+  // Update collapse state based on search
+  useEffect(() => {
+    if (searchTerm) {
+      // Store original state and expand for search
+      if (isCollapsed) {
+        setOriginalCollapsed(true);
       }
-      const dragIndex = item.index;
-      const hoverIndex = index;
-      if (dragIndex === hoverIndex) {
-        return;
+      setIsCollapsed(false);
+    } else {
+      // When search is cleared
+      if (!isActive && !hasActiveChild) {
+        // If not the active path, restore to original collapsed state
+        setIsCollapsed(originalCollapsed);
       }
-      moveItem(dragIndex, hoverIndex);
-      item.index = hoverIndex;
     }
-  });
-
-  const ref = useCallback((node) => {
-    drag(drop(node));
-  }, [drag, drop]);
+  }, [searchTerm, isActive, hasActiveChild]);
 
   const handleExpandCollapse = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    setIsCollapsed(!isCollapsed);
+    const newState = !isCollapsed;
+    setIsCollapsed(newState);
+    if (!searchTerm) {
+      setOriginalCollapsed(newState);
+    }
   };
 
-  const toggleFullText = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setShowFullText(!showFullText);
-  };
+  // Check if this item matches search
+  const matchesSearch = searchTerm && 
+    title.toLowerCase().includes(searchTerm.toLowerCase());
 
-  const isActive = location.pathname.startsWith(path);
+  // Determine if children should be visible
+  const showChildren = (
+    searchTerm || // Show during search
+    !isCollapsed || // Show if not collapsed
+    isActive || // Show if this is active
+    hasActiveChild // Show if contains active child
+  );
 
   return (
-    <li ref={ref} className={`${isActive ? "active" : ""} ${isCollapsed ? "collapsed" : ""}`}>
+    <li className={`
+      ${isActive ? "active" : ""} 
+      ${isCollapsed ? "collapsed" : ""} 
+      ${matchesSearch ? "search-match" : ""}
+    `}>
       <div className="menu-item" title={title}>
         <NavLink to={path} title={title}>{title}</NavLink>
         {children?.length > 0 && (
-          <span className="expand-icon" onClick={handleExpandCollapse}>❯</span>
+          <span 
+            className={`expand-icon ${!isCollapsed ? 'expanded' : ''}`} 
+            onClick={handleExpandCollapse}
+          >
+            ❯
+          </span>
         )}
       </div>
-      {children && <ul>{children.map((child, index) => (
-        <MenuItem key={child.path} {...child} index={index} moveItem={moveItem} />
-      ))}</ul>}
+      {children && showChildren && (
+        <ul>
+          {children.map((child, index) => (
+            <MenuItem 
+              key={child.path} 
+              {...child} 
+              index={index} 
+              searchTerm={searchTerm}
+            />
+          ))}
+        </ul>
+      )}
     </li>
   );
 };
@@ -84,15 +112,6 @@ function Sidebar({ isOpen, toggleSidebar, className, routes }) {
     };
     setMenuItems(buildTree(routes));
   }, [routes]);
-
-  const moveItem = useCallback((dragIndex, hoverIndex) => {
-    setMenuItems((prevItems) => {
-      const newItems = [...prevItems];
-      const [reorderedItem] = newItems.splice(dragIndex, 1);
-      newItems.splice(hoverIndex, 0, reorderedItem);
-      return newItems;
-    });
-  }, []);
 
   const filteredMenuItems = useMemo(() => {
     if (!searchTerm) return menuItems;
@@ -127,7 +146,7 @@ function Sidebar({ isOpen, toggleSidebar, className, routes }) {
         <nav className="sidebar-nav">
           <ul>
             {filteredMenuItems.map((item, index) => (
-              <MenuItem key={item.path} {...item} index={index} moveItem={moveItem} />
+              <MenuItem key={item.path} {...item} index={index} searchTerm={searchTerm} />
             ))}
           </ul>
         </nav>
