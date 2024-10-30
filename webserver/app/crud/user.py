@@ -1,6 +1,6 @@
 from app.models.user import User
 from app.schemas.user import UserCreate
-from app.core.security import get_password_hash
+from app.core.hashing import get_password_hash
 
 async def get_user_by_username(username: str):
     return await User.filter(username=username).first()

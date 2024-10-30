@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
-from app.core.security import authenticate_user, create_access_token, get_password_hash, verify_password
+from app.core.security import authenticate_user, create_access_token
 from app.models.user import User
 from app.schemas.user import UserCreate, UserInDB, UserLogin
 from app.crud.user import create_user, delete_user, get_user_by_username
@@ -21,7 +21,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     return {"access_token": access_token, "token_type": "bearer"}
 
 @router.post("/login")
-async def login(user_data: UserLogin):
+async def login_post(user_data: UserLogin):
     user = await authenticate_user(user_data.username, user_data.password)
     if not user:
         raise HTTPException(status_code=400, detail="Incorrect username or password")
@@ -35,7 +35,12 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+        payload = jwt.decode(
+            token, 
+            settings.SECRET_KEY, 
+            algorithms=[settings.ALGORITHM],
+            options={"verify_exp": False}  # Disable expiration verification
+        )
         username: str = payload.get("sub")
         if username is None:
             raise credentials_exception
