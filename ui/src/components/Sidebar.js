@@ -83,6 +83,25 @@ const MenuItem = ({ id, title, path, index, moveItem, children, searchTerm, onIt
       ${matchesSearch ? "search-match" : ""}
     `}>
       <div className="menu-item" title={title}>
+        <span 
+          className="add-child-icon" 
+          onClick={handleAddChild}
+          title="Add new page here"
+        >
+          <svg 
+            width="12" 
+            height="12" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            stroke="currentColor" 
+            strokeWidth="2" 
+            strokeLinecap="round" 
+            strokeLinejoin="round"
+          >
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+        </span>
         <NavLink to={path} title={title} onClick={handleClick}>{title}</NavLink>
         <div className="menu-item-controls">
           {children?.length > 0 && (
@@ -93,25 +112,6 @@ const MenuItem = ({ id, title, path, index, moveItem, children, searchTerm, onIt
               ❯
             </span>
           )}
-          <span 
-            className="add-child-icon" 
-            onClick={handleAddChild}
-            title="Add new page here"
-          >
-            <svg 
-              width="12" 
-              height="12" 
-              viewBox="0 0 24 24" 
-              fill="none" 
-              stroke="currentColor" 
-              strokeWidth="2" 
-              strokeLinecap="round" 
-              strokeLinejoin="round"
-            >
-              <line x1="12" y1="5" x2="12" y2="19"></line>
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-            </svg>
-          </span>
         </div>
       </div>
       {children && showChildren && (

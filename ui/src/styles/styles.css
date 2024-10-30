@@ -1079,18 +1079,19 @@ h6 {
 .add-child-icon {
   opacity: 0;
   cursor: pointer;
-  padding: 1px 2px 1px 2px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 3px;
   transition: opacity 0.2s ease;
   position: absolute;
-  margin-left: -15px;
+  margin-left: -20px;
+  color: var(--text-light);
 }
 
 .menu-item:hover .add-child-icon {
   opacity: 0.6;
+  background-color: rgba(0, 0, 0);
 }
 
 .add-child-icon:hover {
