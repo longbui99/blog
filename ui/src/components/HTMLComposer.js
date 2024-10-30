@@ -1,5 +1,6 @@
 import React, { useState, useRef,useEffect } from 'react';
 import { FaAlignLeft, FaAlignCenter, FaAlignRight, FaLink, FaImage } from 'react-icons/fa';
+import { useLocation } from 'react-router-dom';
 import DOMPurify from 'dompurify';
 import '../styles/HtmlComposer.css';
 import { COLOR_PALETTE } from '../const/colors';
@@ -133,8 +134,12 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
     const [imageUrl, setImageUrl] = useState('');
     const [imageAlt, setImageAlt] = useState('');
     const [showAlignmentPicker, setShowAlignmentPicker] = useState(false);
+    const location = useLocation();
 
     useEffect(() => {
+        if (location.pathname === '/new-page') {
+            initialContent = '';
+        }
         if (editorRef.current && initialContent) {
             const sanitizedContent = DOMPurify.sanitize(initialContent);
             editorRef.current.innerHTML = sanitizedContent;

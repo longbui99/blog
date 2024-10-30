@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, status
 from tortoise.transactions import atomic
 from tortoise.expressions import F
 from tortoise.functions import Max
@@ -11,6 +11,9 @@ from app.api.v1.auth import get_current_user
 from app.models.user import User
 
 router = APIRouter()
+
+# Add constant at the top of the file
+RESERVED_PATHS = {'/new-page'}  # Can be expanded for other reserved paths
 
 @router.post("/", response_model=BlogContentSchema)
 async def create_blog_content(blog_content_data: BlogContentCreate, current_user: Annotated[User, Depends(get_current_user)]):
@@ -33,6 +36,17 @@ async def list_blog_contents():
 @router.put("/update_or_create", response_model=BlogContentSchema)
 @atomic()
 async def update_or_create_blog_content(blog_content_data: BlogContentUpdate, current_user: Annotated[User, Depends(get_current_user)]):
+    # Add validation for reserved paths
+    if blog_content_data.path in RESERVED_PATHS:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={
+                "message": "Cannot use reserved path",
+                "path": blog_content_data.path,
+                "error": f"The path '{blog_content_data.path}' is reserved for system use. Please choose a different path."
+            }
+        )
+    
     # Check if the blog menu exists
     blog_menu = await get_blog_menu_by_path(blog_content_data.path)
     if not blog_menu:

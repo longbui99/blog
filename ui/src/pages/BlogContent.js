@@ -9,6 +9,7 @@ import HTMLComposer from '../components/HTMLComposer';
 import { useNotification } from '../contexts/NotificationContext';
 import { parseContent } from '../utils/contentParser';
 import { useConfirmation } from '../contexts/ConfirmationContext';
+import { ROUTES, isNewPageRoute } from '../utils/routeConstants';
 
 function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onContentLoaded}) {
     const [content, setContent] = useState('');
@@ -54,15 +55,21 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
         onContentLoaded()
     }
 
+
+    // Add this new useEffect to handle auto-creation mode
+    useEffect(() => {
+        if (isNewPageRoute(location.pathname) && isLoggedIn) {
+            handleCreate();
+        }
+    }, [location.pathname]); // Add necessary dependencies if needed
+    
     useEffect(() => {
         const loadBlogContent = async () => {
-            if (isCreating) {
-                onContentLoaded?.();
-                return null;
+            if (!isNewPageRoute(location.pathname)) {
+                const blogData = await blogMenuProcessor.createBlogMenuContentByPath(path);
+                setBlogPost(blogData);
+                return blogData;
             }
-            const blogData = await blogMenuProcessor.createBlogMenuContentByPath(path);
-            setBlogPost(blogData);
-            return blogData;
         };
 
         const fetchBlogContent = async () => {
@@ -84,6 +91,16 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
     
     const handleSave = async (path, routeInfo) => {
         try {
+            if (isNewPageRoute(path)) {
+                showNotification({
+                    type: 'error',
+                    title: 'Invalid URL',
+                    message: 'Cannot use /new-page as the URL. Please choose a different path.',
+                    duration: 3
+                });
+                return;
+            }
+
             const blogContentUpdate = {
                 path: path,
                 content: rawContent,
@@ -163,7 +180,7 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
         if (isEditing) {
             if (isCreating) {
                 // Restore original content
-                navigate(-2); // This will go back to the previous page
+                navigate(-1); // This will go back to the previous page
                 setBlogPost(originalContent.blogPost);
                 setRawContent(originalContent.rawContent);
                 setContentReadonly(originalContent.contentReadonly);
@@ -183,22 +200,17 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
             await updateContent();
         }
     };
+    
+    const setCreateData = () => {
 
-    const handleCreate = () => {
-        // Store original content before creating new
-        setOriginalContent({
-            blogPost,
-            rawContent,
-            contentReadonly,
-            content
-        });
-        
-        // Set empty content
+        const { state } = location;
+        const parentPath = state?.parentPath || '';
+        // Set empty content with parent path if provided
         setBlogPost({
             content: '',
             title: 'New Page',
             path: '/new-page',
-            parent: '',
+            parent: parentPath,
             previous: '',
             next: ''
         });
@@ -207,9 +219,25 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
         setContent('');
         setIsEditing(true);
         setIsCreating(true);
+    }
+    
 
-        // Navigate to new-page URL
-        navigate('/new-page');
+    const handleCreate = () => {
+        
+        // Only store original content if we're not already in creation mode
+        setOriginalContent({
+            blogPost,
+            rawContent,
+            contentReadonly,
+            content
+        });
+        
+        setCreateData()
+
+        // Only navigate if we're not already at new-page route
+        if (!isNewPageRoute(location.pathname)) {
+            navigate(ROUTES.NEW_PAGE);
+        }
     };
 
     // Add useEffect for keyboard shortcuts
@@ -405,6 +433,7 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
                                     onCancel={handleEditToggle}
                                     currentPath={location.pathname}
                                     routes={routes}
+                                    blogPost={blogPost}
                                 />
                             )
                         }

@@ -3,8 +3,9 @@ import Select from 'react-select';
 import '../styles/EditPageContent.css';
 import debounce from 'lodash/debounce';
 import { blogMenuProcessor } from '../processor/blogMenuProcessor';
+import { isNewPageRoute } from '../utils/routeConstants';
 
-function EditPageContent({ onSave, onCancel, currentPath, routes}) {
+function EditPageContent({ onSave, onCancel, currentPath, routes, blogPost }) {
   const [title, setTitle] = useState('');
   const [urlPath, setUrlPath] = useState(currentPath);
   const [parent, setParent] = useState(null);
@@ -16,7 +17,8 @@ function EditPageContent({ onSave, onCancel, currentPath, routes}) {
   const [isCheckingPath, setIsCheckingPath] = useState(false);
   const [validationErrors, setValidationErrors] = useState({
     title: false,
-    urlPath: false
+    urlPath: false,
+    newPageUrl: false
   });
 
   useEffect(() => {
@@ -24,20 +26,17 @@ function EditPageContent({ onSave, onCancel, currentPath, routes}) {
       setIsLoading(true);
       setError(null);
       try {
-        
-        if (routes) {
-          const currentRoute = routes.find(route => route.path === currentPath);
-          if (currentRoute) {
+        const currentRoute = routes?.find(route => route.path === currentPath);
+        if (routes && currentRoute) {
             setUrlPath(currentPath);
             setTitle(currentRoute.title || 'page');
-            setParent(currentRoute?.parent || null);
+            setParent(blogPost?.parent || currentRoute?.parent || null);
             setPrevious(currentRoute?.previous || null);
             setNext(currentRoute?.next || null);
-          }
         } else {
-          setTitle('page');
+          setTitle('');
           setUrlPath(currentPath);
-          setParent(null);
+          setParent(blogPost?.parent || null);
           setPrevious(null);
           setNext(null);
         }
@@ -50,7 +49,7 @@ function EditPageContent({ onSave, onCancel, currentPath, routes}) {
     };
 
     fetchBlogContent();
-  }, [currentPath, routes]);
+  }, [currentPath, routes, blogPost]);
 
   const handleTitleChange = (e) => setTitle(e.target.value);
 
@@ -77,6 +76,21 @@ function EditPageContent({ onSave, onCancel, currentPath, routes}) {
   const handleUrlPathChange = (e) => {
     const newPath = e.target.value;
     setUrlPath(newPath);
+    
+    setValidationErrors(prev => ({
+      ...prev,
+      urlPath: false,
+      newPageUrl: false
+    }));
+    
+    if (isNewPageRoute(newPath)) {
+      setValidationErrors(prev => ({
+        ...prev,
+        newPageUrl: true
+      }));
+      return;
+    }
+    
     checkPathExists(newPath);
   };
 
@@ -139,27 +153,26 @@ function EditPageContent({ onSave, onCancel, currentPath, routes}) {
           </div>
 
           <div className="url-input-container">
-            {pathExists && (
-              <span className="path-exists-warning">
-                This path already exists
-              </span>
-            )}
             {validationErrors.urlPath && (
               <span className="validation-error">URL path is required</span>
+            )}
+            {validationErrors.newPageUrl && (
+              <span className="validation-error">Cannot use /new-page as the URL.</span>
+            )}
+            {pathExists && !validationErrors.newPageUrl && (
+              <span className="path-exists-warning">This path already exists</span>
             )}
             <input
               type="text"
               value={urlPath}
               onChange={handleUrlPathChange}
               placeholder="Enter URL path *"
-              className={`url-path-input ${pathExists ? 'path-exists' : ''} ${
-                validationErrors.urlPath ? 'input-error' : ''
+              className={`url-path-input ${
+                pathExists || validationErrors.urlPath || validationErrors.newPageUrl ? 'input-error' : ''
               }`}
             />
             {isCheckingPath && (
-              <span className="checking-path">
-                Checking...
-              </span>
+              <span className="checking-path">Checking...</span>
             )}
           </div>
         </div>

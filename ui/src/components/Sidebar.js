@@ -1,9 +1,10 @@
 import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { DndProvider} from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import SidebarSearch from './SidebarSearch';
 import { isDeviceMobile } from '../utils/responsive';
+import { ROUTES } from '../utils/routeConstants';
 
 const ItemTypes = {
   MENU_ITEM: 'menuItem'
@@ -13,6 +14,7 @@ const MenuItem = ({ id, title, path, index, moveItem, children, searchTerm, onIt
   const location = useLocation();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [originalCollapsed, setOriginalCollapsed] = useState(false);
+  const navigate = useNavigate();
 
   // Combine the refs
   const ref = useRef(null);
@@ -68,6 +70,12 @@ const MenuItem = ({ id, title, path, index, moveItem, children, searchTerm, onIt
     }
   };
 
+  const handleAddChild = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    navigate(ROUTES.NEW_PAGE, { state: { parentPath: path } });
+  };
+
   return (
     <li className={`
       ${isActive ? "active" : ""} 
@@ -76,14 +84,35 @@ const MenuItem = ({ id, title, path, index, moveItem, children, searchTerm, onIt
     `}>
       <div className="menu-item" title={title}>
         <NavLink to={path} title={title} onClick={handleClick}>{title}</NavLink>
-        {children?.length > 0 && (
+        <div className="menu-item-controls">
+          {children?.length > 0 && (
+            <span 
+              className={`expand-icon ${!isCollapsed ? 'expanded' : ''}`} 
+              onClick={handleExpandCollapse}
+            >
+              ❯
+            </span>
+          )}
           <span 
-            className={`expand-icon ${!isCollapsed ? 'expanded' : ''}`} 
-            onClick={handleExpandCollapse}
+            className="add-child-icon" 
+            onClick={handleAddChild}
+            title="Add new page here"
           >
-            ❯
+            <svg 
+              width="12" 
+              height="12" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="currentColor" 
+              strokeWidth="2" 
+              strokeLinecap="round" 
+              strokeLinejoin="round"
+            >
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
           </span>
-        )}
+        </div>
       </div>
       {children && showChildren && (
         <ul>
