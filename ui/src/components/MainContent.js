@@ -27,6 +27,7 @@ const scrollToElement = (elementId, offset = 80) => {
 function MainContent({ 
   isSidebarOpen, 
   isTOCOpen, 
+  setIsTOCOpen, 
   isLoggedIn, 
   routes, 
 }) {
@@ -87,7 +88,11 @@ function MainContent({
             onContentLoaded={handleContentLoaded}
           />
         </div>
-        <TableOfContents items={tocItems} isOpen={isTOCOpen} />
+        <TableOfContents 
+          items={tocItems} 
+          isOpen={isTOCOpen} 
+          onToggle={setIsTOCOpen} 
+        />
       </main>
     </>
   );

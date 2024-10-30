@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaBars, FaList } from 'react-icons/fa';
+import { IoListOutline } from "react-icons/io5";
 
 function SidebarToggle({ isOpen, toggleSidebar }) {
   return (
@@ -8,7 +8,7 @@ function SidebarToggle({ isOpen, toggleSidebar }) {
       onClick={toggleSidebar} 
       title={isOpen ? "Hide Sidebar" : "Show Sidebar"}
     >
-      <FaList />
+      <IoListOutline />
     </button>
   );
 }

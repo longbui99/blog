@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaUserAlt } from 'react-icons/fa';
+import { IoPersonOutline } from "react-icons/io5";
 
 function LoginToggle({ isLoggedIn, onLoginClick }) {
   const showLoginButton = window.location.hostname === process.env.REACT_APP_ADMIN_DOMAIN;
@@ -14,7 +14,7 @@ function LoginToggle({ isLoggedIn, onLoginClick }) {
       onClick={onLoginClick}
       title="Login"
     >
-      <FaUserAlt />
+      <IoPersonOutline />
     </button>
   );
 }

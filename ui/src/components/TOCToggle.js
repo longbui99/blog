@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaAlignJustify } from 'react-icons/fa';
+import { IoReorderThreeOutline } from "react-icons/io5";
 
 function TOCToggle({ isOpen, toggleTOC }) {
   return (
@@ -8,7 +8,7 @@ function TOCToggle({ isOpen, toggleTOC }) {
       onClick={toggleTOC} 
       title={isOpen ? "Hide Table of Contents" : "Show Table of Contents"}
     >
-      <FaAlignJustify />
+      <IoReorderThreeOutline />
     </button>
   );
 }

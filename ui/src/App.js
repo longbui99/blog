@@ -17,7 +17,7 @@ import { loginProcessor } from './processor/loginProcessor';
 import { NotificationProvider, useNotification } from './contexts/NotificationContext';
 import { ConfirmationProvider } from './contexts/ConfirmationContext';
 import { initializeBaseProcessor } from './processor/baseProcessor';
-import { getInitialPanelState, handleResponsiveState } from './utils/responsive';
+import { getInitialPanelState, handleResponsiveState, isDeviceMobile } from './utils/responsive';
 
 
 // Initialize GA with your measurement ID
@@ -149,6 +149,12 @@ function App() {
   useEffect(() => {
   }, [isLoginModalOpen, isLoginPopup]);
 
+  const handleMenuItemClick = () => {
+    if (isDeviceMobile()) {
+      setIsSidebarOpen(false);
+    }
+  };
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -172,6 +178,7 @@ function App() {
               toggleSidebar={toggleSidebar} 
               className={isDarkMode ? 'dark-mode' : ''}
               routes={routes}
+              onItemClick={handleMenuItemClick}
             />
             <MainContent 
               isSidebarOpen={isSidebarOpen} 
@@ -183,6 +190,7 @@ function App() {
               setIsEditing={setIsEditing}
               currentPath={currentPath}
               setCurrentPath={setCurrentPath}
+              setIsTOCOpen={setIsTOCOpen}
             >
               <Routes>
                 {routes.map(route => (

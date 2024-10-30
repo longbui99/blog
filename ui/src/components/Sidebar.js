@@ -3,12 +3,13 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { DndProvider} from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import SidebarSearch from './SidebarSearch';
+import { isDeviceMobile } from '../utils/responsive';
 
 const ItemTypes = {
   MENU_ITEM: 'menuItem'
 };
 
-const MenuItem = ({ id, title, path, index, moveItem, children, searchTerm }) => {
+const MenuItem = ({ id, title, path, index, moveItem, children, searchTerm, onItemClick }) => {
   const location = useLocation();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [originalCollapsed, setOriginalCollapsed] = useState(false);
@@ -61,6 +62,12 @@ const MenuItem = ({ id, title, path, index, moveItem, children, searchTerm }) =>
     hasActiveChild // Show if contains active child
   );
 
+  const handleClick = () => {
+    if (isDeviceMobile()) {
+      onItemClick?.();
+    }
+  };
+
   return (
     <li className={`
       ${isActive ? "active" : ""} 
@@ -68,7 +75,7 @@ const MenuItem = ({ id, title, path, index, moveItem, children, searchTerm }) =>
       ${matchesSearch ? "search-match" : ""}
     `}>
       <div className="menu-item" title={title}>
-        <NavLink to={path} title={title}>{title}</NavLink>
+        <NavLink to={path} title={title} onClick={handleClick}>{title}</NavLink>
         {children?.length > 0 && (
           <span 
             className={`expand-icon ${!isCollapsed ? 'expanded' : ''}`} 
@@ -86,6 +93,7 @@ const MenuItem = ({ id, title, path, index, moveItem, children, searchTerm }) =>
               {...child} 
               index={index} 
               searchTerm={searchTerm}
+              onItemClick={onItemClick}
             />
           ))}
         </ul>
@@ -94,7 +102,7 @@ const MenuItem = ({ id, title, path, index, moveItem, children, searchTerm }) =>
   );
 };
 
-function Sidebar({ isOpen, toggleSidebar, className, routes }) {
+function Sidebar({ isOpen, toggleSidebar, className, routes, onItemClick }) {
   const [menuItems, setMenuItems] = useState([]);
   const [searchTerm, setSearchTerm] = useState(() => {
     return localStorage.getItem('sidebarSearchTerm') || '';
@@ -146,7 +154,13 @@ function Sidebar({ isOpen, toggleSidebar, className, routes }) {
         <nav className="sidebar-nav">
           <ul>
             {filteredMenuItems.map((item, index) => (
-              <MenuItem key={item.path} {...item} index={index} searchTerm={searchTerm} />
+              <MenuItem 
+                key={item.path} 
+                {...item} 
+                index={index} 
+                searchTerm={searchTerm}
+                onItemClick={onItemClick}
+              />
             ))}
           </ul>
         </nav>
