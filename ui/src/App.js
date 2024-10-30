@@ -179,6 +179,7 @@ function App() {
               className={isDarkMode ? 'dark-mode' : ''}
               routes={routes}
               onItemClick={handleMenuItemClick}
+              isLoggedIn={isLoggedIn}
             />
             <MainContent 
               isSidebarOpen={isSidebarOpen} 
