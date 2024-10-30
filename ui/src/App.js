@@ -17,6 +17,7 @@ import { loginProcessor } from './processor/loginProcessor';
 import { NotificationProvider, useNotification } from './contexts/NotificationContext';
 import { ConfirmationProvider } from './contexts/ConfirmationContext';
 import { initializeBaseProcessor } from './processor/baseProcessor';
+import { getInitialPanelState, handleResponsiveState } from './utils/responsive';
 
 
 // Initialize GA with your measurement ID
@@ -28,7 +29,7 @@ function App() {
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
     const saved = localStorage.getItem('isSidebarOpen');
-    return saved !== null ? JSON.parse(saved) : true;
+    return saved !== null ? JSON.parse(saved) : getInitialPanelState();
   });
 
   const [isDarkMode, setIsDarkMode] = useState(() => {
@@ -41,7 +42,7 @@ function App() {
 
   const [isTOCOpen, setIsTOCOpen] = useState(() => {
     const saved = localStorage.getItem('isTOCOpen');
-    return saved !== null ? JSON.parse(saved) : true;
+    return saved !== null ? JSON.parse(saved) : getInitialPanelState();
   });
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -95,6 +96,18 @@ function App() {
 
     checkLoginStatus();
   }, []); // Run on component mount
+
+  useEffect(() => {
+    const handleResize = () => {
+      handleResponsiveState({
+        setSidebar: setIsSidebarOpen,
+        setTOC: setIsTOCOpen
+      });
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
