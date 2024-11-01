@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Request
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from app.core.security import authenticate_user, create_access_token
 from app.models.user import User
@@ -49,6 +49,32 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     user = await get_user_by_username(username)
     if user is None:
         raise credentials_exception
+    return user
+
+async def check_authorized_user(request: Request):
+    # Get the Authorization header
+    authorization: str = request.headers.get("Authorization")
+    
+    if not authorization:
+        return None  # Return None if no Authorization header is provided
+
+    # Extract the token from the Authorization header
+    token = authorization.split(" ")[1] if " " in authorization else authorization
+
+    payload = jwt.decode(
+        token, 
+        settings.SECRET_KEY, 
+        algorithms=[settings.ALGORITHM],
+        options={"verify_exp": False}  # Disable expiration verification
+    )
+    username: str = payload.get("sub")
+    if username is None:
+        return None
+    # Your logic to validate the token and retrieve the user
+    user = await get_user_by_username(username)
+    if user is None:
+        return None  # Return None if the token is invalid
+
     return user
 
 @router.post("/users", response_model=UserInDB)

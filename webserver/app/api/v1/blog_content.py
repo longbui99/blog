@@ -31,7 +31,9 @@ async def create_blog_content(blog_content_data: BlogContentCreate, current_user
 
 @router.get("/", response_model=List[BlogContentSchema])
 async def list_blog_contents():
-    return await BlogContentSchema.from_queryset(BlogContent.all())
+    # Fetch all blog contents associated with published menus
+    published_menus = await BlogMenu.filter(is_published=True).values_list('id', flat=True)
+    return await BlogContentSchema.from_queryset(BlogContent.filter(blog_menu_id__in=published_menus).all())
 
 @router.put("/update_or_create", response_model=BlogContentSchema)
 @atomic()
@@ -130,6 +132,12 @@ async def read_blog_content(content_id: int):
     content = await BlogContent.get_or_none(id=content_id)
     if not content:
         raise HTTPException(status_code=404, detail="Blog content not found")
+    
+    # Check if the associated blog menu is published
+    blog_menu = await BlogMenu.get_or_none(id=content.blog_menu_id)
+    if blog_menu is None or not blog_menu.is_published:
+        raise HTTPException(status_code=403, detail="This content is not associated with a published menu")
+    
     return await BlogContentSchema.from_tortoise_orm(content)
 
 @router.put("/{content_id}", response_model=BlogContentSchema)
@@ -162,9 +170,15 @@ async def delete_blog_content(content_id: int, current_user: Annotated[User, Dep
 
 @router.get("/by-menu/{menu_id}", response_model=BlogContentSchema)
 async def read_blog_content_by_menu(menu_id: int):
+    # Check if the menu is published before fetching content
+    blog_menu = await BlogMenu.get_or_none(id=menu_id)
+    if not blog_menu or not blog_menu.is_published:
+        raise HTTPException(status_code=403, detail="This menu is not published or does not exist")
+    
     content = await BlogContent.get_or_none(blog_menu_id=menu_id)
     if not content:
         raise HTTPException(status_code=404, detail="Blog content not found for this menu")
+    
     return await BlogContentSchema.from_tortoise_orm(content)
 
 @router.delete("/delete_by_path/{path}")

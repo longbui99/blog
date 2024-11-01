@@ -10,6 +10,7 @@ class BlogMenu(models.Model):
     short_name = fields.CharField(max_length=50)
     created_at = fields.DatetimeField(auto_now_add=True)
     updated_at = fields.DatetimeField(auto_now=True)
+    is_published = fields.BooleanField(default=False)
 
     class Meta:
         table = "blog_menus"

@@ -1,11 +1,11 @@
 from fastapi import APIRouter, HTTPException, Depends, status, Body
 from typing import List
-from app.schemas.blog_menu import BlogMenuCreate, BlogMenu, BlogMenuUpdate, BlogMenuItem
-from app.schemas.blog_content import BlogContent as BlogContentSchema, BlogContentCreate
+from app.schemas.blog_menu import BlogMenuCreate, BlogMenu, BlogMenuUpdate, BlogMenuItem, PublishMenuRequest
+from app.schemas.blog_content import BlogContent as BlogContentSchema
 from app.models.blog_content import BlogContent as BlogContentModel
 from app.models.blog_menu import BlogMenu as BlogMenuModel
 from app.crud.blog_menu import create_blog_menu, get_blog_menu, get_blog_menus, update_blog_menu, delete_blog_menu
-from app.api.v1.auth import get_current_user
+from app.api.v1.auth import get_current_user, check_authorized_user
 import logging
 
 router = APIRouter()
@@ -15,15 +15,20 @@ async def create_menu_item(menu: BlogMenuCreate, current_user: dict = Depends(ge
     return await create_blog_menu(menu)
 
 @router.get("/{menu_id}", response_model=BlogMenu)
-async def read_menu_item(menu_id: int):
+async def read_menu_item(menu_id: int, current_user: dict = Depends(check_authorized_user)):
     menu = await get_blog_menu(menu_id)
     if menu is None:
         raise HTTPException(status_code=404, detail="Menu item not found")
+    if not menu.is_published and current_user is None:
+        raise HTTPException(status_code=403, detail="This menu item is not published")
     return menu
 
 @router.get("/", response_model=List[BlogMenuItem])
-async def read_menu_items(skip: int = 0, limit: int = 100):
-    return await get_blog_menus()
+async def read_menu_items(skip: int = 0, limit: int = 100, current_user: dict = Depends(check_authorized_user)):
+    menus = await get_blog_menus()
+    if current_user:
+        return menus
+    return [menu for menu in menus if menu['is_published']]
 
 @router.put("/{menu_id}", response_model=BlogMenu)
 async def update_menu_item(menu_id: int, menu: BlogMenuUpdate, current_user: dict = Depends(get_current_user)):
@@ -41,14 +46,15 @@ async def delete_menu_item(menu_id: int, current_user: dict = Depends(get_curren
     return {"detail": "Menu item deleted successfully"}
 
 @router.get("/{menu_id}/content", response_model=BlogContentSchema)
-async def read_blog_content_by_menu(menu_id: int):
+async def read_blog_content_by_menu(menu_id: int, current_user: dict = Depends(check_authorized_user)):
     content = await BlogContentModel.get(blog_menu_id=menu_id)
     if not content:
         raise HTTPException(status_code=404, detail="Blog content not found for this menu")
+    if not content.is_published and current_user is None:
+        raise HTTPException(status_code=403, detail="This content is not published")
     return await BlogContentSchema.from_tortoise_orm(content)
 
-
-@router.get("/path/{path}/content", response_model=BlogContentSchema)
+@router.get("/path/content/{path}", response_model=BlogContentSchema)
 async def read_blog_content_by_menu_path(path: str):
     menu_item = await BlogMenuModel.get_or_none(path="/"+path)
 
@@ -60,7 +66,6 @@ async def read_blog_content_by_menu_path(path: str):
         raise HTTPException(status_code=404, detail="Blog content not found for this menu path")
 
     return content
-
 
 @router.get("/path//content")
 async def add_blog_content_home_by_menu_path():
@@ -75,7 +80,7 @@ async def add_blog_content_home_by_menu_path():
 
     return content
 
-@router.post("/path/{path}/content/{title}")
+@router.post("/path/{path}/content/{title}", response_model=bool)
 async def add_blog_content_by_menu_path(
     path: str,
     title: str,
@@ -96,7 +101,7 @@ async def add_blog_content_by_menu_path(
     new_content = await BlogContentModel.create(**content_data)
     return True
 
-@router.post("/{menu_id}/content/{title}")
+@router.post("/{menu_id}/content/{title}", response_model=bool)
 async def add_blog_content_by_menu_id(
     menu_id: int,
     title: str,
@@ -133,3 +138,17 @@ async def check_path_exists(
         "exists": existing_menu is not None,
         "path": path
     }
+
+
+@router.post("/publish", response_model=BlogMenu)
+async def publish_menu_item(request: PublishMenuRequest, current_user: dict = Depends(get_current_user)):
+    # Find the menu item by path
+    logging.info("HELLO")
+    db_menu = await BlogMenuModel.get_or_none(path=request.path)
+    if db_menu is None:
+        raise HTTPException(status_code=404, detail="Menu item not found")
+    
+    # Update the is_published field based on the request
+    db_menu.is_published = request.isPublished
+    await db_menu.save()  # Save the updated menu item
+    return db_menu

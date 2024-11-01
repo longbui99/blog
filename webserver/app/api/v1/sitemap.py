@@ -28,7 +28,7 @@ async def generate_sitemap() -> str:
         generator = SitemapGenerator(base_url="https://blog.longbui.net")
         
         # Get all blog posts using Tortoise ORM
-        blog_posts = await BlogMenu.all().order_by('created_at')
+        blog_posts = await BlogMenu.filter(is_published=True).order_by('created_at')
         
         urls = [
             {

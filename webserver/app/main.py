@@ -44,7 +44,7 @@ class LoggingMiddleware(BaseHTTPMiddleware):
         # Log the request details
         response = await call_next(request)
         log_function = logging.error if response.status_code >= 400 else logging.info
-        log_function(f"{request.client.host} : {response.status_code} {request.method} {request.url} - {request.scope['endpoint'].__name__}")
+        log_function(f"{request.client.host} : {response.status_code} {request.method} {request.url}")
         return response
 
 # Create FastAPI app

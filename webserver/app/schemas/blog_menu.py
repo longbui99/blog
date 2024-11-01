@@ -8,6 +8,7 @@ class BlogMenuBase(BaseModel):
     sequence: int
     component: str
     short_name: str
+    is_published: bool
 
 class BlogMenuCreate(BlogMenuBase):
     pass
@@ -36,3 +37,8 @@ class BlogMenuItem(BaseModel):
     parent: Optional[str]
     sequence: int
     component: str
+    is_published: bool
+
+class PublishMenuRequest(BaseModel):
+    path: str  # Ensure this is a string
+    isPublished: bool  # Ensure this is a boolean

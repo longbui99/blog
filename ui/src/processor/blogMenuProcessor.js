@@ -23,11 +23,15 @@ class BlogMenuProcessor extends BaseProcessor {
   }
 
   async createBlogMenuContentByPath(pathData) {
-    return await this.makeRequest('get', `${this.baseEndpoint}/path${pathData}/content`);
+    return await this.makeRequest('get', `${this.baseEndpoint}/path/content${pathData}`);
   }
 
   async checkPathExists(path) {
     return await this.makeRequest('post', `${this.baseEndpoint}/check-path`, { path });
+  }
+
+  async publishBlogMenu(path, isPublished) {
+    return await this.makeRequest('post', `${this.baseEndpoint}/publish`, { path, isPublished });
   }
 }
 

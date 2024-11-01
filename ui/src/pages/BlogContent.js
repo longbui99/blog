@@ -11,7 +11,7 @@ import { parseContent } from '../utils/contentParser';
 import { useConfirmation } from '../contexts/ConfirmationContext';
 import { ROUTES, isNewPageRoute } from '../utils/routeConstants';
 
-function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onContentLoaded}) {
+function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onContentLoaded }) {
     const [content, setContent] = useState('');
     const [rawContent, setRawContent] = useState('');
     const [contentReadonly, setContentReadonly] = useState('');
@@ -30,11 +30,12 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
     const [lastUpdated, setLastUpdated] = useState(null);
     const [isCreating, setIsCreating] = useState(false);
     const [originalContent, setOriginalContent] = useState(null);
+    const [isPublished, setIsPublished] = useState(false); // State for published status
     const navigate = useNavigate();
 
     const updateContent = (blogData) => {
-        if (!blogData){
-            blogData = blogPost
+        if (!blogData) {
+            blogData = blogPost;
         }
         if (blogData && blogData.content) {
             let parsedContent = parseContent(blogData.content, path);
@@ -45,6 +46,9 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
             setPageDescription(blogData.title || blogData.title || '');
             setAuthor(blogData.author || 'Long Bui');
             setLastUpdated(blogData.updated_at || new Date().toISOString());
+
+            const currentRoute = routes?.find(route => route.path === path);
+            setIsPublished(currentRoute.is_published || false); // Set published state
             
             // Update MainContent's editable content
             updateMainContentEditableContent(blogData.content);
@@ -52,9 +56,8 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
             setContent(<p>No content found for this path.</p>);
             updateMainContentEditableContent('');
         }
-        onContentLoaded()
+        onContentLoaded();
     }
-
 
     // Add this new useEffect to handle auto-creation mode
     useEffect(() => {
@@ -112,8 +115,6 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
 
             await blogContentProcessor.saveOrUpdateContent(blogContentUpdate);
             
-            // Debug log
-            
             showNotification({
                 type: 'success',
                 title: 'Success',
@@ -134,10 +135,8 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
                 window.location.href = location;
             }, 500);
 
-
         } catch (error) {
             console.error('Error saving content:', error);
-            
         }
     };
 
@@ -170,12 +169,14 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
             }
         });
     };
+
     const handleContentChange = (newContent) => {
         // Update the raw content when HTMLComposer content changes
         if (rawContent !== newContent) {
             setRawContent(newContent);
         }
     };
+
     const handleEditToggle = async () => {
         if (isEditing) {
             if (isCreating) {
@@ -202,7 +203,6 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
     };
     
     const setCreateData = () => {
-
         const { state } = location;
         const parentPath = state?.parentPath || '';
         // Set empty content with parent path if provided
@@ -220,10 +220,8 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
         setIsEditing(true);
         setIsCreating(true);
     }
-    
 
     const handleCreate = () => {
-        
         // Only store original content if we're not already in creation mode
         setOriginalContent({
             blogPost,
@@ -232,11 +230,34 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
             content
         });
         
-        setCreateData()
+        setCreateData();
 
         // Only navigate if we're not already at new-page route
         if (!isNewPageRoute(location.pathname)) {
             navigate(ROUTES.NEW_PAGE);
+        }
+    };
+
+    // Add the handlePublish function
+    const handlePublish = async () => {
+        try {
+            const newPublishStatus = !isPublished; // Toggle the publish status
+            await blogMenuProcessor.publishBlogMenu(path, newPublishStatus); // Send the path and new publish status
+            setIsPublished(newPublishStatus); // Update the local state
+            showNotification({
+                type: 'success',
+                title: 'Success',
+                message: newPublishStatus ? 'Content published successfully!' : 'Content unpublished successfully!',
+                duration: 3
+            });
+        } catch (error) {
+            console.error('Error publishing content:', error);
+            showNotification({
+                type: 'error',
+                title: 'Error',
+                message: 'Failed to update publish status.',
+                duration: 3
+            });
         }
     };
 
@@ -249,7 +270,7 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
             const isModifierKey = navigator.platform.toUpperCase().indexOf('MAC') >= 0 
                 ? event.metaKey  // Command key for Mac
                 : event.ctrlKey; // Control key for Windows/Linux
-            if (!isModifierKey) return
+            if (!isModifierKey) return;
 
             if (!isEditing) { // Only handle these shortcuts when not editing
                 if (event.key === 'e') {
@@ -350,49 +371,49 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
             {isLoggedIn ? (
                 <>
                     <div className="content-actions">
-                            <div className="content-actions-controllers">
-                                <button 
-                                    onClick={handleCreate}
-                                    className={`action-button create-button ${isCreating ? 'active' : ''}`}
-                                    title={isEditing ? "Finish editing first" : "Create New Page (C)"}
-                                    disabled={isEditing || isCreating}
+                        <div className="content-actions-controllers">
+                            <button 
+                                onClick={handleCreate}
+                                className={`action-button create-button ${isCreating ? 'active' : ''}`}
+                                title={isEditing ? "Finish editing first" : "Create New Page (C)"}
+                                disabled={isEditing || isCreating}
+                            >
+                                <svg 
+                                    width="16" 
+                                    height="16" 
+                                    viewBox="0 0 24 24" 
+                                    fill="none" 
+                                    stroke="currentColor" 
+                                    strokeWidth="2" 
+                                    strokeLinecap="round" 
+                                    strokeLinejoin="round"
                                 >
-                                    <svg 
-                                        width="16" 
-                                        height="16" 
-                                        viewBox="0 0 24 24" 
-                                        fill="none" 
-                                        stroke="currentColor" 
-                                        strokeWidth="2" 
-                                        strokeLinecap="round" 
-                                        strokeLinejoin="round"
-                                    >
-                                        <line x1="12" y1="5" x2="12" y2="19"></line>
-                                        <line x1="5" y1="12" x2="19" y2="12"></line>
-                                    </svg>
-                                    <span className="button-text">Create</span>
-                                </button>
-                                <button 
-                                    onClick={handleEditToggle} 
-                                    className={`action-button edit-button ${isEditing ? 'active' : ''}`}
-                                    title={isEditing ? "Exit Edit Mode (Esc)" : "Edit Page (E)"}
+                                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                </svg>
+                                <span className="button-text">Create</span>
+                            </button>
+                            <button 
+                                onClick={handleEditToggle} 
+                                className={`action-button edit-button ${isEditing ? 'active' : ''}`}
+                                title={isEditing ? "Exit Edit Mode (Esc)" : "Edit Page (E)"}
+                            >
+                                <svg 
+                                    width="16" 
+                                    height="16" 
+                                    viewBox="0 0 24 24" 
+                                    fill="none" 
+                                    stroke="currentColor" 
+                                    strokeWidth="2" 
+                                    strokeLinecap="round" 
+                                    strokeLinejoin="round"
                                 >
-                                    <svg 
-                                        width="16" 
-                                        height="16" 
-                                        viewBox="0 0 24 24" 
-                                        fill="none" 
-                                        stroke="currentColor" 
-                                        strokeWidth="2" 
-                                        strokeLinecap="round" 
-                                        strokeLinejoin="round"
-                                    >
-                                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                                    </svg>
-                                    <span className="button-text">{isEditing ? 'Exit' : 'Edit'}</span>
-                                    </button>
-                                    
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                </svg>
+                                <span className="button-text">{isEditing ? 'Exit' : 'Edit'}</span>
+                            </button>
+                            
                             <button 
                                 onClick={handleDelete} 
                                 className="action-button delete-button"
@@ -417,6 +438,29 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
                                 </svg>
                                 <span className="button-text">Delete</span>
                             </button>
+
+                            {/* Publish Button as a boolean toggle */}
+                            <button 
+                                onClick={handlePublish} 
+                                className={`action-button publish-button ${isPublished ? 'active' : ''}`}
+                                title={isPublished ? "Unpublish Page" : "Publish Page"}
+                                disabled={isEditing || isCreating}
+                            >
+                                <svg 
+                                    width="16" 
+                                    height="16" 
+                                    viewBox="0 0 24 24" 
+                                    fill="none" 
+                                    stroke="currentColor" 
+                                    strokeWidth="2" 
+                                    strokeLinecap="round" 
+                                    strokeLinejoin="round"
+                                >
+                                    <path d={isPublished ? "M12 2L2 12h3v8h8v-3h3L12 2z" : "M12 2L2 12h3v8h8v-3h3L12 2z"} />
+                                </svg>
+                                <span className="button-text">{isPublished ? 'Published' : 'Publish'}</span>
+                            </button>
+
                             {isEditing && (
                                 <button 
                                     onClick={() => setIsRawEditor(!isRawEditor)} 
@@ -457,7 +501,7 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
                                         isEditing={isEditing}
                                     />
                                 )
-                            ): content
+                            ) : content
                         }
                     </div>
                     
