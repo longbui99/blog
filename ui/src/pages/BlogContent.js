@@ -32,12 +32,12 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
     const [originalContent, setOriginalContent] = useState(null);
     const [isPublished, setIsPublished] = useState(false); // State for published status
     const navigate = useNavigate();
+    const currentRoute = routes?.find(route => route.path === path);
 
     const updateContent = (blogData) => {
         if (!blogData) {
             blogData = blogPost;
         }
-        const currentRoute = routes?.find(route => route.path === path);
         if (blogData && blogData.content) {
             let parsedContent = parseContent(blogData.content, path);
             setContent(parsedContent);
@@ -242,6 +242,7 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
             const newPublishStatus = !isPublished; // Toggle the publish status
             await blogMenuProcessor.publishBlogMenu(path, newPublishStatus); // Send the path and new publish status
             setIsPublished(newPublishStatus); // Update the local state
+            currentRoute.is_published = newPublishStatus;
             if (newPublishStatus){
                 showNotification({
                     type: 'success',
