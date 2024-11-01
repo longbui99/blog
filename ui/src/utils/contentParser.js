@@ -42,6 +42,18 @@ function processNode(node, currentRoute) {
       return <CodeBlock key={Math.random()} code={node.textContent.trim()} language={language} inline />;
     }
 
+    if (tagName === 'img') {
+      const src = node.getAttribute('src');
+      const alt = node.getAttribute('alt') || '';
+      return <img key={Math.random()} src={src} alt={alt} />;
+    }
+
+    if (tagName === 'a') {
+      const href = node.getAttribute('href');
+      const text = node.textContent;
+      return <a key={Math.random()} href={href} target='_blank'>{text}</a>;
+    }
+
     const HeaderComponents = { h1: H1, h2: H2, h3: H3, h4: H4, h5: H5, h6: H6, h7: H7 };
     if (HeaderComponents[tagName]) {
       const HeaderComponent = HeaderComponents[tagName];

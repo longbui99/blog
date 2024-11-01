@@ -504,6 +504,31 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
     const handlePaste = (e) => {
         if (!isEditing) return;
         e.preventDefault();
+
+        const items = e.clipboardData.items;
+        for (let i = 0; i < items.length; i++) {
+            const item = items[i];
+            if (item.kind === 'file' && item.type.startsWith('image/')) {
+                const file = item.getAsFile();
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const imgElement = document.createElement('img');
+                    imgElement.src = event.target.result; // Base64 string
+                    imgElement.style.maxWidth = '100%'; // Optional styling
+                    const selection = window.getSelection();
+                    if (!selection.rangeCount) return;
+
+                    const range = selection.getRangeAt(0);
+                    range.deleteContents(); // Remove any selected content
+                    range.insertNode(imgElement); // Insert the image
+                    handleContentChange(); // Update content
+                };
+                reader.readAsDataURL(file); // Convert image to Base64
+                return; // Exit after handling the image
+            }
+        }
+
+        // Fallback to plain text paste
         const text = e.clipboardData.getData('text/plain');
         document.execCommand('insertText', false, text);
     };
