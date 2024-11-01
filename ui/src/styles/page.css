@@ -612,9 +612,9 @@ section {
 
 .publish-button.active svg {
     transform: rotate(45deg); /* Rotate the icon when active */
-    stroke: #4CAF50; /* Change color to green when published */
+    stroke: #dc2626; /* Change color to red when not published */
 }
 
 .publish-button:not(.active) svg {
-    stroke: #dc2626; /* Change color to red when not published */
+    stroke: #4CAF50; /* Change color to green when published */
 }
