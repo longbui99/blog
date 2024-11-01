@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int
     ALLOWED_ORIGINS: str  # Will be converted to list in get_settings()
     OPENAI_API_KEY: str
+    LOG_FILE: str
 
     class Config:
         env_file = ".env"

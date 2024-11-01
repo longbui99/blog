@@ -11,5 +11,4 @@ async def chat_with_gpt(request: ChatGPTRequest, current_user: dict = Depends(ge
         response = await generate_text(request.message)
         return ChatGPTResponse(response=response)
     except Exception as e:
-        print(e)
         raise HTTPException(status_code=500, detail=str(e))
