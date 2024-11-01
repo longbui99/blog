@@ -44,7 +44,7 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
             setPageTitle(`${blogData.title} | VectorDI`);
             setPageDescription(blogData.title || blogData.title || '');
             setAuthor(blogData.author || 'Long Bui');
-            setLastUpdated(blogData.lastUpdated || new Date().toISOString());
+            setLastUpdated(blogData.updated_at || new Date().toISOString());
             
             // Update MainContent's editable content
             updateMainContentEditableContent(blogData.content);
