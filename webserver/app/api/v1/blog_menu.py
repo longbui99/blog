@@ -143,7 +143,6 @@ async def check_path_exists(
 @router.post("/publish", response_model=BlogMenu)
 async def publish_menu_item(request: PublishMenuRequest, current_user: dict = Depends(get_current_user)):
     # Find the menu item by path
-    logging.info("HELLO")
     db_menu = await BlogMenuModel.get_or_none(path=request.path)
     if db_menu is None:
         raise HTTPException(status_code=404, detail="Menu item not found")
