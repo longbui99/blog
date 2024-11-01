@@ -580,4 +580,41 @@ section {
 .delete-button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
-} 
+}
+
+/* Base styles for the publish button */
+.publish-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px; /* Adjust padding as needed */
+    border-radius: 4px;
+    background-color: transparent; /* Make background transparent */
+    border: 1px solid transparent; /* No border by default */
+    transition: transform 0.3s ease, stroke 0.3s ease, background-color 0.3s ease; /* Smooth transitions */
+}
+
+/* Active state for the publish button */
+.publish-button.active {
+    background-color: rgba(76, 175, 80, 0.1); /* Light green background when active */
+    border-color: #4CAF50; /* Green border when active */
+}
+
+/* Hover state for the publish button */
+.publish-button:hover {
+    background-color: rgba(76, 175, 80, 0.2); /* Slightly darker green on hover */
+}
+
+/* Icon styles */
+.publish-button svg {
+    transition: transform 0.3s ease, stroke 0.3s ease; /* Smooth transition for rotation and color */
+}
+
+.publish-button.active svg {
+    transform: rotate(45deg); /* Rotate the icon when active */
+    stroke: #4CAF50; /* Change color to green when published */
+}
+
+.publish-button:not(.active) svg {
+    stroke: #dc2626; /* Change color to red when not published */
+}
