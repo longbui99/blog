@@ -31,7 +31,7 @@ function processNode(node, currentRoute) {
   if (node.nodeType === Node.ELEMENT_NODE) {
     const tagName = node.tagName.toLowerCase();
 
-    if (tagName === 'pre' && node.firstChild && node.firstChild.tagName.toLowerCase() === 'code') {
+    if (tagName === 'pre' && node.firstChild && node.firstChild.tagName?.toLowerCase() === 'code') {
       const code = node.firstChild;
       const language = getLanguage(code.className);
       return <CodeBlock key={Math.random()} code={code.textContent.trim()} language={language} />;
