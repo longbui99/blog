@@ -167,11 +167,6 @@
   opacity: 0.8;
 }
 
-.edit-button svg,
-.delete-button svg {
-  margin-right: 0.5rem;
-}
-
 /* Smooth scroll behavior */
 html {
     scroll-behavior: smooth;
