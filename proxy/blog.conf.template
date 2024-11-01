@@ -1,0 +1,59 @@
+
+
+upstream blog_server {
+	server localhost:8000;
+}
+
+
+map $http_upgrade $connection_upgrade {  
+	default upgrade;
+	''      close;
+}
+
+server {
+	listen *:80;
+    # TODO: Enter your blog-server-domain here, this will point to FastAPI server
+    server_name     blog-server.longbui.net;
+
+	client_max_body_size 1000m;
+
+	proxy_read_timeout    480s;
+	proxy_connect_timeout 300s;
+
+	proxy_set_header X-Forwarded-Host $host;
+	proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+	proxy_set_header X-Forwarded-Proto $scheme;
+	proxy_set_header X-Real-IP $remote_addr;
+
+	
+	location / {
+		proxy_pass http://blog_server;
+		proxy_redirect off;
+	}
+
+
+    add_header  X-Robots-Tag "noindex, nofollow, nosnippet, noarchive";
+}
+
+server {
+	listen 80;
+	listen [::]:80;
+    # TODO: Enter your blog-domain here, this is the public endpoint where the login icon will be hidden
+	server_name  blog.longbui.net;
+    # TODO: Enter your blog-domain here, this is the private endpoint where the login icon will be shown
+	server_name  admin-blog.longbui.net;
+	root /opt/source/porfolio/blogs/ui/build;
+
+    # Handle sitemap.xml and robots.txt
+    location ~ ^/(sitemap\.xml|robots\.txt)$ {
+        proxy_pass http://blog_server$request_uri;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+	location / {
+		try_files $uri /index.html;
+	}
+}
