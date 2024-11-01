@@ -11,7 +11,7 @@ latest_commit=$(parse_git_hash)
 echo $latest_commit
 
 # Path to the file where the last known commit hash is stored
-commit_file="last_commit.txt"
+commit_file="last_cmt.txt"
 
 # Check if the commit file exists
 if [ ! -f "$commit_file" ]; then
