@@ -242,12 +242,21 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
             const newPublishStatus = !isPublished; // Toggle the publish status
             await blogMenuProcessor.publishBlogMenu(path, newPublishStatus); // Send the path and new publish status
             setIsPublished(newPublishStatus); // Update the local state
-            showNotification({
-                type: 'success',
-                title: 'Success',
-                message: newPublishStatus ? 'Content published successfully!' : 'Content unpublished successfully!',
-                duration: 3
-            });
+            if (newPublishStatus){
+                showNotification({
+                    type: 'success',
+                    title: 'Success',
+                    message: newPublishStatus ? 'Content published successfully!' : 'Content unpublished successfully!',
+                    duration: 3
+                });
+            } else {
+                showNotification({
+                    type: 'warning',
+                    title: 'Success',
+                    message: newPublishStatus ? 'Content published successfully!' : 'Content unpublished successfully!',
+                    duration: 3
+                });
+            }
         } catch (error) {
             console.error('Error publishing content:', error);
             showNotification({
