@@ -19,7 +19,7 @@ last_commit=$(cat "$commit_file")
 # Compare the latest commit with the last known commit
 if [ "$latest_commit" != "$last_commit" ]; then
     echo "Commit has changed. Running ./cicid.sh"
-    ./cicid.sh
+    ./cicd.sh
     # Update the last known commit hash
     echo "$latest_commit" > "$commit_file"
 else
