@@ -32,3 +32,5 @@ if [ "$latest_commit" != "$last_commit" ]; then
 else
     echo "No changes in the commit."
 fi
+
+echo "DONE"
