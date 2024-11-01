@@ -260,5 +260,3 @@ dist
 .pnp.*
 
 exec.sh
-
-last_commit.txt
