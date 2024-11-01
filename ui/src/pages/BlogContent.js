@@ -37,6 +37,7 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
         if (!blogData) {
             blogData = blogPost;
         }
+        const currentRoute = routes?.find(route => route.path === path);
         if (blogData && blogData.content) {
             let parsedContent = parseContent(blogData.content, path);
             setContent(parsedContent);
@@ -46,16 +47,13 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
             setPageDescription(blogData.title || blogData.title || '');
             setAuthor(blogData.author || 'Long Bui');
             setLastUpdated(blogData.updated_at || new Date().toISOString());
-
-            const currentRoute = routes?.find(route => route.path === path);
-            setIsPublished(currentRoute.is_published || false); // Set published state
-            
             // Update MainContent's editable content
             updateMainContentEditableContent(blogData.content);
         } else {
             setContent(<p>No content found for this path.</p>);
             updateMainContentEditableContent('');
         }
+        setIsPublished(currentRoute.is_published || false); // Set published state
         onContentLoaded();
     }
 
