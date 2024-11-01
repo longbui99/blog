@@ -1,7 +1,14 @@
-#!/bin/bash
+function parse_git_hash() {
+  # Get the short commit hash and truncate the first character
+  git rev-parse --short HEAD 2> /dev/null | sed 's/^.\(.*\)/\1/'
+}
 
-# Get the latest commit hash of the current branch
-latest_commit=$(git rev-parse HEAD)
+
+git fetch origin
+
+# Get the latest commit hash of the current branch from the origin
+latest_commit=$(parse_git_hash)
+echo $latest_commit
 
 # Path to the file where the last known commit hash is stored
 commit_file="last_commit.txt"
