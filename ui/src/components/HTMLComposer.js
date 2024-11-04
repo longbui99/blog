@@ -350,8 +350,8 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
 
         // Check for Enter key
         if (e.key === 'Enter') {
-            e.preventDefault(); // Prevent default behavior (like adding a new line)
-            replaceCurrentLineWithElement('p'); // Replace current line with <p>
+            // e.preventDefault(); // Prevent default behavior (like adding a new line)
+            document.execCommand('formatBlock', false, 'p'); // Insert a <p> element
             return;
         }
 
