@@ -1087,6 +1087,7 @@ h6 {
   position: absolute;
   margin-left: -20px;
   color: var(--text-light);
+  z-index: 100;
 }
 
 .menu-item:hover .add-child-icon {

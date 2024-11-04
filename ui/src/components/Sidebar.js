@@ -84,6 +84,19 @@ const MenuItem = ({ id, title, path, index, is_published, children, searchTerm, 
       ${matchesSearch ? "search-match" : ""}
     `}>
       <div className="menu-item" title={title}>
+        { isLoggedIn && <svg 
+            width="16" 
+            height="16" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            stroke="currentColor" 
+            strokeWidth="2" 
+            strokeLinecap="round" 
+            strokeLinejoin="round"
+            className={`status-icon ${isPublished ? 'published' : 'unpublished'}`}
+        >
+            <path d={isPublished ? "M12 2L2 12h3v8h8v-3h3L12 2z" : "M12 2L2 12h3v8h8v-3h3L12 2z"} />
+        </svg> }
         {isLoggedIn &&
           <span 
             className="add-child-icon" 
@@ -105,19 +118,6 @@ const MenuItem = ({ id, title, path, index, is_published, children, searchTerm, 
             </svg>
           </span>
         }
-        { isLoggedIn && <svg 
-            width="16" 
-            height="16" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            stroke="currentColor" 
-            strokeWidth="2" 
-            strokeLinecap="round" 
-            strokeLinejoin="round"
-            className={`status-icon ${isPublished ? 'published' : 'unpublished'}`}
-        >
-            <path d={isPublished ? "M12 2L2 12h3v8h8v-3h3L12 2z" : "M12 2L2 12h3v8h8v-3h3L12 2z"} />
-        </svg> }
         <NavLink to={path} title={title} onClick={handleClick}>{title}</NavLink>
         <div className="menu-item-controls">
           {children?.length > 0 && (
