@@ -17,6 +17,17 @@ function getLanguage(classString) {
   return match ? match[1] : 'plaintext';
 }
 
+export function styleMap(style){
+
+  return style.split(';').reduce((styleObj, style) => {
+    const [property, value] = style.split(':').map(s => s.trim());
+    if (property && value) {
+      styleObj[property.replace(/-([a-z])/g, g => g[1].toUpperCase())] = value; // Convert to camelCase
+    }
+    return styleObj;
+  }, {});
+}
+
 function processNode(node, currentRoute) {
   if (!node) return null;
 
@@ -45,13 +56,15 @@ function processNode(node, currentRoute) {
     if (tagName === 'img') {
       const src = node.getAttribute('src');
       const alt = node.getAttribute('alt') || '';
-      return <img key={Math.random()} src={src} alt={alt} />;
+      const style = styleMap(node.getAttribute('style') || '')
+      return <img key={Math.random()} src={src} alt={alt} style={style}/>;
     }
 
     if (tagName === 'a') {
       const href = node.getAttribute('href');
       const text = node.textContent;
-      return <a key={Math.random()} href={href} target='_blank'>{text}</a>;
+      const style = styleMap(node.getAttribute('style') || '')
+      return <a key={Math.random()} href={href} target='_blank' style={style}>{text}</a>;
     }
 
     const HeaderComponents = { h1: H1, h2: H2, h3: H3, h4: H4, h5: H5, h6: H6, h7: H7 };
@@ -62,9 +75,19 @@ function processNode(node, currentRoute) {
 
     const childElements = Array.from(node.childNodes).map(child => processNode(child, currentRoute));
 
+    const attributes = {};
+    for (let i = 0; i < node.attributes.length; i++) {
+      const attr = node.attributes[i];
+      attributes[attr.name] = attr.value;
+    }
+
+    if (attributes.style) {
+      attributes.style = styleMap(attributes.style)
+    }
+
     return React.createElement(
       tagName,
-      { key: Math.random() },
+      { key: Math.random(), ...attributes },
       ...childElements
     );
   }

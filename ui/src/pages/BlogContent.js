@@ -10,6 +10,7 @@ import { useNotification } from '../contexts/NotificationContext';
 import { parseContent } from '../utils/contentParser';
 import { useConfirmation } from '../contexts/ConfirmationContext';
 import { ROUTES, isNewPageRoute } from '../utils/routeConstants';
+import { useMenuContext } from '../contexts/MenuContext';
 
 function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onContentLoaded }) {
     const [content, setContent] = useState('');
@@ -33,6 +34,7 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
     const [isPublished, setIsPublished] = useState(false); // State for published status
     const navigate = useNavigate();
     const currentRoute = routes?.find(route => route.path === path);
+    const { publishToEvent } = useMenuContext();
 
     const updateContent = (blogData) => {
         if (!blogData) {
@@ -242,6 +244,7 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
             const newPublishStatus = !isPublished; // Toggle the publish status
             await blogMenuProcessor.publishBlogMenu(path, newPublishStatus); // Send the path and new publish status
             setIsPublished(newPublishStatus); // Update the local state
+            publishToEvent(path, newPublishStatus); // Update the context
             currentRoute.is_published = newPublishStatus;
             if (newPublishStatus){
                 showNotification({

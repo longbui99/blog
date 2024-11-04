@@ -15,6 +15,7 @@ import './styles/Toggle.css';
 import { fetchRouteMap } from './const/routes';
 import { loginProcessor } from './processor/loginProcessor';
 import { NotificationProvider, useNotification } from './contexts/NotificationContext';
+import { MenuProvider } from './contexts/MenuContext';
 import { ConfirmationProvider } from './contexts/ConfirmationContext';
 import { initializeBaseProcessor } from './processor/baseProcessor';
 import { getInitialPanelState, handleResponsiveState, isDeviceMobile } from './utils/responsive';
@@ -167,6 +168,7 @@ function App() {
     <NotificationProvider>
       <ProcessorInitializer />
       <ConfirmationProvider>
+      <MenuProvider>
         <Router>
           <RouteTracker />
           <div className="App">
@@ -215,7 +217,7 @@ function App() {
               isLoggedIn={isLoggedIn}
             />
           </div>
-        </Router>
+        </Router></MenuProvider>
       </ConfirmationProvider>
     </NotificationProvider>
   );

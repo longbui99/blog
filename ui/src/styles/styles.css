@@ -1099,4 +1099,27 @@ h6 {
   background-color: rgba(0, 0, 0);
 }
 
+/* Add this to your CSS file (e.g., styles.css or page.css) */
+
+.sidebar-item {
+    display: flex;
+    align-items: center; /* Align items vertically */
+}
+
+.status-icon {    
+  margin-right: 8px;
+  transition: stroke 0.3s ease;
+  width: 12px;
+  position: absolute;
+  left: -8px;
+}
+
+.status-icon.published {
+    stroke: #4CAF50; /* Green color for published */
+}
+
+.status-icon.unpublished {
+    stroke: #dc2626; /* Red color for unpublished */
+}
+
 

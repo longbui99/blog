@@ -5,25 +5,26 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import SidebarSearch from './SidebarSearch';
 import { isDeviceMobile } from '../utils/responsive';
 import { ROUTES } from '../utils/routeConstants';
+import { useMenuContext } from '../contexts/MenuContext';
 
 const ItemTypes = {
   MENU_ITEM: 'menuItem'
 };
 
-const MenuItem = ({ id, title, path, index, moveItem, children, searchTerm, onItemClick, isLoggedIn}) => {
+const MenuItem = ({ id, title, path, index, is_published, children, searchTerm, onItemClick, isLoggedIn}) => {
   const location = useLocation();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [originalCollapsed, setOriginalCollapsed] = useState(false);
+  const [isPublished, setIsPublished] = useState(is_published)
   const navigate = useNavigate();
-
-  // Combine the refs
-  const ref = useRef(null);
+  const { subscribeToEvent }= useMenuContext()
 
   // Check if this item or its children are currently active
   const isActive = location.pathname === path; // Changed to exact match
   const hasActiveChild = children?.some(child => 
     location.pathname === child.path  // Changed to exact match
   );
+  subscribeToEvent(path, setIsPublished)
 
   // Update collapse state based on search
   useEffect(() => {
@@ -104,6 +105,19 @@ const MenuItem = ({ id, title, path, index, moveItem, children, searchTerm, onIt
             </svg>
           </span>
         }
+        <svg 
+            width="16" 
+            height="16" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            stroke="currentColor" 
+            strokeWidth="2" 
+            strokeLinecap="round" 
+            strokeLinejoin="round"
+            className={`status-icon ${isPublished ? 'published' : 'unpublished'}`}
+        >
+            <path d={isPublished ? "M12 2L2 12h3v8h8v-3h3L12 2z" : "M12 2L2 12h3v8h8v-3h3L12 2z"} />
+        </svg>
         <NavLink to={path} title={title} onClick={handleClick}>{title}</NavLink>
         <div className="menu-item-controls">
           {children?.length > 0 && (

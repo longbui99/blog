@@ -4,6 +4,8 @@ import { useLocation } from 'react-router-dom';
 import DOMPurify from 'dompurify';
 import '../styles/HtmlComposer.css';
 import { COLOR_PALETTE } from '../const/colors';
+import ReactDOM from 'react-dom';
+import { styleMap } from '../utils/contentParser'
 
 // Color Picker Component
 const ColorPicker = ({ colors, onSelectColor }) => {
@@ -120,6 +122,92 @@ const KEYBOARD_SHORTCUTS = {
 
 const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
 
+// New Image Component
+const ImageComponent = ({ src, alt, initialWidth, onDelete, handleContentChange }) => {
+    const [isResizing, setIsResizing] = useState(false);
+    const [width, setWidth] = useState(initialWidth || "960px"); // Track width in pixels, starting at 960px
+    const resizeHandleRef = useRef(null); // Reference for the resize handle
+
+    const handleMouseDown = (e) => {
+        setIsResizing(true);
+    };
+
+    const handleMouseMove = (e) => {
+        if (isResizing) {
+            const newWidth = e.clientX - e.target.getBoundingClientRect().left; // Calculate new width in pixels
+            setWidth((newWidth > 0 ? Math.min(newWidth, 960) : 0) + "px"); // Prevent negative width and cap at 960px
+        }
+    };
+
+    const handleMouseUp = () => {
+        setIsResizing(false);
+        handleContentChange(); // Trigger content change after res
+    };
+
+    const handleMouseEnter = () => {
+        // Create the resize handle dynamically
+        if (!resizeHandleRef.current) {
+            const handle = document.createElement('div');
+            handle.className = 'resize-handle';
+            handle.style.width = '30px';
+            handle.style.height = '30px';
+            handle.style.position = 'absolute';
+            handle.style.bottom = '20px';
+            handle.style.right = '20px';
+            handle.style.cursor = 'ew-resize';
+            handle.style.zIndex = '10';
+            handle.style.background = 'red';
+            handle.style.borderRadius = '50%';
+
+            // Append the handle to the image wrapper
+            resizeHandleRef.current = handle;
+            document.querySelector('.image-wrapper').appendChild(handle);
+
+            // Add event listeners for resizing
+            handle.addEventListener('mousedown', handleMouseDown);
+        }
+    };
+
+    const handleMouseLeave = () => {
+        // Remove the resize handle when mouse leaves
+        if (resizeHandleRef.current) {
+            resizeHandleRef.current.remove();
+            resizeHandleRef.current = null; // Reset the reference
+        }
+        handleContentChange(); // Trigger content change after resizing
+    };
+
+    useEffect(() => {
+        if (isResizing) {
+            window.addEventListener('mousemove', handleMouseMove);
+            window.addEventListener('mouseup', handleMouseUp);
+        } else {
+            window.removeEventListener('mousemove', handleMouseMove);
+            window.removeEventListener('mouseup', handleMouseUp);
+        }
+        return () => {
+            window.removeEventListener('mousemove', handleMouseMove);
+            window.removeEventListener('mouseup', handleMouseUp);
+        };
+    }, [isResizing]);
+
+    return (
+        <div 
+            className="image-wrapper" 
+            style={{ display: 'inline-block', position: 'relative' }} 
+            onMouseEnter={handleMouseEnter} 
+            onMouseLeave={handleMouseLeave}
+        >
+            <img
+                src={src}
+                alt={alt}
+                style={{ width: `${width}`, height: 'auto', cursor: 'pointer' }} // Maintain aspect ratio
+                onClick={onDelete}
+            />
+        </div>
+    );
+}
+
 const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
     const editorRef = useRef(null);
     const [showSlashMenu, setShowSlashMenu] = useState(false);
@@ -143,6 +231,8 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
         if (editorRef.current && initialContent) {
             const sanitizedContent = DOMPurify.sanitize(initialContent);
             editorRef.current.innerHTML = sanitizedContent;
+
+            renderImages();
         }
     }, [initialContent]);
 
@@ -307,6 +397,12 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
         if (showSlashMenu) {
             handleSlashMenuInput(e);
         }
+
+        // Check for Command + Shift + 0 (Mac) or Control + Shift + 0 (Windows)
+        if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key === '0') {
+            e.preventDefault(); // Prevent the default action
+            document.execCommand('formatBlock', false, 'p'); // Format the selected text as a paragraph
+        }
     };
 
     const handleSlashMenuInput = (e) => {
@@ -340,6 +436,7 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
                 if (e.key.length === 1 && /[a-zA-Z0-9 ]/.test(e.key)) {
                     setCommandFilter(prev => prev + e.key);
                 }
+                e.preventDefault();
                 break;
         }
     };
@@ -389,12 +486,12 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
         
         try {
             // Move selection one character back to include the slash and command text
-            const startOffset = Math.max(0, range.startOffset - (commandFilter.length));
-            range.setStart(range.startContainer, startOffset);
-            range.setEnd(range.startContainer, range.startOffset + (commandFilter.length));
+            // const startOffset = Math.max(0, range.startOffset - (commandFilter.length));
+            // range.setStart(range.startContainer, startOffset);
+            // range.setEnd(range.startContainer, range.startOffset + (commandFilter.length));
             
-            // Remove the slash and command text
-            range.deleteContents();
+            // // Remove the slash and command text
+            // range.deleteContents();
             
             // Get content without the slash
             const content = range.toString().slice(1);
@@ -402,12 +499,22 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
             let newElement;
             switch (commandItem.command) {
                 case 'h1':
+                    document.execCommand('formatBlock', false, 'h1');
+                    break;
                 case 'h2':
+                    document.execCommand('formatBlock', false, 'h2');
+                    break;
                 case 'h3':
+                    document.execCommand('formatBlock', false, 'h3');
+                    break;
                 case 'h4':
+                    document.execCommand('formatBlock', false, 'h4');
+                    break;
                 case 'h5':
-                    replaceCurrentLineWithElement(commandItem.command);
-                    closeSlashMenu();
+                    document.execCommand('formatBlock', false, 'h5');
+                    break;
+                case 'h6':
+                    document.execCommand('formatBlock', false, 'h6');
                     break;
                 case 'pre':
                     newElement = document.createElement('pre');
@@ -512,15 +619,35 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
                 const file = item.getAsFile();
                 const reader = new FileReader();
                 reader.onload = (event) => {
-                    const imgElement = document.createElement('img');
-                    imgElement.src = event.target.result; // Base64 string
-                    imgElement.style.maxWidth = '100%'; // Optional styling
+                    const imgElement = {
+                        src: event.target.result, // Base64 string
+                        alt: 'Pasted Image' // Default alt text
+                    };
+
+                    // Create a new div to hold the ImageComponent
+                    const newImageContainer = document.createElement('div');
+                    newImageContainer.className = 'image-container';
+
+                    // Create a React element for ImageComponent
+                    const imageComponent = (
+                        <ImageComponent 
+                            src={imgElement.src} 
+                            alt={imgElement.alt} 
+                            onDelete={() => newImageContainer.remove()} 
+                            handleContentChange={handleContentChange}
+                        />
+                    );
+
+                    // Render the ImageComponent into the new div
+                    ReactDOM.render(imageComponent, newImageContainer);
+
+                    // Insert the new image container into the document
                     const selection = window.getSelection();
                     if (!selection.rangeCount) return;
 
                     const range = selection.getRangeAt(0);
                     range.deleteContents(); // Remove any selected content
-                    range.insertNode(imgElement); // Insert the image
+                    range.insertNode(newImageContainer); // Insert the image container
                     handleContentChange(); // Update content
                 };
                 reader.readAsDataURL(file); // Convert image to Base64
@@ -531,6 +658,7 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
         // Fallback to plain text paste
         const text = e.clipboardData.getData('text/plain');
         document.execCommand('insertText', false, text);
+        handleContentChange()
     };
 
     // Filter commands based on input
@@ -539,13 +667,7 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
     );
 
     const handleCommandClick = (command) => {
-        if (command.showColorPicker) {
-            setShowColorPicker(true);
-        } else if (command.showAlignmentPicker) {
-            setShowAlignmentPicker(true);
-        } else {
-            executeCommand(command);
-        }
+        executeCommand(command.command);
     };
 
     const handleContentChange = () => {
@@ -574,14 +696,33 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
     const handleImageSubmit = (e) => {
         e.preventDefault();
         if (!currentSelection) return;
-        
+
         const range = currentSelection.cloneRange();
-        const imgElement = document.createElement('img');
-        imgElement.src = imageUrl;
-        imgElement.alt = imageAlt;
-        imgElement.style.maxWidth = '100%';
-        range.deleteContents();
-        range.insertNode(imgElement);
+        const imgElement = {
+            src: imageUrl,
+            alt: imageAlt
+        };
+        range.deleteContents(); // Remove any selected content
+
+        // Create a new div to hold the ImageComponent
+        const newImageContainer = document.createElement('div');
+        newImageContainer.className = 'image-container';
+
+        // Create a React element for ImageComponent
+        const imageComponent = (
+            <ImageComponent 
+                src={imgElement.src} 
+                alt={imgElement.alt} 
+                onDelete={() => newImageContainer.remove()} 
+                handleContentChange={handleContentChange}
+            />
+        );
+
+        // Render the ImageComponent into the new div
+        ReactDOM.render(imageComponent, newImageContainer);
+
+        // Insert the new image container into the document
+        range.insertNode(newImageContainer);
         setShowImageInput(false);
         setImageUrl('');
         setImageAlt('');
@@ -636,6 +777,39 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
         }
 
         handleContentChange();
+    };
+
+    // In the return statement of HTMLComposer, render the images
+    const renderImages = () => {
+        const images = editorRef.current.querySelectorAll('img'); // Select all <img> elements
+        images.forEach((img) => {
+            const imgElement = {
+                src: img.src,
+                alt: img.alt || 'Image', // Default alt text if not provided
+            };
+
+            // Create a new div to hold the ImageComponent
+            const newImageContainer = document.createElement('div');
+            newImageContainer.className = 'image-container';
+
+            // Create a React element for ImageComponent
+            const imageComponent = (
+                <ImageComponent 
+                    src={imgElement.src} 
+                    alt={imgElement.alt}
+                    style={imgElement.style}
+                    initialWidth={img.style.width}
+                    onDelete={() => newImageContainer.remove()} // Handle deletion
+                    handleContentChange={handleContentChange} // Trigger content change
+                />
+            );
+
+            // Render the ImageComponent into the new div
+            ReactDOM.render(imageComponent, newImageContainer);
+
+            // Replace the <img> element with the new image container
+            img.parentNode.replaceChild(newImageContainer, img);
+        });
     };
 
     return (
