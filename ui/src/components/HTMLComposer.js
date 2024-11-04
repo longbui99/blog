@@ -351,10 +351,18 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
         // Check for Enter key
         if (e.key === 'Enter') {
             // e.preventDefault(); // Prevent default behavior (like adding a new line)
-            setTimeout(()=>{
-                document.execCommand('formatBlock', false, 'p'); // Insert a <p> element
-                // replaceCurrentLineWithElement(`p`);
-            }, 0)
+            const selection = window.getSelection();
+            if (!selection.rangeCount) return;
+
+            const range = selection.getRangeAt(0);
+            let currentNode = range.startContainer;
+            
+            // If we're in a text node, get its parent
+            if (node.tagName.toLowerCase() === "div") {
+                setTimeout(()=>{
+                    replaceCurrentLineWithElement(`p`);
+                }, 0)
+            }
         }
 
         if (isModifierKey && isSecondModifier && /[1-5]/.test(e.key)) {
