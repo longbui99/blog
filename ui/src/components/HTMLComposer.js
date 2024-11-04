@@ -348,6 +348,13 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
         const isModifierKey = isMac ? e.metaKey : e.ctrlKey;
         const isSecondModifier = isMac ? e.shiftKey : e.altKey;
 
+        // Check for Enter key
+        if (e.key === 'Enter') {
+            e.preventDefault(); // Prevent default behavior (like adding a new line)
+            replaceCurrentLineWithElement('p'); // Replace current line with <p>
+            return;
+        }
+
         if (isModifierKey && isSecondModifier && /[1-5]/.test(e.key)) {
             e.preventDefault();
             e.stopPropagation();
