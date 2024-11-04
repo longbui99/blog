@@ -67,7 +67,7 @@ async def read_blog_content_by_menu_path(path: str):
 
     return content
 
-@router.get("/path//content")
+@router.get("/path/content/")
 async def add_blog_content_home_by_menu_path():
     menu_item = await BlogMenuModel.get_or_none(path="/")
 
