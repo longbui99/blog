@@ -57,14 +57,14 @@ function processNode(node, currentRoute) {
       const src = node.getAttribute('src');
       const alt = node.getAttribute('alt') || '';
       const style = styleMap(node.getAttribute('style') || '') 
-      return <img key={Math.random()} src={src} alt={alt}/>;
+      return <img key={Math.random()} src={src} alt={alt} style={style}/>;
     }
 
     if (tagName === 'a') {
       const href = node.getAttribute('href');
       const text = node.textContent;
       const style = styleMap(node.getAttribute('style') || '')
-      return <a key={Math.random()} href={href} target='_blank'>{text}</a>;
+      return <a key={Math.random()} href={href} target='_blank' style={style}>{text}</a>;
     }
 
     const HeaderComponents = { h1: H1, h2: H2, h3: H3, h4: H4, h5: H5, h6: H6, h7: H7 };
