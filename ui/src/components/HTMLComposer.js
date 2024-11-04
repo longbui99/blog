@@ -797,7 +797,6 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
                 <ImageComponent 
                     src={imgElement.src} 
                     alt={imgElement.alt}
-                    style={imgElement.style}
                     initialWidth={img.style.width}
                     onDelete={() => newImageContainer.remove()} // Handle deletion
                     handleContentChange={handleContentChange} // Trigger content change
