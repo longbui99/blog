@@ -105,7 +105,7 @@ const MenuItem = ({ id, title, path, index, is_published, children, searchTerm, 
             </svg>
           </span>
         }
-        <svg 
+        { isLoggedIn && <svg 
             width="16" 
             height="16" 
             viewBox="0 0 24 24" 
@@ -117,7 +117,7 @@ const MenuItem = ({ id, title, path, index, is_published, children, searchTerm, 
             className={`status-icon ${isPublished ? 'published' : 'unpublished'}`}
         >
             <path d={isPublished ? "M12 2L2 12h3v8h8v-3h3L12 2z" : "M12 2L2 12h3v8h8v-3h3L12 2z"} />
-        </svg>
+        </svg> }
         <NavLink to={path} title={title} onClick={handleClick}>{title}</NavLink>
         <div className="menu-item-controls">
           {children?.length > 0 && (
