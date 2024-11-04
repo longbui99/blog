@@ -352,8 +352,8 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
         if (e.key === 'Enter') {
             // e.preventDefault(); // Prevent default behavior (like adding a new line)
             setTimeout(()=>{
-                // document.execCommand('formatBlock', false, 'p'); // Insert a <p> element
-                replaceCurrentLineWithElement(`p`);
+                document.execCommand('formatBlock', false, 'p'); // Insert a <p> element
+                // replaceCurrentLineWithElement(`p`);
             }, 0)
         }
 
