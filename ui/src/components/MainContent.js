@@ -5,6 +5,7 @@ import { generateTOC } from '../utils/contentUtils';
 import '../styles/MainContent.css';
 import BlogContent from '../pages/BlogContent';
 import Header from './Header';
+import BreadCrumbs from './BreadCrumbs';
 
 // Add scroll helper function
 const scrollToElement = (elementId, offset = 80) => {
@@ -66,6 +67,7 @@ function MainContent({
     }
   }, [location.hash, isContentLoaded]);
 
+
   // Add content loaded handler
   const handleContentLoaded = useCallback(() => {
     setIsContentLoaded(true);
@@ -80,6 +82,7 @@ function MainContent({
         className={`main-content ${isSidebarOpen ? 'sidebar-open' : ''} ${isTOCOpen ? 'toc-open' : ''}`}
       >
         <div className="content-wrapper" ref={contentRef}>
+          <BreadCrumbs routes={routes} currentPath={location.pathname} />
           <BlogContent 
             content={editableContent}
             updateMainContentEditableContent={setEditableContent}

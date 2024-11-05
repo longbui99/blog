@@ -1,0 +1,55 @@
+.breadcrumbs{
+    width: fit-content;
+    max-width: 100%;
+    display: flex;
+    border-bottom: solid 1px var(--text-light);
+    margin-bottom: 10px;
+}
+
+.breadcrumbs .breadcrumb-segment{
+    color: var(--text-light);
+    text-decoration: none;
+    margin-left: 8px;
+    font-style: italic;
+
+}
+
+.breadcrumbs .breadcrumb-segment.active{
+    color: var(--link-light);
+}
+
+.breadcrumbs .breadcrumb-segment:hover{
+    color: var(--link-light);
+    cursor: pointer;
+}
+
+.breadcrumbs .breadcrumb-segment.active:hover{
+    cursor: default;
+}
+
+.breadcrumbs .breadcrumb-segment::before{
+    content: "/";
+    margin-right: 2px;
+    color: var(--text-light);
+}
+
+.dark-mode .breadcrumbs{
+    border-bottom-color: var(--text-dark);
+}
+.dark-mode .breadcrumbs .breadcrumb-segment{
+    color: var(--text-dark);
+}
+.dark-mode .breadcrumbs .breadcrumb-segment.active{
+    color: var(--link-dark);
+}
+
+.dark-mode .breadcrumbs .breadcrumb-segment:hover{
+    color: var(--link-dark);
+}
+.dark-mode .breadcrumbs .breadcrumb-segment.active:hover{
+    cursor: default;
+}
+
+.dark-mode .breadcrumbs .breadcrumb-segment::before{
+    color: var(--text-dark);
+}

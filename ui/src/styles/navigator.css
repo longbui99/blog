@@ -1,0 +1,65 @@
+/* ui/src/styles/navigator.css */
+.navigator {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 40px; /* Same height as toggle-container */
+    border-radius: 10px;
+    background-color: var(--background-light);
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000; /* Ensure it appears above other content */
+    margin-left: 300px;
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    cursor: pointer;
+    text-align: center; /* Center text under the icon */
+    width: 250px;;
+}
+.nav-item.invisible{
+    visibility: hidden;
+}
+.nav-item:hover{
+    color: red;
+}
+
+.nav-icon {
+    width: 20px; /* Set a specific width for the icon */
+    height: 20px; /* Set a specific height for the icon */
+}
+
+.nav-title {
+    height: 25px;
+    margin-left: 5px;
+    max-width: 200px;
+    overflow-x: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.dark-mode .navigator{
+    background-color: var(--background-dark);
+    box-shadow: 0 -2px 5px rgba(250, 255, 255, 0.1);
+}
+
+.dark-mode .nav-title{
+    color: white;
+}
+
+.dark-mode .nav-item:hover{
+    color: orange;
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+    .nav-title {
+        display: none; /* Hide title on mobile */
+    }
+}
