@@ -50,7 +50,3 @@
 .dark-mode .breadcrumbs .breadcrumb-segment.active:hover{
     cursor: default;
 }
-
-.dark-mode .breadcrumbs .breadcrumb-segment::before{
-    color: var(--text-dark);
-}
