@@ -358,7 +358,8 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
             let currentNode = range.startContainer;
             
             // If we're in a text node, get its parent
-            if (currentNode.tagName.toLowerCase() === "div") {
+            console.log(currentNode)
+            if (currentNode?.tagName?.toLowerCase() === "div") {
                 setTimeout(()=>{
                     replaceCurrentLineWithElement(`p`);
                 }, 0)
