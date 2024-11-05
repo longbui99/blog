@@ -11,11 +11,13 @@
     text-decoration: none;
     margin-left: 8px;
     font-style: italic;
-
+    font-weight: 200;
+    letter-spacing: 0px;
 }
 
 .breadcrumbs .breadcrumb-segment.active{
     color: var(--link-light);
+    font-weight: 600;
 }
 
 .breadcrumbs .breadcrumb-segment:hover{
