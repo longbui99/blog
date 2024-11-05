@@ -633,5 +633,11 @@ section {
 .content-wrapper h2 a,
 .content-wrapper h3 a {
     font-style: normal;
-    font-weight: bold;
+}
+
+.content-wrapper h1 a{
+    font-weight: 600;
+}
+.content-wrapper h2 a{
+    font-weight: 500;
 }
