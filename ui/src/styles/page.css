@@ -620,7 +620,6 @@ section {
     stroke: #dc2626; /* Change color to red when not published */
 }
 .content-wrapper a {
-    text-decoration: none;
     margin-left: 8px;
     font-style: italic;
     font-weight: 200;
