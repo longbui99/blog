@@ -12,7 +12,11 @@ const BreadCrumbs = ({ routes, currentPath }) => {
     const findRootPath = (path) => {
         if (path){
             var step = routes.find(route => route.path == path);
-            return findRootPath(step.parent).concat([step])
+            if (step){
+                return findRootPath(step.parent).concat([step])
+            } else {
+                return []
+            }
         } else {
             return []
         }
