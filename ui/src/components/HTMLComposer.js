@@ -1,4 +1,5 @@
-import React, { useState, useRef,useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { createRoot } from 'react-dom/client'; // Import createRoot
 import { FaAlignLeft, FaAlignCenter, FaAlignRight, FaLink, FaImage } from 'react-icons/fa';
 import { useLocation } from 'react-router-dom';
 import DOMPurify from 'dompurify';
@@ -125,8 +126,9 @@ const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
 // New Image Component
 const ImageComponent = ({ src, alt, initialWidth, onDelete, handleContentChange }) => {
     const [isResizing, setIsResizing] = useState(false);
-    const [width, setWidth] = useState(initialWidth || "960px"); // Track width in pixels, starting at 960px
+    const [width, setWidth] = useState(initialWidth || "1120px"); // Track width in pixels, starting at 960px
     const resizeHandleRef = useRef(null); // Reference for the resize handle
+    const minWidth = parseFloat(initialWidth)
 
     const handleMouseDown = (e) => {
         setIsResizing(true);
@@ -135,7 +137,7 @@ const ImageComponent = ({ src, alt, initialWidth, onDelete, handleContentChange 
     const handleMouseMove = (e) => {
         if (isResizing) {
             const newWidth = e.clientX - e.target.getBoundingClientRect().left; // Calculate new width in pixels
-            setWidth((newWidth > 0 ? Math.min(newWidth, 960) : 0) + "px"); // Prevent negative width and cap at 960px
+            setWidth((newWidth > 0 ? Math.min(Math.max(minWidth, newWidth), 960) : 0) + "px"); // Prevent negative width and cap at 960px
         }
     };
 
@@ -223,6 +225,7 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
     const [imageAlt, setImageAlt] = useState('');
     const [showAlignmentPicker, setShowAlignmentPicker] = useState(false);
     const location = useLocation();
+    const urlInputRef = useRef(null); // Create a ref for the URL input
 
     useEffect(() => {
         if (location.pathname === '/new-page') {
@@ -341,6 +344,13 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
         };
     };
 
+    const saveCurrentSelection = () => {
+        const selectionInfo = getEditorSelection();
+        if (!selectionInfo) return;
+        
+        setCurrentSelection(selectionInfo.range.cloneRange());
+    }
+
     const handleKeyDown = (e) => {
         if (!isEditing) return;
 
@@ -395,11 +405,8 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
 
         if (e.key === '/') {
             e.preventDefault();
-            const selectionInfo = getEditorSelection();
-            if (!selectionInfo) return;
-            
+            saveCurrentSelection()
             setShowSlashMenu(true);
-            setCurrentSelection(selectionInfo.range.cloneRange());
             setCommandFilter('');
             return;
         }
@@ -620,6 +627,23 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
         setCommandFilter('');
     };
 
+    const getSelectedContent = () => {
+        const selection = window.getSelection(); // Get the current selection
+        if (selection.rangeCount > 0) { // Check if there is a selection
+            const range = selection.getRangeAt(0); // Get the first range
+            const selectedContent = range.cloneContents(); // Clone the contents of the range
+    
+            // Convert the cloned contents to a string
+            const tempDiv = document.createElement('div');
+            tempDiv.appendChild(selectedContent);
+            const contentString = tempDiv.innerHTML; // Get the HTML string of the selected content
+    
+            console.log(contentString); // Output the selected content
+            return contentString; // Return the selected content as a string
+        }
+        return ''; // Return an empty string if no selection
+    };
+
     const closeSlashMenu = () => {
         setShowSlashMenu(false);
         setSelectedCommandIndex(0);
@@ -655,8 +679,9 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
                         />
                     );
 
-                    // Render the ImageComponent into the new div
-                    ReactDOM.render(imageComponent, newImageContainer);
+                    // Create a root for the new image container
+                    const root = createRoot(newImageContainer);
+                    root.render(imageComponent); // Render the ImageComponent into the new div
 
                     // Insert the new image container into the document
                     const selection = window.getSelection();
@@ -674,8 +699,83 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
 
         // Fallback to plain text paste
         const text = e.clipboardData.getData('text/plain');
-        document.execCommand('insertText', false, text);
-        handleContentChange()
+        const selectedContent = getSelectedContent(); // Get the currently selected content
+
+        // Check if the pasted text is a valid image URL
+        const imageUrlPattern = /\.(jpeg|jpg|gif|png|bmp|webp|svg)$/i; // Regex to match image file extensions
+        if (imageUrlPattern.test(text)) {
+            // If it's a direct image link, insert it as an image
+            const imgElement = {
+                src: text,
+                alt: 'Pasted Image'
+            };
+
+            // Create a new div to hold the ImageComponent
+            const newImageContainer = document.createElement('div');
+            newImageContainer.className = 'image-container';
+
+            // Create a React element for ImageComponent
+            const imageComponent = (
+                <ImageComponent 
+                    src={imgElement.src} 
+                    alt={imgElement.alt} 
+                    onDelete={() => newImageContainer.remove()} 
+                    handleContentChange={handleContentChange}
+                />
+            );
+
+            // Create a root for the new image container
+            const root = createRoot(newImageContainer);
+            root.render(imageComponent); // Render the ImageComponent into the new div
+
+            // Insert the new image container into the document
+            const selection = window.getSelection();
+            if (!selection.rangeCount) return;
+
+            const range = selection.getRangeAt(0);
+            range.deleteContents(); // Remove any selected content
+            range.insertNode(newImageContainer); // Insert the image container
+            handleContentChange(); // Update content
+            return; // Exit after handling the image
+        }
+
+        // Check if the pasted text is a valid URL
+        const urlPattern = /^(https?:\/\/[^\s]+)$/; // Basic regex for URL validation
+        const selection = window.getSelection();
+        if (selectedContent) {
+            const range = selection.getRangeAt(0);
+            if (urlPattern.test(text)) {
+                // If the pasted text is a valid URL, create a new anchor element
+                const linkElement = document.createElement('a'); // Create a new anchor element
+                linkElement.href = text; // Set the href to the pasted URL
+                linkElement.innerText = selectedContent; // Set the link text to the pasted URL
+
+                // Insert the link element at the current cursor position
+                range.deleteContents(); // Remove any selected content
+                range.insertNode(linkElement); // Insert the link element
+                handleContentChange(); // Update content
+                return; // Exit after inserting the link
+            }
+        }
+
+        // If no text is selected or the pasted text is not a valid URL, show the link input popup
+        if (!selection.rangeCount || urlPattern.test(text)) {
+            saveCurrentSelection()
+            setShowLinkInput(true); // Show the link input popup
+            setLinkUrl(text); // Set the pasted text as the URL in the link input
+        } else {
+            // If the pasted content is plain text, create a <p> element and set its innerHTML
+            const newParagraph = document.createElement('p');
+            newParagraph.innerHTML = text; // Set the innerHTML to the pasted text
+
+            // Insert the new paragraph into the document
+            if (selection.rangeCount > 0) {
+                const range = selection.getRangeAt(0);
+                range.deleteContents(); // Remove any selected content
+                range.insertNode(newParagraph); // Insert the new paragraph
+                handleContentChange(); // Update content
+            }
+        }
     };
 
     // Filter commands based on input
@@ -735,8 +835,9 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
             />
         );
 
-        // Render the ImageComponent into the new div
-        ReactDOM.render(imageComponent, newImageContainer);
+        // Create a root for the new image container
+        const root = createRoot(newImageContainer);
+        root.render(imageComponent); // Render the ImageComponent into the new div
 
         // Insert the new image container into the document
         range.insertNode(newImageContainer);
@@ -820,13 +921,21 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
                 />
             );
 
-            // Render the ImageComponent into the new div
-            ReactDOM.render(imageComponent, newImageContainer);
+            // Create a root for the new image container
+            const root = createRoot(newImageContainer);
+            root.render(imageComponent); // Render the ImageComponent into the new div
 
             // Replace the <img> element with the new image container
             img.parentNode.replaceChild(newImageContainer, img);
         });
     };
+
+    // Effect to focus on the URL input when the link input is shown
+    useEffect(() => {
+        if (showLinkInput && urlInputRef.current) {
+            urlInputRef.current.focus(); // Set focus on the URL input
+        }
+    }, [showLinkInput]); // Run effect when showLinkInput changes
 
     return (
         <div className="html-composer">
@@ -897,6 +1006,7 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
                             value={linkUrl}
                             onChange={(e) => setLinkUrl(e.target.value)}
                             required
+                            ref={urlInputRef} // Attach the ref to the input
                         />
                         <input
                             type="text"
