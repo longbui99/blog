@@ -937,6 +937,30 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
         }
     }, [showLinkInput]); // Run effect when showLinkInput changes
 
+    const handleCopy = (e) => {
+        e.preventDefault(); // Prevent the default copy behavior
+
+        const selection = window.getSelection(); // Get the current selection
+        if (selection.rangeCount > 0) { // Check if there is a selection
+            const range = selection.getRangeAt(0); // Get the first range
+            const selectedContent = range.cloneContents(); // Clone the contents of the range
+
+            // Create a temporary div to hold the cloned contents
+            const tempDiv = document.createElement('div');
+            tempDiv.appendChild(selectedContent); // Append the cloned contents to the temp div
+
+            // Get the HTML string of the selected content
+            const contentString = tempDiv.innerHTML;
+
+            // Use the Clipboard API to copy the HTML string to the clipboard
+            navigator.clipboard.writeText(contentString).then(() => {
+                console.log('Copied to clipboard:', contentString); // Optional: log the copied content
+            }).catch(err => {
+                console.error('Failed to copy: ', err); // Handle any errors
+            });
+        }
+    };
+
     return (
         <div className="html-composer">
             <div
@@ -946,6 +970,7 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
                 onInput={handleInput}
                 onKeyDown={handleKeyDown}
                 onPaste={handlePaste}
+                onCopy={handleCopy}
                 suppressContentEditableWarning={true}
             />
             
