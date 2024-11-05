@@ -629,11 +629,11 @@ section {
 .dark-mode .content-wrapper a {
     color: var(--link-dark);
 }
-.content-wrapper h1 a,
+/* .content-wrapper h1 a,
 .content-wrapper h2 a,
 .content-wrapper h3 a {
     font-style: normal;
-}
+} */
 
 .content-wrapper h1 a{
     font-weight: 600;
