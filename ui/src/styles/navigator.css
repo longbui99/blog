@@ -59,7 +59,7 @@
 
 /* Mobile styles */
 @media (max-width: 768px) {
-    .nav-title {
+    .navigator {
         display: none; /* Hide title on mobile */
     }
 }
