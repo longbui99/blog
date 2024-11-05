@@ -633,4 +633,5 @@ section {
 .content-wrapper h2 a,
 .content-wrapper h3 a {
     font-style: normal;
+    font-weight: bold;
 }
