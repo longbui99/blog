@@ -32,7 +32,6 @@
 .breadcrumbs .breadcrumb-segment::before{
     content: "/";
     margin-right: 2px;
-    color: var(--text-light);
 }
 
 .dark-mode .breadcrumbs{
