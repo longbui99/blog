@@ -434,7 +434,7 @@ section {
 }
 
 .content-body.editing {
-    margin-top: 120px;
+    margin-top: 50px;
     animation: slideContentDown 0.3s ease-out;
 }
 
