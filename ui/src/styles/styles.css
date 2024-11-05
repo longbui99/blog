@@ -1124,4 +1124,60 @@ h6 {
     stroke: #dc2626; /* Red color for unpublished */
 }
 
+/* Table Styles */
+table {
+    width: 80%;
+    border-collapse: collapse; /* Merge borders */
+    margin-bottom: 1.5em; /* Space below the table */
+}
+
+thead {
+    background-color: #e0e0e0; /* Light background for thead in light mode */
+}
+
+tbody tr:nth-child(even) {
+    background-color: #dbdbdb; /* Light gray for even rows */
+}
+
+th, td {
+    padding: 12px; /* Padding for table cells */
+    text-align: left; /* Align text to the left */
+    border: 1px solid #d0d0d0; /* Light border for cells */
+}
+
+th {
+    font-weight: bold; /* Bold text for headers */
+    border-bottom: 2px solid #d0d0d0; /* Darker border for header bottom */
+}
+
+/* Dark Mode Styles */
+.dark-mode table {
+    background-color: #2d3748; /* Dark background for tables */
+    color: #e5e7eb; /* Light text color for dark mode */
+}
+
+.dark-mode thead {
+    background-color: #4a5568; /* Darker background for thead */
+}
+
+.dark-mode tbody tr {
+  background-color: #1e1e1e; /* Darker gray for even rows */
+}
+.dark-mode tbody tr:nth-child(even) {
+    background-color: #363636; /* Darker gray for even rows */
+}
+
+.dark-mode th, .dark-mode td {
+    border: 1px solid #4a5568; /* Darker border for cells in dark mode */
+}
+
+/* Hover Effects */
+tbody tr:hover {
+    background-color: #dddddd; /* Light blue on hover for light mode */
+}
+
+.dark-mode tbody tr:hover {
+    background-color: #414141; /* Darker blue on hover for dark mode */
+}
+
 
