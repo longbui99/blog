@@ -358,7 +358,6 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
             let currentNode = range.startContainer;
             
             // If we're in a text node, get its parent
-            console.log(currentNode)
             if (currentNode?.tagName?.toLowerCase() === "div") {
                 setTimeout(()=>{
                     replaceCurrentLineWithElement(`p`);
@@ -428,7 +427,7 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
             case 'Enter':
                 e.preventDefault();
                 const filteredCommands = SLASH_COMMANDS.filter(cmd => 
-                    cmd.command.toLowerCase().includes(commandFilter.toLowerCase())
+                    cmd.command.toLowerCase().includes(commandFilter.toLowerCase()) || cmd.label.toLowerCase().includes(commandFilter.toLowerCase())
                 );
                 if (filteredCommands.length > 0) {
                     if (filteredCommands[selectedCommandIndex].showColorPicker) {
@@ -488,10 +487,10 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
 
     const executeCommand = (commandItem) => {
         // Clone the current selection to avoid modifying the actual cursor
-        if (commandFilter.length > 0) {
             const selectionInfo = getEditorSelection();
-            var { range, rect } = selectionInfo;
+        if (commandFilter.length > 0 && selectionInfo) {
             if (!selectionInfo) return;
+            var { range, rect } = selectionInfo;
         } else {
             if (!currentSelection) return;
             var range = currentSelection.cloneRange();
