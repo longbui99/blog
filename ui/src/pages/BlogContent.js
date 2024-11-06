@@ -32,6 +32,7 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
     const [isCreating, setIsCreating] = useState(false);
     const [originalContent, setOriginalContent] = useState(null);
     const [isPublished, setIsPublished] = useState(false); // State for published status
+    const [isLoading, setisLoading] = useState(true)
     const navigate = useNavigate();
     const currentRoute = routes?.find(route => route.path === path);
     const { publishToEvent } = useMenuContext();
@@ -77,6 +78,7 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
 
         const fetchBlogContent = async () => {
             try {
+                setisLoading(true)
                 const blogData = await loadBlogContent();
                 if (!isCreating) {
                     updateContent(blogData);
@@ -86,6 +88,8 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
                 console.error('Error fetching blog content:', error);
                 setContent(<p>Error loading blog content. Please try again later.</p>);
                 updateMainContentEditableContent('');
+            } finally{
+                setisLoading(false)
             }
         };
 
@@ -309,7 +313,9 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
     }
 
     return (
-        <article className="blog-content">
+        <>{
+            isLoading? <div class="loading-panel">Loading...</div>:
+            <article className="blog-content">
             <Helmet>
                 <title>{pageTitle}</title>
                 <meta name="description" content={pageDescription} />
@@ -514,6 +520,8 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
                 </>
             ) : content}
         </article>
+        }</>
+        
     );
 }
 
