@@ -157,7 +157,7 @@ function App() {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div class="loading-panel">Loading...</div>;
   }
 
   const handleRoutesUpdate = (updatedRoutes) => {

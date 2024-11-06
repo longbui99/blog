@@ -305,9 +305,7 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
         };
     }, [isEditing, isLoggedIn]);
 
-    if (!content && !isCreating) {
-        return <div>Loading...</div>;
-    }
+    return <div class="loading-panel">Loading...</div>;
 
     return (
         <article className="blog-content">

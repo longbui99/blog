@@ -676,3 +676,41 @@ h3 {
 .content-wrapper h3{
     font-weight: 500;
 }
+
+.loading-panel {    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh-150px);
+    height: calc(100vh - 254px);
+    /* width: 100%; */
+    background-color: rgba(255, 255, 255, 0.8);
+    color: #333;
+    font-size: 1.5em;
+    font-weight: bold;
+    background: transparent;
+    position: relative;
+}
+
+.loading-panel::before {
+    content: ''; /* Empty content for the spinner */
+    border: 8px solid #f3f3f3; /* Light gray border */
+    border-top: 8px solid var(--link-light); /* Blue top border */
+    border-radius: 50%; /* Circular shape */
+    width: 50px; /* Spinner width */
+    height: 50px; /* Spinner height */
+    animation: spin 1s linear infinite; /* Spin animation */
+    position: absolute; /* Position it absolutely */
+    top: 50%; /* Center vertically */
+    left: 50%; /* Center horizontally */
+    transform: translate(-50%, -50%); /* Adjust for the spinner's size */
+}
+.dark-mode .loading-panel::before {
+    border-top: 8px solid var(--link-dark);
+}
+
+/* Keyframes for the spin animation */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
