@@ -304,8 +304,9 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
             document.removeEventListener('keydown', handleKeyPress);
         };
     }, [isEditing, isLoggedIn]);
-
-    return <div class="loading-panel">Loading...</div>;
+    if (!content && !isCreating) {
+        return <div class="loading-panel">Loading...</div>;
+    }
 
     return (
         <article className="blog-content">
