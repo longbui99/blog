@@ -629,18 +629,50 @@ section {
 .dark-mode .content-wrapper a {
     color: var(--link-dark);
 }
-/* .content-wrapper h1 a,
-.content-wrapper h2 a,
-.content-wrapper h3 a {
-    font-style: normal;
-} */
 
-.content-wrapper h1 a{
+h1, h2, h3, h4, h5, h6 {
+    font-style: italic;
+    font-weight: 200;
+    letter-spacing: 0px;
+    color: var(--link-light);
+}
+h1 {
+    margin-left: 0px;
+}
+h2 {
+    margin-left: 8px;
+}
+h3 {
+    margin-left: 16px;
+}
+.dark-mode h1,
+.dark-mode h2,
+.dark-mode h3,
+.dark-mode h4,
+.dark-mode h5,
+.dark-mode h6 {
+    color: var(--link-dark);
+}
+
+.content-wrapper h1 a,
+.content-wrapper h2 a,
+.content-wrapper h3 a,
+.content-wrapper h4 a,
+.content-wrapper h5 a,
+.content-wrapper h6 a {
+    font-size: inherit;
+    font-style: inherit;
+    margin: 0px;
+    padding: 0px;
+    font-weight: inherit;
+}
+
+.content-wrapper h1{
     font-weight: 600;
 }
-.content-wrapper h2 a{
+.content-wrapper h2{
     font-weight: 500;
 }
-.content-wrapper h3 a{
+.content-wrapper h3{
     font-weight: 500;
 }

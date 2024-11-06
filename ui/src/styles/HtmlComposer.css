@@ -96,31 +96,6 @@
     white-space: nowrap;
 }
 
-/* Styling for different elements */
-.editor-content h1 {
-    font-size: 2em;
-    margin: 1em 0 0.5em;
-}
-
-.editor-content h2 {
-    font-size: 1.75em;
-    margin: 0.8em 0 0.4em;
-}
-
-.editor-content h3 {
-    font-size: 1.5em;
-    margin: 0.6em 0 0.3em;
-}
-
-.editor-content h4 {
-    font-size: 1.25em;
-    margin: 0.4em 0 0.2em;
-}
-
-.editor-content h5 {
-    font-size: 1.1em;
-    margin: 0.3em 0 0.15em;
-}
 
 .editor-content pre {
     background-color: #f5f5f5;

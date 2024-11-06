@@ -81,18 +81,6 @@
   color: var(--text-dark);
 }
 
-.dark-mode .main-content h1,
-.dark-mode .main-content h2,
-.dark-mode .main-content h3,
-.dark-mode .main-content h4,
-.dark-mode .main-content h5,
-.dark-mode .main-content h6 {
-  color: var(--text-dark);
-}
-
-.dark-mode .main-content h1 {
-  border-bottom-color: var(--color-primary-dark);
-}
 
 /* Responsive adjustments */
 @media (max-width: 768px) {

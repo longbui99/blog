@@ -22,6 +22,7 @@
     cursor: pointer;
     text-align: center; /* Center text under the icon */
     width: 250px;;
+    color: var(--link-light);
 }
 .nav-item.invisible{
     visibility: hidden;
@@ -49,8 +50,8 @@
     box-shadow: 0 -2px 5px rgba(250, 255, 255, 0.1);
 }
 
-.dark-mode .nav-title{
-    color: white;
+.dark-mode .nav-item{
+    color: var(--link-dark);
 }
 
 .dark-mode .nav-item:hover{
