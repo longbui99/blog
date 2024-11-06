@@ -208,7 +208,7 @@ function Sidebar({ isOpen, toggleSidebar, className, routes, onItemClick, isLogg
         if (isContentLoaded) { // Ensure content is loaded
             const activeItem = sidebarRef.current.querySelector('.active');
             if (activeItem) {
-                activeItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                activeItem.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         }
     }, [location.pathname, isContentLoaded]); // Run this effect when the pathname or content loading state changes
