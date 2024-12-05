@@ -76,11 +76,7 @@ const MenuItem = ({ id, title, path, index, is_published, children, searchTerm, 
     };
 
     return (
-        <li className={`
-            ${isActive ? "active" : ""} 
-            ${isCollapsed ? "collapsed" : ""} 
-            ${matchesSearch ? "search-match" : ""}
-        `}>
+        <li className={`${isActive ? "active" : ""} ${isCollapsed ? "collapsed" : ""} ${matchesSearch ? "search-match" : ""}`}>
             <div className="menu-item" title={title}>
                 {isLoggedIn && <svg 
                     width="16" 
