@@ -290,15 +290,10 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
             if (!isEditing) { // Only handle these shortcuts when not editing
                 if (event.key === 'e') {
                     handleEditToggle();
-                } else if (event.key === 'c' ) { // Updated to require modifier key
-                    event.preventDefault(); // Prevent default copy behavior
-                    handleCreate();
                 }
             } else {
                 if (event.key === 'Escape') {
                     handleEditToggle();
-                } else if (event.key === 'r') {
-                    setIsRawEditor(!isRawEditor);
                 }
             }
         };
