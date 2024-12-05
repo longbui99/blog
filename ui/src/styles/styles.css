@@ -41,7 +41,7 @@ body {
     transition: all 0.3s ease;
     flex-shrink: 0;
     background-color: transparent;
-    padding: 5px 5px 10px 5px;
+    padding: 10px 0px 10px 0px;
     margin-top: 15px;
     height: calc(100vh - 120px);
 }
@@ -480,14 +480,14 @@ main h2 {
   top: 15px; /* Changed from 70px to 15px */
   left: 0;
   bottom: 60px; /* Account for bottom nav */
-  width: 250px;
+  width: 270px;
   background-color: #f0f0f0; /* Default gray color */
   transition: transform var(--transition-speed);
   z-index: 1000;
 }
 
 .sidebar.hidden {
-  transform: translateX(-250px);
+  transform: translateX(-270px);
 }
 
 
@@ -773,9 +773,9 @@ h6 {
 
 /* Sidebar Navigation Styles */
 .sidebar-nav {
-  padding: 0 5px;
   overflow-y: auto;
   height: calc(100vh - 160px);
+  padding: 0px 10px 0px 10px;
 }
 
 .sidebar-nav ul {
@@ -865,7 +865,7 @@ h6 {
   top: 15px; /* Adjust based on your header height */
   left: 0;
   bottom: 60px; /* Account for bottom nav */
-  width: 250px;
+  width: 270px;
   z-index: 1000;
   transition: transform 0.3s ease;
 }

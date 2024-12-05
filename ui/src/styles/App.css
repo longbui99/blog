@@ -62,8 +62,8 @@ body {
 .sidebar {
   position: fixed;
   top: 30px;
-  left: -250px; /* Hide the sidebar by default */
-  width: 250px;
+  left: -270px; /* Hide the sidebar by default */
+  width: 270px;
   background-color: var(--sidebar-bg);
   transition: left 0.3s ease;
   z-index: 1000;
