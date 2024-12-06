@@ -47,8 +47,23 @@ function processNode(node, currentRoute) {
       const language = getLanguage(code.className);
       return <CodeBlock key={Math.random()} code={code.textContent.trim()} language={language} />;
     }
+    if (tagName === 'pre') {
+      // Create new code element
+      const codeElement = document.createElement('code');
+      // Copy content from pre to code element
+      codeElement.textContent = node.textContent.trim();
+      // Copy any class names that might contain language info
+      codeElement.className = node.className;
+      
+      const language = getLanguage(codeElement.className);
+      return <CodeBlock 
+        key={Math.random()} 
+        code={codeElement.textContent} 
+        language={language} 
+      />;
+    }
 
-    if (tagName === 'code' || tagName === 'pre') {
+    if (tagName === 'code') {
       const language = getLanguage(node.className);
       return <CodeBlock key={Math.random()} code={node.textContent.trim()} language={language} inline />;
     }
