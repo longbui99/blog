@@ -247,6 +247,7 @@ pre code {
   padding: 1em;
   border-radius: 4px;
   color: #cfd7e1;
+  min-width: 901px;
 }
 
 .python-code .line-numbers {
