@@ -216,6 +216,10 @@ pre code {
   color: #8888c6;  /* purple */
 }
 
+.token.inherit {
+  color: #8888c6;  /* purple */
+}
+
 .token.function {
   color: #ffc66d;  /* light blue/turquoise */
 }

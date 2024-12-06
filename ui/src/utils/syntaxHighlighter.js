@@ -12,6 +12,10 @@ function tokenizePythonCode(code) {
         pattern: /(?<!\.)(?<!\w)\b(print|pass|len|range|str|int|float|list|dict|set|tuple|bool|enumerate|zip|map|filter|any|all|sum|min|max|abs|round|sorted|reversed|iter|next|super|isinstance|issubclass|hasattr|getattr|setattr|delattr|property|classmethod|staticmethod|type|id|hex|bin|oct|ord|chr|pow|divmod|eval|exec|repr|input|open|file|quit|exit)\b/g,
         className: 'token builtin'
     },
+    inherit: {
+      pattern: /(?<=class\s+\w+\()[\w,\s]+(?=\))/g,
+      className: 'token inherit'
+    },
     function: {
       pattern: /(?<=def\s+)\w+(?=\()/g,
       className: 'token function'
