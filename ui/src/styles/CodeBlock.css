@@ -106,7 +106,6 @@ code {
 :not(.dark-mode) .copy-button {
   background: rgba(0, 0, 0, 0.1);
   border-color: rgba(0, 0, 0, 0.2);
-  color: #333;
 }
 
 :not(.dark-mode) .copy-button:hover {
