@@ -1,7 +1,7 @@
 function tokenizePythonCode(code) {
   const tokenPatterns = {
     keyword: {
-      pattern: /\b(class|def|if|__name__)\b/g,
+      pattern: /\b(class|def|if|from|import)\b/g,
       className: 'token keyword'
     },
     dunder: {
