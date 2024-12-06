@@ -20,6 +20,10 @@ function tokenizePythonCode(code) {
       pattern: /@[\w.]+(?=\(|$|\s)/g,
       className: 'token decorator'
     },
+    number: {
+      pattern: /\b\d+(?:\.\d+)?(?:e[+-]?\d+)?\b|0x[\da-f]+|0b[01]+|0o[0-7]+/gi,
+      className: 'token number'
+    },
     function: {
       pattern: /(?<=def\s+)\w+(?=\()/g,
       className: 'token function'

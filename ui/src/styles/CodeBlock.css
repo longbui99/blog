@@ -220,6 +220,10 @@ pre code {
   color: #d9d229;
 }
 
+.token.number{
+  color: #79acd2;
+}
+
 .token.inherit {
   color: #8888c6;  /* purple */
 }
