@@ -161,8 +161,7 @@ code {
 
 .code-block-wrapper pre {
   background-color: #f4f4f4;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  border: none;
   padding: 1em;
   overflow-x: auto;
 }
@@ -323,11 +322,10 @@ pre code {
 
 /* Light mode overrides */
 :not(.dark-mode) .python-code pre {
-  background-color: #f8f8f2;
+  background-color: transparent:
 }
 
 :not(.dark-mode) .python-code .line-numbers {
-  background-color: #f0f0f0;
   color: #888;
 }
 
