@@ -206,7 +206,7 @@ pre code {
 
 /* Python-specific syntax colors */
 .token.keyword {
-  color: #d57f38;  /* orange/coral */
+  color: #ed8c3c;  /* orange/coral */
 }
 
 .token.dunder {
@@ -222,11 +222,11 @@ pre code {
 }
 
 .token.self {
-  color: #94558d;  /* purple */
+  color: #c466b9;  /* purple */
 }
 
 .token.string {
-  color: #6a8759;  /* muted red/coral */
+  color: #6c9951;  /* muted red/coral */
 }
 
 .token.comment {
@@ -234,11 +234,11 @@ pre code {
 }
 
 .token.method {
-  color: #a9b7c6;  /* light yellow */
+  color: #cfd7e1;  /* light yellow */
 }
 
 .token.punctuation {
-  color: #a9b7c6;  /* light grey */
+  color: #cfd7e1;  /* light grey */
 }
 
 /* Code block background */
@@ -246,10 +246,11 @@ pre code {
   background-color: #1e1e1e;  /* dark grey background */
   padding: 1em;
   border-radius: 4px;
+  color: #cfd7e1;
 }
 
 .python-code .line-numbers {
-  color: #a9b7c6;  /* grey for line numbers */
+  color: #cfd7e1;  /* grey for line numbers */
   background-color: #1e1e1e;
   padding-right: 1em;
   border-right: 1px solid #404040;
