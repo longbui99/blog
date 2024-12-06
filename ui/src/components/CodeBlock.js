@@ -18,6 +18,25 @@ function CodeBlock({ code, language, inline }) {
   const lines = code.split('\n');
   const isMultiLine = lines.length > 1;
 
+  const renderLineNumbers = (lines) => {
+    return (
+      <div className="line-numbers">
+        {lines.map((_, index) => (
+          <span key={index + 1}>{index + 1}</span>
+        ))}
+      </div>
+    );
+  };
+
+  const escapeHtml = (text) => {
+    return text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  };
+
   const copyToClipboard = () => {
     navigator.clipboard.writeText(code).then(() => {
       setCopied(true);
