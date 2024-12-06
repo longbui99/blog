@@ -17,7 +17,7 @@ function tokenizePythonCode(code) {
       className: 'token function'
     },
     self: {
-      pattern: /\bself\b/g,
+      pattern: /\bself?.\b/g,
       className: 'token self'
     },
     string: {
