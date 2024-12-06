@@ -13,8 +13,9 @@ function htmlToElement(html) {
 }
 
 function getLanguage(classString) {
-  const match = classString && classString.match(/language-(\w+)/);
-  return match ? match[1] : 'plaintext';
+  // const match = classString && classString.match(/language-(\w+)/);
+  // return match ? match[1] : 'plaintext';
+  return "python"
 }
 
 export function styleMap(style){
