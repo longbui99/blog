@@ -216,6 +216,10 @@ pre code {
   color: #8888c6;  /* purple */
 }
 
+.token.decorator {
+  color: #d9d229;
+}
+
 .token.inherit {
   color: #8888c6;  /* purple */
 }

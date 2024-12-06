@@ -16,6 +16,10 @@ function tokenizePythonCode(code) {
       pattern: /(?<=class\s+\w+\()[\w,\s]+(?=\))/g,
       className: 'token inherit'
     },
+    decorator: {
+      pattern: /@[\w.]+(?=\(|$|\s)/g,
+      className: 'token decorator'
+    },
     function: {
       pattern: /(?<=def\s+)\w+(?=\()/g,
       className: 'token function'
