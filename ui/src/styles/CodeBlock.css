@@ -322,7 +322,7 @@ pre code {
 
 /* Light mode overrides */
 :not(.dark-mode) .python-code pre {
-  background-color: transparent:
+  background-color: transparent;
 }
 
 :not(.dark-mode) .python-code .line-numbers {
