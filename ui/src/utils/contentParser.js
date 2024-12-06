@@ -45,13 +45,13 @@ function processNode(node, currentRoute) {
     if (tagName === 'pre' && node.firstChild && node.firstChild.tagName?.toLowerCase() === 'code') {
       const code = node.firstChild;
       const language = getLanguage(code.className);
-      return <CodeBlock key={Math.random()} code={code.textContent.trim()} language={language} />;
+      return <CodeBlock key={Math.random()} code={code.textContent} language={language} />;
     }
     if (tagName === 'pre') {
       // Create new code element
       const codeElement = document.createElement('code');
       // Copy content from pre to code element
-      codeElement.textContent = node.textContent.trim();
+      codeElement.textContent = node.textContent;
       // Copy any class names that might contain language info
       codeElement.className = node.className;
       
@@ -65,7 +65,7 @@ function processNode(node, currentRoute) {
 
     if (tagName === 'code') {
       const language = getLanguage(node.className);
-      return <CodeBlock key={Math.random()} code={node.textContent.trim()} language={language} inline />;
+      return <CodeBlock key={Math.random()} code={node.textContent} language={language} inline />;
     }
 
     if (tagName === 'img') {
