@@ -245,7 +245,7 @@ pre code {
 }
 
 .python-code .line-numbers {
-  color: #858585;  /* grey for line numbers */
+  color: #a7b5c4;  /* grey for line numbers */
   background-color: #1e1e1e;
   padding-right: 1em;
   border-right: 1px solid #404040;

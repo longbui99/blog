@@ -5,7 +5,7 @@ function tokenizePythonCode(code) {
       className: 'token keyword'
     },
     builtin: {
-      pattern: /\b(print|__init__)\b/g,
+      pattern: /\b(print|__init__|pass|return)\b/g,
       className: 'token builtin'
     },
     function: {
