@@ -13,7 +13,7 @@ function tokenizePythonCode(code) {
         className: 'token builtin'
     },
     function: {
-        pattern: /(?<=def\s+)\w+(?=\()|(?<=return\s+)\w+(?=[\s.()]*)/g,
+      pattern: /(?<=def\s+)\w+(?=\()/g,
       className: 'token function'
     },
     self: {
