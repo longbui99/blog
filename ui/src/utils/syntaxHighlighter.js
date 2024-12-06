@@ -1,7 +1,7 @@
 function tokenizePythonCode(code) {
   const tokenPatterns = {
     keyword: {
-      pattern: /\b(class|def|if|__name__|return)\b/g,
+      pattern: /\b(class|def|if|__name__)\b/g,
       className: 'token keyword'
     },
     dunder: {
@@ -9,7 +9,7 @@ function tokenizePythonCode(code) {
         className: 'token dunder'
     },
     builtin: {
-        pattern: /\b(print|pass|return|len|range|str|int|float|list|dict|set|tuple|bool|enumerate|zip|map|filter|any|all|sum|min|max|abs|round|sorted|reversed|iter|next|super|isinstance|issubclass|hasattr|getattr|setattr|delattr|property|classmethod|staticmethod|type|id|hex|bin|oct|ord|chr|pow|divmod|eval|exec|repr|input|open|file|quit|exit)\b/g,
+        pattern: /\b(print|pass|len|range|str|int|float|list|dict|set|tuple|bool|enumerate|zip|map|filter|any|all|sum|min|max|abs|round|sorted|reversed|iter|next|super|isinstance|issubclass|hasattr|getattr|setattr|delattr|property|classmethod|staticmethod|type|id|hex|bin|oct|ord|chr|pow|divmod|eval|exec|repr|input|open|file|quit|exit)\b/g,
         className: 'token builtin'
     },
     function: {

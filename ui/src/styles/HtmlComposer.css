@@ -288,6 +288,7 @@
     border-radius: 8px;
     overflow-x: scroll;
     width: fit-content;
+    min-width: 700px;
 }
 
 .code-block-wrapper pre {
@@ -327,10 +328,6 @@
 /* Dark Mode */
 .dark-mode .inline-code {
     background-color: #1e293b;
-}
-
-.dark-mode .code-block-wrapper {
-    background-color: #060606;
 }
 
 /* Language-specific syntax highlighting */

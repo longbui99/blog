@@ -12,10 +12,24 @@ function htmlToElement(html) {
   return template.content;
 }
 
-function getLanguage(classString) {
-  // const match = classString && classString.match(/language-(\w+)/);
-  // return match ? match[1] : 'plaintext';
-  return "python"
+function getLanguage(codeContent) {
+  // Common Python syntax patterns
+  const pythonPatterns = [
+    /\bdef\s+\w+\s*\(/,      // function definitions
+    /\bclass\s+\w+[:(]/,     // class definitions
+    /\bimport\s+\w+/,        // import statements
+    /\bfrom\s+\w+\s+import/, // from imports
+    /__\w+__/,               // dunder methods
+    /:\s*$/m,                // lines ending with colon
+    /\bself\b/,              // self parameter
+    /\bpass\b/,              // pass statement
+    /#.*/,                   // Python comments
+  ];
+
+  // Check if any Python pattern matches
+  const isPython = pythonPatterns.some(pattern => pattern.test(codeContent));
+
+  return isPython ? 'python' : 'plaintext';
 }
 
 export function styleMap(style){
@@ -45,7 +59,7 @@ function processNode(node, currentRoute) {
 
     if (tagName === 'pre' && node.firstChild && node.firstChild.tagName?.toLowerCase() === 'code') {
       const code = node.firstChild;
-      const language = getLanguage(code.className);
+      const language = getLanguage(code.textContent);
       return <CodeBlock key={Math.random()} code={code.textContent} language={language} />;
     }
     if (tagName === 'pre') {
@@ -56,7 +70,7 @@ function processNode(node, currentRoute) {
       // Copy any class names that might contain language info
       codeElement.className = node.className;
       
-      const language = getLanguage(codeElement.className);
+      const language = getLanguage(codeElement.textContent);
       return <CodeBlock 
         key={Math.random()} 
         code={codeElement.textContent} 
@@ -65,7 +79,7 @@ function processNode(node, currentRoute) {
     }
 
     if (tagName === 'code') {
-      const language = getLanguage(node.className);
+      const language = getLanguage(node.textContent);
       return <CodeBlock key={Math.random()} code={node.textContent} language={language} inline />;
     }
 
