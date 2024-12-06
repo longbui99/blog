@@ -234,11 +234,11 @@ pre code {
 }
 
 .token.method {
-  color: #a7b5c4;  /* light yellow */
+  color: #a9b7c6;  /* light yellow */
 }
 
 .token.punctuation {
-  color: #a7b5c4;  /* light grey */
+  color: #a9b7c6;  /* light grey */
 }
 
 /* Code block background */
@@ -249,7 +249,7 @@ pre code {
 }
 
 .python-code .line-numbers {
-  color: #a7b5c4;  /* grey for line numbers */
+  color: #a9b7c6;  /* grey for line numbers */
   background-color: #1e1e1e;
   padding-right: 1em;
   border-right: 1px solid #404040;
