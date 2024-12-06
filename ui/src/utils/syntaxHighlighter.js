@@ -1,7 +1,7 @@
 function tokenizePythonCode(code) {
   const tokenPatterns = {
     keyword: {
-      pattern: /\b(class|if|from|import|while|for|in|is|as|with|try|except|finally|raise|assert|and|or|not|elif|else|pass|break|continue|lambda|yield|global|nonlocal|def)\b/g,
+      pattern: /(?<!\.)(?<!\w)\b(class|if|from|import|while|for|in|is|as|with|try|except|finally|raise|assert|and|or|not|elif|else|pass|break|continue|lambda|yield|global|nonlocal|def)\b/g,
       className: 'token keyword'
     },
     dunder: {
