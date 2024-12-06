@@ -298,35 +298,35 @@ pre code {
 
 /* Python-specific syntax colors */
 .token.keyword {
-  color: #ff8b39;  /* orange/coral */
+  color: #d57f38;  /* orange/coral */
 }
 
 .token.builtin {
-  color: #c586c0;  /* purple */
+  color: #b200b2;  /* purple */
 }
 
 .token.function {
-  color: #4ec9b0;  /* light blue/turquoise */
+  color: #d57f38;  /* light blue/turquoise */
 }
 
 .token.self {
-  color: #c586c0;  /* purple */
+  color: #94558d;  /* purple */
 }
 
 .token.string {
-  color: #ce9178;  /* muted red/coral */
+  color: #6a8759;  /* muted red/coral */
 }
 
 .token.comment {
-  color: #6a9955;  /* green */
+  color: #808080;  /* green */
 }
 
 .token.method {
-  color: #dcdcaa;  /* light yellow */
+  color: #ffc66d;  /* light yellow */
 }
 
 .token.punctuation {
-  color: #d4d4d4;  /* light grey */
+  color: #a7b5c4;  /* light grey */
 }
 
 /* Code block background */
