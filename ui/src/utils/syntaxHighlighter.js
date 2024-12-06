@@ -1,7 +1,7 @@
 function tokenizePythonCode(code) {
   const tokenPatterns = {
     keyword: {
-      pattern: /(?<!\.)(?<!\w)\b(class|if|from|import|while|for|in|is|as|with|try|except|finally|raise|assert|and|or|not|elif|else|pass|break|continue|lambda|yield|global|nonlocal|def)\b/g,
+      pattern: /(?<!\.)(?<!\w)\b(class|if|from|import|while|for|in|is|as|with|try|except|finally|raise|assert|and|or|not|elif|else|pass|break|continue|lambda|yield|global|nonlocal|def|return)\b/g,
       className: 'token keyword'
     },
     dunder: {
@@ -9,7 +9,7 @@ function tokenizePythonCode(code) {
         className: 'token dunder'
     },
     builtin: {
-        pattern: /\b(print|pass|len|range|str|int|float|list|dict|set|tuple|bool|enumerate|zip|map|filter|any|all|sum|min|max|abs|round|sorted|reversed|iter|next|super|isinstance|issubclass|hasattr|getattr|setattr|delattr|property|classmethod|staticmethod|type|id|hex|bin|oct|ord|chr|pow|divmod|eval|exec|repr|input|open|file|quit|exit)\b/g,
+        pattern: /(?<!\.)(?<!\w)\b(print|pass|len|range|str|int|float|list|dict|set|tuple|bool|enumerate|zip|map|filter|any|all|sum|min|max|abs|round|sorted|reversed|iter|next|super|isinstance|issubclass|hasattr|getattr|setattr|delattr|property|classmethod|staticmethod|type|id|hex|bin|oct|ord|chr|pow|divmod|eval|exec|repr|input|open|file|quit|exit)\b/g,
         className: 'token builtin'
     },
     function: {
