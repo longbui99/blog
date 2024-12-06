@@ -4,12 +4,16 @@ function tokenizePythonCode(code) {
       pattern: /\b(class|def|if|__name__|return)\b/g,
       className: 'token keyword'
     },
+    dunder: {
+        pattern: /\b(__init__|__str__|__repr__|__len__|__getitem__|__setitem__|__delitem__|__iter__|__next__|__enter__|__exit__|__call__|__add__|__sub__|__mul__|__div__|__mod__|__pow__|__eq__|__ne__|__lt__|__gt__|__le__|__ge__|__hash__|__bool__|__contains__|__getattr__|__setattr__|__delattr__|__new__|__del__|__copy__|__deepcopy__|__getstate__|__setstate__)\b/g,
+        className: 'token dunder'
+    },
     builtin: {
-      pattern: /\b(print|__init__|pass|return)\b/g,
-      className: 'token builtin'
+        pattern: /\b(print|pass|return|len|range|str|int|float|list|dict|set|tuple|bool|enumerate|zip|map|filter|any|all|sum|min|max|abs|round|sorted|reversed|iter|next|super|isinstance|issubclass|hasattr|getattr|setattr|delattr|property|classmethod|staticmethod|type|id|hex|bin|oct|ord|chr|pow|divmod|eval|exec|repr|input|open|file|quit|exit)\b/g,
+        className: 'token builtin'
     },
     function: {
-      pattern: /(?<=class\s+)\w+|(?<=def\s+)\w+(?=\()/g,
+        pattern: /(?<=def\s+)\w+(?=\()|(?<=return\s+)\w+(?=[\s.()]*)/g,
       className: 'token function'
     },
     self: {

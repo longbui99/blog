@@ -209,8 +209,12 @@ pre code {
   color: #d57f38;  /* orange/coral */
 }
 
-.token.builtin {
+.token.dunder {
   color: #ce00ce;  /* purple */
+}
+
+.token.builtin {
+  color: #8888c6;  /* purple */
 }
 
 .token.function {
