@@ -48,7 +48,7 @@ function processNode(node, currentRoute) {
       return <CodeBlock key={Math.random()} code={code.textContent.trim()} language={language} />;
     }
 
-    if (tagName === 'code') {
+    if (tagName === 'code' || tagName === 'pre') {
       const language = getLanguage(node.className);
       return <CodeBlock key={Math.random()} code={node.textContent.trim()} language={language} inline />;
     }
