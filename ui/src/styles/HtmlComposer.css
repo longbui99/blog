@@ -287,7 +287,6 @@
     border-radius: 8px;
     overflow-x: scroll;
     width: fit-content;
-    min-width: 901px;
 }
 
 .code-block-wrapper pre {

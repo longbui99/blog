@@ -242,7 +242,7 @@ pre code {
 }
 
 /* Code block background */
-.python-code pre {
+.code-block-wrapper pre {
   background-color: #1e1e1e;  /* dark grey background */
   padding: 1em;
   border-radius: 4px;
