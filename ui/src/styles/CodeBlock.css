@@ -158,8 +158,7 @@ pre code {
 }
 
 .dark-mode pre {
-  background-color: var(--code-bg-dark);
-  color: var(--code-color-dark);
+  background: transparent;
   border-color: #444;
 }
 
