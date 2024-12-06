@@ -38,6 +38,7 @@ function CodeBlock({ code, language, inline }) {
   };
 
   const copyToClipboard = () => {
+    alert("Copied")
     navigator.clipboard.writeText(code).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
