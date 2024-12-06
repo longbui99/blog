@@ -41,6 +41,7 @@ code {
   font-size: 0.8em;
   cursor: pointer;
   transition: background 0.3s ease;
+  z-index: 20000;
 }
 
 .copy-button:hover {
@@ -159,6 +160,51 @@ code {
   margin: 1em 0;
 }
 
+.code-header {
+  position: absolute;
+  top: 0.5em;
+  right: 0.5em;
+  z-index: 10;
+}
+
+.copy-button {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  color: #d4d4d4;
+  padding: 4px 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s ease;
+}
+
+.copy-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.code-container {
+  position: relative;
+  overflow-x: auto;
+}
+
+/* Dark mode adjustments */
+.dark-mode .copy-button {
+  color: #d4d4d4;
+}
+
+/* Light mode adjustments */
+:not(.dark-mode) .copy-button {
+  background: rgba(0, 0, 0, 0.1);
+  border-color: rgba(0, 0, 0, 0.2);
+  color: #333;
+}
+
+:not(.dark-mode) .copy-button:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
+
 .code-block-wrapper pre {
   background-color: #f4f4f4;
   border: none;
@@ -171,28 +217,6 @@ code {
   font-size: 0.8em;
   line-height: 1.25;
   background-color: transparent;
-}
-
-.copy-button {
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  background: rgba(255, 255, 255, 0.1);
-  border: none;
-  border-radius: 3px;
-  color: var(--code-color-light);
-  padding: 5px 10px;
-  font-size: 0.8em;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-
-.copy-button:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.copy-button:active {
-  background: rgba(255, 255, 255, 0.3);
 }
 
 .inline-code {

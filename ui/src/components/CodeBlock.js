@@ -38,11 +38,13 @@ function CodeBlock({ code, language, inline }) {
   };
 
   const copyToClipboard = () => {
-    alert("Copied")
-    navigator.clipboard.writeText(code).then(() => {
+    try {
+      navigator.clipboard.writeText(code);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    });
+    } catch (err) {
+      console.error('Failed to copy:', err);
+    }
   };
 
   const getHighlightedCode = () => {
@@ -62,9 +64,16 @@ function CodeBlock({ code, language, inline }) {
 
   return (
     <div className={`code-block-wrapper ${isDarkMode ? 'dark-mode' : ''} ${language === 'python' ? 'python-code' : ''}`}>
-      <button className="copy-button" onClick={copyToClipboard}>
-        {copied ? 'Copied!' : <FaCopy />}
-      </button>
+      <div className="code-header">
+        <button 
+          className="copy-button" 
+          onClick={copyToClipboard}
+          type="button"
+          aria-label="Copy code"
+        >
+          {copied ? 'Copied!' : <FaCopy />}
+        </button>
+      </div>
       <div className="code-container">
         {language === 'python' && renderLineNumbers(lines)}
         <pre className={`language-${language}`}
