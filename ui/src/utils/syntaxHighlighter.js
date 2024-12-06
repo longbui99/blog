@@ -1,33 +1,36 @@
 function tokenizePythonCode(code) {
-  // Define Python keywords and their corresponding token classes
   const tokenPatterns = {
     keyword: {
-      pattern: /\b(def|class|if|else|elif|for|while|return|import|from|as|try|except|finally|raise|with|in|is|lambda|and|or|not|None|True|False)\b/g,
+      pattern: /\b(class|def|if|__name__|return)\b/g,
       className: 'token keyword'
     },
+    builtin: {
+      pattern: /\b(print|__init__)\b/g,
+      className: 'token builtin'
+    },
     function: {
-      pattern: /(?<=def\s+)\w+(?=\s*\()|(?<=class\s+)\w+(?=\s*[:\(])/g,
+      pattern: /(?<=class\s+)\w+|(?<=def\s+)\w+(?=\()/g,
       className: 'token function'
     },
+    self: {
+      pattern: /\bself\b/g,
+      className: 'token self'
+    },
     string: {
-      pattern: /("""[\s\S]*?"""|'''[\s\S]*?'''|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*')/g,
+      pattern: /"[^"]*"|'[^']*'/g,
       className: 'token string'
     },
     comment: {
       pattern: /#.*/g,
       className: 'token comment'
     },
-    number: {
-      pattern: /\b\d+\.?\d*\b/g,
-      className: 'token number'
+    method: {
+      pattern: /\b\w+(?=\()/g,
+      className: 'token method'
     },
-    operator: {
-      pattern: /[+\-*/%=<>!&|^~]+/g,
-      className: 'token operator'
-    },
-    builtin: {
-      pattern: /\b(print|len|range|str|int|float|list|dict|set|tuple)\b/g,
-      className: 'token builtin'
+    punctuation: {
+      pattern: /[.,()]/g,
+      className: 'token punctuation'
     }
   };
 

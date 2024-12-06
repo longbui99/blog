@@ -274,77 +274,55 @@ pre code {
 
 /* Python-specific syntax colors */
 .token.keyword {
-  color: #ff79c6;
-}
-
-.token.function {
-  color: #50fa7b;
-}
-
-.token.string {
-  color: #f1fa8c;
-}
-
-.token.number {
-  color: #bd93f9;
-}
-
-.token.comment {
-  color: #6272a4;
-  font-style: italic;
-}
-
-.token.class-name {
-  color: #8be9fd;
+  color: #ff8b39;  /* orange/coral */
 }
 
 .token.builtin {
-  color: #50fa7b;
+  color: #c586c0;  /* purple */
 }
 
-.token.boolean {
-  color: #bd93f9;
+.token.function {
+  color: #4ec9b0;  /* light blue/turquoise */
 }
 
-.token.operator {
-  color: #ff79c6;
+.token.self {
+  color: #c586c0;  /* purple */
+}
+
+.token.string {
+  color: #ce9178;  /* muted red/coral */
+}
+
+.token.comment {
+  color: #6a9955;  /* green */
+}
+
+.token.method {
+  color: #dcdcaa;  /* light yellow */
+}
+
+.token.punctuation {
+  color: #d4d4d4;  /* light grey */
 }
 
 /* Code block background */
 .python-code pre {
-  background-color: #282a36;
+  background-color: #1e1e1e;  /* dark grey background */
+  padding: 1em;
+  border-radius: 4px;
 }
 
 .python-code .line-numbers {
-  background-color: #21222c;
-  color: #6272a4;
+  color: #858585;  /* grey for line numbers */
+  background-color: #1e1e1e;
+  padding-right: 1em;
+  border-right: 1px solid #404040;
 }
 
 /* Light mode overrides */
 :not(.dark-mode) .python-code pre {
-  background-color: transparent;
 }
 
 :not(.dark-mode) .python-code .line-numbers {
-  color: #888;
-}
-
-:not(.dark-mode) .token.keyword {
-  color: #ff5555;
-}
-
-:not(.dark-mode) .token.function {
-  color: #50fa7b;
-}
-
-:not(.dark-mode) .token.string {
-  color: #f1fa8c;
-}
-
-:not(.dark-mode) .token.number {
-  color: #bd93f9;
-}
-
-:not(.dark-mode) .token.comment {
-  color: #6272a4;
+  border-right-color: #e0e0e0;
 }
