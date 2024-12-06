@@ -235,3 +235,118 @@ pre code {
 .dark-mode .copy-button {
   color: var(--code-color-dark);
 }
+
+.code-container {
+  display: flex;
+  position: relative;
+}
+
+.line-numbers {
+  display: flex;
+  flex-direction: column;
+  padding: 1em 0.5em;
+  border-right: 1px solid #ddd;
+  background: rgba(0, 0, 0, 0.05);
+  user-select: none;
+}
+
+.dark-mode .line-numbers {
+  border-right-color: #444;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.line-numbers span {
+  color: #999;
+  font-family: monospace;
+  font-size: 0.9em;
+  text-align: right;
+  min-width: 1.5em;
+}
+
+.python-code pre {
+  margin: 0;
+  padding-left: 0.5em;
+}
+
+.python-code .language-python {
+  tab-size: 4;
+  -moz-tab-size: 4;
+}
+
+/* Python-specific syntax colors */
+.token.keyword {
+  color: #ff79c6;
+}
+
+.token.function {
+  color: #50fa7b;
+}
+
+.token.string {
+  color: #f1fa8c;
+}
+
+.token.number {
+  color: #bd93f9;
+}
+
+.token.comment {
+  color: #6272a4;
+  font-style: italic;
+}
+
+.token.class-name {
+  color: #8be9fd;
+}
+
+.token.builtin {
+  color: #50fa7b;
+}
+
+.token.boolean {
+  color: #bd93f9;
+}
+
+.token.operator {
+  color: #ff79c6;
+}
+
+/* Code block background */
+.python-code pre {
+  background-color: #282a36;
+}
+
+.python-code .line-numbers {
+  background-color: #21222c;
+  color: #6272a4;
+}
+
+/* Light mode overrides */
+:not(.dark-mode) .python-code pre {
+  background-color: #f8f8f2;
+}
+
+:not(.dark-mode) .python-code .line-numbers {
+  background-color: #f0f0f0;
+  color: #888;
+}
+
+:not(.dark-mode) .token.keyword {
+  color: #ff5555;
+}
+
+:not(.dark-mode) .token.function {
+  color: #50fa7b;
+}
+
+:not(.dark-mode) .token.string {
+  color: #f1fa8c;
+}
+
+:not(.dark-mode) .token.number {
+  color: #bd93f9;
+}
+
+:not(.dark-mode) .token.comment {
+  color: #6272a4;
+}

@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { FaCopy } from 'react-icons/fa';
 import '../styles/CodeBlock.css';
+import tokenizePythonCode from '../utils/syntaxHighlighter';
 
 // Import ThemeContext if it exists, otherwise create a dummy context
 let ThemeContext;
@@ -24,6 +25,13 @@ function CodeBlock({ code, language, inline }) {
     });
   };
 
+  const getHighlightedCode = () => {
+    if (language === 'python') {
+      return { __html: tokenizePythonCode(code) };
+    }
+    return { __html: escapeHtml(code) };
+  };
+
   if (inline || !isMultiLine) {
     return (
       <code className={`inline-code language-${language} ${isDarkMode ? 'dark-mode' : ''}`}>
@@ -33,13 +41,15 @@ function CodeBlock({ code, language, inline }) {
   }
 
   return (
-    <div className={`code-block-wrapper ${isDarkMode ? 'dark-mode' : ''}`}>
+    <div className={`code-block-wrapper ${isDarkMode ? 'dark-mode' : ''} ${language === 'python' ? 'python-code' : ''}`}>
       <button className="copy-button" onClick={copyToClipboard}>
         {copied ? 'Copied!' : <FaCopy />}
       </button>
-      <pre className={`language-${language}`}>
-        <code>{code}</code>
-      </pre>
+      <div className="code-container">
+        {language === 'python' && renderLineNumbers(lines)}
+        <pre className={`language-${language}`}
+             dangerouslySetInnerHTML={getHighlightedCode()} />
+      </div>
     </div>
   );
 }
