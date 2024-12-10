@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends, status, Body, Query
-from typing import List
+from typing import List, Dict
 from app.schemas.blog_menu import BlogMenuCreate, BlogMenu, BlogMenuUpdate, BlogMenuItem, PublishMenuRequest
 from app.schemas.blog_content import BlogContent as BlogContentSchema
 from app.models.blog_content import BlogContent as BlogContentModel
@@ -7,17 +7,21 @@ from app.models.blog_menu import BlogMenu as BlogMenuModel
 from app.models.search import SearchResult
 from app.crud.blog_menu import create_blog_menu, get_blog_menu, get_blog_menus, update_blog_menu, delete_blog_menu
 from app.api.v1.auth import get_current_user, check_authorized_user
-from tortoise.expressions import Q
-from tortoise import connections
-import logging
+from app.services.blogpost_elastic import BlogpostElasticService
+from app.schemas.search import SearchQuery
 import re
-from bs4 import BeautifulSoup
+
+PREVIEW_LENGTH = 300
 
 router = APIRouter()
+blog_elastic = BlogpostElasticService()
 
 @router.post("/", response_model=BlogMenu, status_code=status.HTTP_201_CREATED)
 async def create_menu_item(menu: BlogMenuCreate, current_user: dict = Depends(get_current_user)):
-    return await create_blog_menu(menu)
+    created_menu = await create_blog_menu(menu)
+    # Sync to Elasticsearch
+    await blog_elastic.publish_menu(created_menu)
+    return created_menu
 
 @router.get("/", response_model=List[BlogMenuItem])
 async def read_menu_items(skip: int = 0, limit: int = 100, current_user: dict = Depends(check_authorized_user)):
@@ -26,84 +30,89 @@ async def read_menu_items(skip: int = 0, limit: int = 100, current_user: dict = 
         return menus
     return [menu for menu in menus if menu['is_published']]
 
+def clean_html_tags(text: str) -> str:
+    """Remove HTML tags from text"""
+    if not text:
+        return ""
+    # Remove HTML tags
+    clean_text = re.sub(r'<[^>]+>', '', text)
+    # Remove extra whitespace
+    clean_text = ' '.join(clean_text.split())
+    return clean_text
+
 @router.get("/search", response_model=List[SearchResult])
 async def search_content(
-    q: str = Query(..., description="Search query string")
+    q: str = Query(..., description="Search query string"),
+    from_: int = Query(0, alias="from", description="Starting point for search results"),
+    size: int = Query(10, description="Number of search results to return")
 ):
     """
-    Search across blog menus and content using GIN index.
-    Does not require authentication.
-    Uses full-text search capabilities.
+    Search across blog menus and content using Elasticsearch with fuzzy matching.
     """
-    def clean_content(content: str) -> str:
-        soup = BeautifulSoup(content, 'html.parser')
-        text = soup.get_text(separator=' ', strip=True)
-        text = re.sub(r'\s+', ' ', text)
-        return text[:200] + "..." if len(text) > 200 else text
+    try:
+        query = SearchQuery(
+            query={
+                "query": {
+                    "bool": {
+                        "should": [
+                            {
+                                "multi_match": {
+                                    "query": q,
+                                    "fields": ["title^3", "content^2"],
+                                    "fuzziness": "AUTO",
+                                    "operator": "or",
+                                    "minimum_should_match": "70%"
+                                }
+                            }
+                        ]
+                    }
+                },
+                "collapse": {
+                    "field": "id"  # Collapse results by document ID
+                },
+                "highlight": {
+                    "max_analyzed_offset": 1000000,
+                    "fields": {
+                        "content": {
+                            "fragment_size": PREVIEW_LENGTH,
+                            "number_of_fragments": 1,
+                            "pre_tags": [""],
+                            "post_tags": [""],
+                            "type": "unified",
+                            "boundary_scanner": "sentence",
+                            "boundary_scanner_locale": "en-US"
+                        }
+                    }
+                },
+                "_source": {
+                    "includes": ["title", "path", "author", "updated_at", "content"]
+                }
+            },
+            from_=from_,
+            size=size
+        )
 
-    # Raw SQL query using GIN index
-    search_query = """
-    WITH combined_results AS (
-        -- Search in blog_menu
-        SELECT 
-            title,
-            path,
-            updated_at,
-            NULL as content,
-            NULL as author,
-            NULL as blog_menu_id,
-            ts_rank(to_tsvector('english', title || ' ' || path), plainto_tsquery('english', $1)) as rank
-        FROM blog_menus
-        WHERE 
-            is_published = TRUE 
-            AND to_tsvector('english', title || ' ' || path) @@ plainto_tsquery('english', $1)
+        response = await blog_elastic.search_blog(query)
+        hits = response.get('hits', {}).get('hits', [])
         
-        UNION ALL
-        
-        -- Search in blog_content
-        SELECT 
-            bc.title,
-            bm.path,
-            bc.updated_at,
-            bc.content,
-            bc.author,
-            bc.blog_menu_id,
-            ts_rank(to_tsvector('english', bc.title || ' ' || bc.content), plainto_tsquery('english', $2)) as rank
-        FROM blog_contents bc
-        JOIN blog_menus bm ON bc.blog_menu_id = bm.id
-        WHERE 
-            bm.is_published = TRUE
-            AND to_tsvector('english', bc.title || ' ' || bc.content) @@ plainto_tsquery('english', $2)
-    )
-    SELECT * FROM combined_results
-    ORDER BY rank DESC
-    LIMIT 40;
-    """
-    
-    # Execute raw query using Tortoise connection
-    conn = connections.get("default")
-    results = await conn.execute_query_dict(search_query, [q, q])
-    
-    # Process results
-    search_results = []
-    existing_paths = set()
-    
-    for result in results:
-        if result['path'] not in existing_paths:
-            search_result = SearchResult(
-                title=result['title'],
-                path=result['path'],
-                updated_at=result['updated_at'],
-                author=result['author']
+        search_results = [
+            SearchResult(
+                title=hit['_source']['title'],
+                path=hit['_source'].get('path', ''),
+                author=hit['_source'].get('author'),
+                updated_at=hit['_source'].get('updated_at'),
+                content_preview=clean_html_tags(
+                    hit.get('highlight', {}).get('content', [''])[0] 
+                    if hit.get('highlight') and hit.get('highlight', {}).get('content') 
+                    else (hit['_source'].get('content', '')[:PREVIEW_LENGTH] if hit.get('highlight') else hit['_source'].get('content', '')[:PREVIEW_LENGTH])
+                )
             )
-            
-            if result['content']:
-                search_result.content_preview = clean_content(result['content'])
-            
-            search_results.append(search_result)
-            existing_paths.add(result['path'])
-
-    return search_results
+            for hit in hits
+        ]
+        
+        return search_results
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Search failed: {str(e)}")
 
 @router.get("/{menu_id}", response_model=BlogMenu)
 async def read_menu_item(menu_id: int, current_user: dict = Depends(check_authorized_user)):
@@ -119,7 +128,10 @@ async def update_menu_item(menu_id: int, menu: BlogMenuUpdate, current_user: dic
     db_menu = await get_blog_menu(menu_id)
     if db_menu is None:
         raise HTTPException(status_code=404, detail="Menu item not found")
-    return await update_blog_menu(menu_id, menu)
+    updated_menu = await update_blog_menu(menu_id, menu)
+    # Sync to Elasticsearch
+    await blog_elastic.publish_menu(updated_menu)
+    return updated_menu
 
 @router.delete("/{menu_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_menu_item(menu_id: int, current_user: dict = Depends(get_current_user)):
@@ -127,6 +139,8 @@ async def delete_menu_item(menu_id: int, current_user: dict = Depends(get_curren
     if db_menu is None:
         raise HTTPException(status_code=404, detail="Menu item not found")
     await delete_blog_menu(menu_id)
+    # Delete from Elasticsearch
+    await blog_elastic.delete_menu(menu_id)
     return {"detail": "Menu item deleted successfully"}
 
 @router.get("/{menu_id}/content", response_model=BlogContentSchema)
@@ -226,12 +240,47 @@ async def check_path_exists(
 
 @router.post("/publish", response_model=BlogMenu)
 async def publish_menu_item(request: PublishMenuRequest, current_user: dict = Depends(get_current_user)):
-    # Find the menu item by path
     db_menu = await BlogMenuModel.get_or_none(path=request.path)
     if db_menu is None:
         raise HTTPException(status_code=404, detail="Menu item not found")
     
-    # Update the is_published field based on the request
     db_menu.is_published = request.isPublished
-    await db_menu.save()  # Save the updated menu item
+    await db_menu.save()
+    
+    # Sync updated publish status to Elasticsearch
+    await blog_elastic.publish_menu(db_menu)
+    
     return db_menu
+
+@router.post("/sync-elasticsearch", status_code=status.HTTP_200_OK)
+async def sync_all_to_elasticsearch():
+    """
+    Sync all existing blog menus and contents to Elasticsearch.
+    This is useful for initial setup or recovery.
+    """
+    try:
+        # Get all blog menus
+        menus = await BlogMenuModel.all()
+        menu_count = len(menus)
+        
+        # Get all blog contents
+        contents = await BlogContentModel.all()
+        content_count = len(contents)
+        
+        # Reindex everything
+        await blog_elastic.reindex_all()
+        
+        return {
+            "status": "success",
+            "message": "Successfully synced all data to Elasticsearch",
+            "details": {
+                "menus_synced": menu_count,
+                "contents_synced": content_count
+            }
+        }
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to sync data to Elasticsearch: {str(e)}"
+        )

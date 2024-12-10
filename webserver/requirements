@@ -7,3 +7,5 @@ python-multipart
 bcrypt
 openai
 beautifulsoup4
+elasticsearch
+aiohttp

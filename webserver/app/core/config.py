@@ -1,6 +1,7 @@
 from typing import List
 from pydantic_settings import BaseSettings
 from functools import lru_cache
+import logging
 
 class Settings(BaseSettings):
     PROJECT_NAME: str
@@ -11,11 +12,19 @@ class Settings(BaseSettings):
     ALLOWED_ORIGINS: str  # Will be converted to list in get_settings()
     OPENAI_API_KEY: str
     LOG_FILE: str
+    ELASTICSEARCH_HOST: str = "http://localhost:9200"
 
     class Config:
         env_file = ".env"
         env_file_encoding = 'utf-8'
         case_sensitive = True
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S'
+)
 
 @lru_cache()
 def get_settings() -> Settings:

@@ -9,8 +9,10 @@ from app.models.blog_menu import BlogMenu
 from app.crud.blog_menu import get_blog_menu_by_path
 from app.api.v1.auth import get_current_user
 from app.models.user import User
+from app.services.blogpost_elastic import BlogpostElasticService
 
 router = APIRouter()
+blog_elastic = BlogpostElasticService()
 
 # Add constant at the top of the file
 RESERVED_PATHS = {'/new-page'}  # Can be expanded for other reserved paths
@@ -27,6 +29,10 @@ async def create_blog_content(blog_content_data: BlogContentCreate, current_user
         raise HTTPException(status_code=400, detail="Blog content already exists for this blog menu")
     
     content = await BlogContent.create(**blog_content_data.dict())
+    
+    # Sync to Elasticsearch
+    await blog_elastic.publish_content(content)
+    
     return await BlogContentSchema.from_tortoise_orm(content)
 
 @router.get("/", response_model=List[BlogContentSchema])
@@ -64,10 +70,14 @@ async def update_or_create_blog_content(blog_content_data: BlogContentUpdate, cu
             component="BlogContent",  # Default component, adjust if needed
             short_name=blog_content_data.title[:50]  
         )
+        # Sync menu to Elasticsearch
+        await blog_elastic.publish_menu(blog_menu)
     else:
         if blog_menu.title != blog_content_data.title:
             blog_menu.title = blog_content_data.title
             await blog_menu.save()
+            # Sync updated menu to Elasticsearch
+            await blog_elastic.publish_menu(blog_menu)
 
     # Check if the content already exists for this blog menu
     existing_content = await BlogContent.get_or_none(blog_menu=blog_menu)
@@ -123,6 +133,9 @@ async def update_or_create_blog_content(blog_content_data: BlogContentUpdate, cu
     await blog_menu.save()
     await content.save()
     
+    # Sync content to Elasticsearch
+    await blog_elastic.publish_content(content)
+    
     # Convert the Tortoise ORM model to a dict, then to a Pydantic model
     content_dict = await BlogContent.get(id=content.id).values()
     return BlogContentSchema(**content_dict)
@@ -165,6 +178,10 @@ async def delete_blog_content(content_id: int, current_user: Annotated[User, Dep
     content = await BlogContent.get_or_none(id=content_id)
     if not content:
         raise HTTPException(status_code=404, detail="Blog content not found")
+    
+    # Delete from Elasticsearch first
+    await blog_elastic.delete_content(content_id)
+    
     await content.delete()
     return {"message": "Blog content deleted successfully"}
 
@@ -190,6 +207,11 @@ async def delete_blog_content_by_path(path: str, current_user: Annotated[User, D
     if not blog_menu:
         raise HTTPException(status_code=404, detail="Blog menu not found")
 
+    # Get content before deletion for Elasticsearch cleanup
+    content = await BlogContent.get_or_none(blog_menu=blog_menu)
+    if content:
+        await blog_elastic.delete_content(content.id)
+
     # Get the parent of the blog_menu
     parent = await BlogMenu.get_or_none(path=blog_menu.parent)
 
@@ -203,8 +225,22 @@ async def delete_blog_content_by_path(path: str, current_user: Annotated[User, D
 
     # Remove blog_content
     await BlogContent.filter(blog_menu=blog_menu).delete()
-
-    # Remove blog_menu
+    
+    # Delete menu from Elasticsearch
+    await blog_elastic.delete_menu(blog_menu.id)
+    
     await blog_menu.delete()
 
     return {"message": "Blog content and menu deleted successfully"}
+
+@router.post("/reindex")
+async def reindex_all_content(current_user: Annotated[User, Depends(get_current_user)]):
+    # You might want to add additional admin-only checks here
+    try:
+        result = await blog_elastic.reindex_all()
+        return {"message": "Reindexing completed successfully", "details": result}
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to reindex content: {str(e)}"
+        )

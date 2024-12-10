@@ -68,6 +68,28 @@ function SearchPopup({ isOpen, onClose, searchTerm, onSearchChange }) {
     });
   };
 
+  const highlightKeywords = (text, searchQuery) => {
+    if (!text || !searchQuery) return text;
+    
+    // Escape special characters in the search query
+    const escapedQuery = searchQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    
+    // Split into words and create regex pattern
+    const keywords = escapedQuery.split(/\s+/).filter(word => word.length > 0);
+    const pattern = new RegExp(`(${keywords.join('|')})`, 'gi');
+    
+    // Split the text into parts that match/don't match the keywords
+    const parts = text.split(pattern);
+    
+    return parts.map((part, i) => {
+      // Check if this part matches any of the keywords
+      if (keywords.some(keyword => part.toLowerCase() === keyword.toLowerCase())) {
+        return <span key={i} className="highlight">{part}</span>;
+      }
+      return part;
+    });
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -97,9 +119,13 @@ function SearchPopup({ isOpen, onClose, searchTerm, onSearchChange }) {
                 onClick={() => handleResultClick(result.path)}
               >
                 <div className="result-main">
-                  <span className="result-title">{result.title}</span>
+                  <span className="result-title">
+                    {highlightKeywords(result.title, searchTerm)}
+                  </span>
                   {result.content_preview && (
-                    <p className="result-preview">{result.content_preview}</p>
+                    <p className="result-preview">
+                      {highlightKeywords(result.content_preview, searchTerm)}
+                    </p>
                   )}
                 </div>
                 <div className="result-meta">

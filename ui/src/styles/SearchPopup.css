@@ -264,3 +264,10 @@
 .dark-mode .result-meta {
   color: var(--text-secondary-dark);
 } 
+.search-results .highlight {
+  color: var(--link-light);
+  font-weight: 700;
+}
+.dark-mode .search-results .highlight {
+  color: var(--link-dark);
+} 

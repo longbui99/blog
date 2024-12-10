@@ -5,6 +5,7 @@ from app.core.database import init_db
 from app.core.cors import setup_cors
 from app.api.v1 import sitemap
 from app.core.config import settings
+from app.services.elasticsearch import ElasticsearchService
 import logging
 import sys
 
@@ -63,10 +64,13 @@ app.include_router(blog_menu.router, prefix="/api/v1/blog-menu", tags=["blog men
 app.include_router(blog_content.router, prefix="/api/v1/blog-content", tags=["blog content"])
 app.include_router(chatgpt.router, prefix="/api/v1/chatgpt", tags=["Chat GPT"])
 
+es_service = ElasticsearchService()
+
 @app.on_event("startup")
 async def startup_event():
     logging.info("Application is starting up")
     await init_db()
+    await es_service.initialize()
 
 @app.on_event("shutdown")
 async def shutdown_event():
