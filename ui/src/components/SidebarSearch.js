@@ -33,7 +33,7 @@ function SidebarSearch({ onSearch, initialSearchTerm = '' }) {
                 <input
                     ref={sidebarSearchInputRef}
                     type="text"
-                    placeholder="Search..."
+                    placeholder="Search... (Shift+?)"
                     value={searchTerm}
                     onChange={(e) => handleSearchChange(e.target.value)}
                     className="search-input"
