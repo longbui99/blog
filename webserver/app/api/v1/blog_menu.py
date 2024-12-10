@@ -8,6 +8,7 @@ from app.models.search import SearchResult
 from app.crud.blog_menu import create_blog_menu, get_blog_menu, get_blog_menus, update_blog_menu, delete_blog_menu
 from app.api.v1.auth import get_current_user, check_authorized_user
 from tortoise.expressions import Q
+from tortoise import connections
 import logging
 import re
 from bs4 import BeautifulSoup
@@ -30,58 +31,77 @@ async def search_content(
     q: str = Query(..., description="Search query string")
 ):
     """
-    Search across blog menus and content.
+    Search across blog menus and content using GIN index.
     Does not require authentication.
-    Query parameter must be at least 2 characters long.
+    Uses full-text search capabilities.
     """
     def clean_content(content: str) -> str:
-        # Remove HTML tags using BeautifulSoup
         soup = BeautifulSoup(content, 'html.parser')
         text = soup.get_text(separator=' ', strip=True)
-        # Remove extra whitespace
         text = re.sub(r'\s+', ' ', text)
-        # Limit to 150 characters
         return text[:200] + "..." if len(text) > 200 else text
 
-    # Search in blog menus
-    menu_results = await BlogMenuModel.filter(
-        Q(title__icontains=q) | 
-        Q(path__icontains=q)
-    ).filter(is_published=True)
-
-    # Search in blog content
-    content_results = await BlogContentModel.filter(
-        Q(title__icontains=q) | 
-        Q(content__icontains=q)
+    # Raw SQL query using GIN index
+    search_query = """
+    WITH combined_results AS (
+        -- Search in blog_menu
+        SELECT 
+            title,
+            path,
+            updated_at,
+            NULL as content,
+            NULL as author,
+            NULL as blog_menu_id,
+            ts_rank(to_tsvector('english', title || ' ' || path), plainto_tsquery('english', $1)) as rank
+        FROM blog_menus
+        WHERE 
+            is_published = TRUE 
+            AND to_tsvector('english', title || ' ' || path) @@ plainto_tsquery('english', $1)
+        
+        UNION ALL
+        
+        -- Search in blog_content
+        SELECT 
+            bc.title,
+            bm.path,
+            bc.updated_at,
+            bc.content,
+            bc.author,
+            bc.blog_menu_id,
+            ts_rank(to_tsvector('english', bc.title || ' ' || bc.content), plainto_tsquery('english', $2)) as rank
+        FROM blog_contents bc
+        JOIN blog_menus bm ON bc.blog_menu_id = bm.id
+        WHERE 
+            bm.is_published = TRUE
+            AND to_tsvector('english', bc.title || ' ' || bc.content) @@ plainto_tsquery('english', $2)
     )
-
-    # Combine results
+    SELECT * FROM combined_results
+    ORDER BY rank DESC
+    LIMIT 40;
+    """
+    
+    # Execute raw query using Tortoise connection
+    conn = connections.get("default")
+    results = await conn.execute_query_dict(search_query, [q, q])
+    
+    # Process results
     search_results = []
+    existing_paths = set()
     
-    # Add menu results
-    for menu in menu_results:
-        search_results.append(SearchResult(
-            title=menu.title,
-            path=menu.path,
-            updated_at=menu.updated_at
-        ))
-    
-    # Add content results, avoiding duplicates
-    existing_paths = {result.path for result in search_results}
-    for content in content_results:
-        menu = await BlogMenuModel.get_or_none(id=content.blog_menu_id)
-        if menu and menu.path not in existing_paths:
-            # Clean and limit the content preview
-            content_preview = clean_content(content.content)
+    for result in results:
+        if result['path'] not in existing_paths:
+            search_result = SearchResult(
+                title=result['title'],
+                path=result['path'],
+                updated_at=result['updated_at'],
+                author=result['author']
+            )
             
-            search_results.append(SearchResult(
-                title=content.title,
-                path=menu.path,
-                content_preview=content_preview,
-                author=content.author,
-                updated_at=content.updated_at
-            ))
-            existing_paths.add(menu.path)
+            if result['content']:
+                search_result.content_preview = clean_content(result['content'])
+            
+            search_results.append(search_result)
+            existing_paths.add(result['path'])
 
     return search_results
 

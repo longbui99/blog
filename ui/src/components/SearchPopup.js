@@ -10,6 +10,18 @@ function SearchPopup({ isOpen, onClose, searchTerm, onSearchChange }) {
   const [isClosing, setIsClosing] = useState(false);
   const navigate = useNavigate();
 
+  // Handle Escape key
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === 'Escape' && isOpen) {
+        handleClose();
+      }
+    };
+
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [isOpen]);
+
   // Debounce search function
   useEffect(() => {
     const debounceTimer = setTimeout(async () => {
@@ -43,7 +55,7 @@ function SearchPopup({ isOpen, onClose, searchTerm, onSearchChange }) {
 
   const handleSearchChange = (e) => {
     const value = e.target.value;
-    onSearchChange(value); // This will update both popup and sidebar search
+    onSearchChange(value);
   };
 
   const formatDate = (dateString) => {

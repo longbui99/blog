@@ -5,11 +5,12 @@ function SidebarSearch({ onSearch, initialSearchTerm = '' }) {
     const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
     const [showPopup, setShowPopup] = useState(false);
     const sidebarSearchInputRef = useRef(null);
+
     useEffect(() => {
         const handleKeyPress = (event) => {
             if (event.shiftKey && event.key === '?') {
                 event.preventDefault();
-                setShowPopup(true);
+                sidebarSearchInputRef.current?.focus();
             }
         };
 
