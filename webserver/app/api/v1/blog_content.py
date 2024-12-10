@@ -180,7 +180,7 @@ async def delete_blog_content(content_id: int, current_user: Annotated[User, Dep
         raise HTTPException(status_code=404, detail="Blog content not found")
     
     # Delete from Elasticsearch first
-    await blog_elastic.delete_content(content_id)
+    await blog_elastic.delete_content(content)
     
     await content.delete()
     return {"message": "Blog content deleted successfully"}
@@ -210,7 +210,7 @@ async def delete_blog_content_by_path(path: str, current_user: Annotated[User, D
     # Get content before deletion for Elasticsearch cleanup
     content = await BlogContent.get_or_none(blog_menu=blog_menu)
     if content:
-        await blog_elastic.delete_content(content.id)
+        await blog_elastic.delete_content(content)
 
     # Get the parent of the blog_menu
     parent = await BlogMenu.get_or_none(path=blog_menu.parent)

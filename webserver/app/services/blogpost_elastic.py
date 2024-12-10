@@ -57,7 +57,7 @@ class BlogpostElasticService:
 
             doc_content = await self._convert_menu_to_doc(menu)
             doc = Document(
-                id=doc_content["id"],
+                id=str(menu.id),
                 content=doc_content
             )
 
@@ -126,7 +126,7 @@ class BlogpostElasticService:
     async def delete_menu(self, menu_id: int) -> Dict[str, Any]:
         """Delete menu from Elasticsearch"""
         try:
-            doc_id = f"menu_{menu_id}"
+            doc_id = f"{menu_id}"
             response = await self.es_service.delete_document(
                 doc_id=doc_id,
                 index_name=self.blog_index
@@ -136,10 +136,14 @@ class BlogpostElasticService:
             print(f"Error deleting menu from Elasticsearch: {str(e)}")
             raise
 
-    async def delete_content(self, content_id: int) -> Dict[str, Any]:
+    async def delete_content(self, content: BlogContent) -> Dict[str, Any]:
         """Delete content from Elasticsearch"""
         try:
-            doc_id = f"content_{content_id}"
+            menu = await BlogMenu.get(Q(id=content.blog_menu_id))
+            if not menu:
+                logger.warning(f"Menu not found for content {content.id}")
+                return {"status": "error", "message": "Menu not found"}
+            doc_id = str(menu.id)
             response = await self.es_service.delete_document(
                 doc_id=doc_id,
                 index_name=self.blog_index
