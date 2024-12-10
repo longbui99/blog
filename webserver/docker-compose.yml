@@ -3,8 +3,9 @@ services:
   postgres:
     image: postgres:${POSTGRES_VERSION:-13}
     ports:
-      - "5432:5432"
+      - "5444:5432"
     volumes:
+      - ../blogdb.dump:/opt/blogdb.dump
       - postgres_data:/var/lib/postgresql/data
     restart: unless-stopped
     environment:
@@ -14,5 +15,4 @@ services:
     tty: true
 
 volumes:
-  odoo_data:
   postgres_data:
