@@ -121,7 +121,7 @@
 .result-title {
   font-size: 1rem;
   font-weight: 500;
-  color: var(--primary-color);
+  color: var(--text-light);
 }
 
 .result-path {
@@ -195,7 +195,7 @@
 }
 
 .dark-mode .result-title {
-  color: var(--primary-color-dark);
+  color: var(--text-dark);
 }
 
 .dark-mode .result-path,
@@ -257,7 +257,7 @@
 /* Dark mode support */
 @media (prefers-color-scheme: dark) {
   .result-title {
-    color: var(--primary-color-dark);
+    color: var(--text-dark);
   }
 
   .result-path,
@@ -269,7 +269,7 @@
 
 /* When dark mode class is explicitly set */
 .dark-mode .result-title {
-  color: var(--primary-color-dark);
+  color: var(--text-dark);
 }
 
 .dark-mode .result-path,
