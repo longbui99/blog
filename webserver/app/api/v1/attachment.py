@@ -34,7 +34,7 @@ async def get_attachment_endpoint(filename: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
-@router.post("/", status_code=201)
+@router.post("/filestore", status_code=201)
 async def create_attachment_endpoint(data: AttachmentCreate):
     try:
         attachment = await create_attachment(data)

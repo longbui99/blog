@@ -8,7 +8,7 @@ class AttachmentProcessor extends BaseProcessor {
 
     async createAttachment(base64Data, originalFilename, path) {
         try {
-            return await this.makeRequest('post', this.baseEndpoint, {
+            return await this.makeRequest('post', this.baseEndpoint + "/filestore", {
                 path: path,
                 file_data: base64Data,
                 original_filename: originalFilename,
