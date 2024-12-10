@@ -2,6 +2,7 @@ from typing import List
 from pydantic_settings import BaseSettings
 from functools import lru_cache
 import logging
+import os
 
 class Settings(BaseSettings):
     PROJECT_NAME: str
@@ -13,6 +14,7 @@ class Settings(BaseSettings):
     OPENAI_API_KEY: str
     LOG_FILE: str
     ELASTICSEARCH_HOST: str = "http://localhost:9200"
+    ATTACHMENT_PATH: str = "/Users/longbui/Documents/Software Engineer/Blogs/env/storage"
 
     class Config:
         env_file = ".env"

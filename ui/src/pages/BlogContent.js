@@ -11,6 +11,23 @@ import { parseContent } from '../utils/contentParser';
 import { useConfirmation } from '../contexts/ConfirmationContext';
 import { ROUTES, isNewPageRoute } from '../utils/routeConstants';
 import { useMenuContext } from '../contexts/MenuContext';
+import { attachmentProcessor } from '../processor/attachmentProcessor';
+import { processRawContent } from '../utils/contentUtils';
+
+async function updateBlogContent(rawContent, path, routeInfo) {
+    const processedContent = await processRawContent(rawContent, path);
+
+    const blogContentUpdate = {
+        path: path,
+        content: processedContent,
+        title: routeInfo.title,
+        parent: routeInfo.parent,
+        previous: routeInfo.previous,
+        next: routeInfo.next
+    };
+
+    await blogContentProcessor.saveOrUpdateContent(blogContentUpdate);
+}
 
 function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onContentLoaded }) {
     const [content, setContent] = useState('');
@@ -108,16 +125,7 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
                 return;
             }
 
-            const blogContentUpdate = {
-                path: path,
-                content: rawContent,
-                title: routeInfo.title,
-                parent: routeInfo.parent,
-                previous: routeInfo.previous,
-                next: routeInfo.next
-            };
-
-            await blogContentProcessor.saveOrUpdateContent(blogContentUpdate);
+            await updateBlogContent(rawContent, path, routeInfo);
             
             showNotification({
                 type: 'success',
