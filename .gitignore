@@ -262,4 +262,5 @@ dist
 exec.sh
 
 last_cmt.txt 
- 
+*.dump
+*.sql
