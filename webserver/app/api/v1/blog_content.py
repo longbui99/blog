@@ -209,8 +209,6 @@ async def delete_blog_content_by_path(path: str, current_user: Annotated[User, D
 
     # Get content before deletion for Elasticsearch cleanup
     content = await BlogContent.get_or_none(blog_menu=blog_menu)
-    if content:
-        await blog_elastic.delete_content(content)
 
     # Get the parent of the blog_menu
     parent = await BlogMenu.get_or_none(path=blog_menu.parent)

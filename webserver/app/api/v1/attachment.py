@@ -59,7 +59,7 @@ async def delete_attachment_endpoint(attachment_id: int):
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/cleanup", status_code=200)
-async def cleanup_attachments(current_user: dict = Depends(get_current_user)):
+async def cleanup_attachments():
     """
     Cleanup orphaned attachment files that are no longer referenced in the database.
     Returns the number of files cleaned up.
