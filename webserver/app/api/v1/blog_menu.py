@@ -1,18 +1,89 @@
-from fastapi import APIRouter, HTTPException, Depends, status, Body
+from fastapi import APIRouter, HTTPException, Depends, status, Body, Query
 from typing import List
 from app.schemas.blog_menu import BlogMenuCreate, BlogMenu, BlogMenuUpdate, BlogMenuItem, PublishMenuRequest
 from app.schemas.blog_content import BlogContent as BlogContentSchema
 from app.models.blog_content import BlogContent as BlogContentModel
 from app.models.blog_menu import BlogMenu as BlogMenuModel
+from app.models.search import SearchResult
 from app.crud.blog_menu import create_blog_menu, get_blog_menu, get_blog_menus, update_blog_menu, delete_blog_menu
 from app.api.v1.auth import get_current_user, check_authorized_user
+from tortoise.expressions import Q
 import logging
+import re
+from bs4 import BeautifulSoup
 
 router = APIRouter()
 
 @router.post("/", response_model=BlogMenu, status_code=status.HTTP_201_CREATED)
 async def create_menu_item(menu: BlogMenuCreate, current_user: dict = Depends(get_current_user)):
     return await create_blog_menu(menu)
+
+@router.get("/", response_model=List[BlogMenuItem])
+async def read_menu_items(skip: int = 0, limit: int = 100, current_user: dict = Depends(check_authorized_user)):
+    menus = await get_blog_menus()
+    if current_user:
+        return menus
+    return [menu for menu in menus if menu['is_published']]
+
+@router.get("/search", response_model=List[SearchResult])
+async def search_content(
+    q: str = Query(..., description="Search query string")
+):
+    """
+    Search across blog menus and content.
+    Does not require authentication.
+    Query parameter must be at least 2 characters long.
+    """
+    def clean_content(content: str) -> str:
+        # Remove HTML tags using BeautifulSoup
+        soup = BeautifulSoup(content, 'html.parser')
+        text = soup.get_text(separator=' ', strip=True)
+        # Remove extra whitespace
+        text = re.sub(r'\s+', ' ', text)
+        # Limit to 150 characters
+        return text[:200] + "..." if len(text) > 200 else text
+
+    # Search in blog menus
+    menu_results = await BlogMenuModel.filter(
+        Q(title__icontains=q) | 
+        Q(path__icontains=q)
+    ).filter(is_published=True)
+
+    # Search in blog content
+    content_results = await BlogContentModel.filter(
+        Q(title__icontains=q) | 
+        Q(content__icontains=q)
+    )
+
+    # Combine results
+    search_results = []
+    
+    # Add menu results
+    for menu in menu_results:
+        search_results.append(SearchResult(
+            title=menu.title,
+            path=menu.path,
+            updated_at=menu.updated_at
+        ))
+    
+    # Add content results, avoiding duplicates
+    existing_paths = {result.path for result in search_results}
+    for content in content_results:
+        menu = await BlogMenuModel.get_or_none(id=content.blog_menu_id)
+        if menu and menu.path not in existing_paths:
+            # Clean and limit the content preview
+            content_preview = clean_content(content.content)
+            
+            search_results.append(SearchResult(
+                title=content.title,
+                path=menu.path,
+                content_preview=content_preview,
+                author=content.author,
+                updated_at=content.updated_at
+            ))
+            existing_paths.add(menu.path)
+
+    return search_results
 
 @router.get("/{menu_id}", response_model=BlogMenu)
 async def read_menu_item(menu_id: int, current_user: dict = Depends(check_authorized_user)):
@@ -22,13 +93,6 @@ async def read_menu_item(menu_id: int, current_user: dict = Depends(check_author
     if not menu.is_published and current_user is None:
         raise HTTPException(status_code=403, detail="This menu item is not published")
     return menu
-
-@router.get("/", response_model=List[BlogMenuItem])
-async def read_menu_items(skip: int = 0, limit: int = 100, current_user: dict = Depends(check_authorized_user)):
-    menus = await get_blog_menus()
-    if current_user:
-        return menus
-    return [menu for menu in menus if menu['is_published']]
 
 @router.put("/{menu_id}", response_model=BlogMenu)
 async def update_menu_item(menu_id: int, menu: BlogMenuUpdate, current_user: dict = Depends(get_current_user)):

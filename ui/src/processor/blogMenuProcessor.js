@@ -33,6 +33,10 @@ class BlogMenuProcessor extends BaseProcessor {
   async publishBlogMenu(path, isPublished) {
     return await this.makeRequest('post', `${this.baseEndpoint}/publish`, { path, isPublished });
   }
+
+  async searchContent(searchTerm) {
+    return await this.makeRequest('get', `${this.baseEndpoint}/search?q=${encodeURIComponent(searchTerm)}`);
+  }
 }
 
 // Export a singleton instance of the BlogMenuProcessor

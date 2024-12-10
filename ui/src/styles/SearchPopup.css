@@ -1,0 +1,279 @@
+.search-popup-overlay {
+  position: fixed;
+  top: -50px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 10vh;
+  z-index: 1001;
+  animation: fadeIn 0.2s ease-out;
+  opacity: 1;
+  transition: opacity 0.2s ease-out;
+  width: 100vw;
+  height: 100vh;
+}
+
+.search-popup-overlay.closing {
+  opacity: 0;
+}
+
+.search-popup-container {
+  width: 80%;
+  height: 80vh;
+  background-color: var(--background-light);
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  animation: slideDown 0.3s ease-out;
+  transform: translateY(0);
+  transition: transform 0.2s ease-out;
+}
+
+.search-popup-overlay.closing .search-popup-container {
+  transform: translateY(-20px);
+}
+
+.search-popup-header {
+  padding: 20px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.search-input-wrapper {
+  position: relative;
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--text-secondary);
+  font-size: 1rem;
+}
+
+.search-input {
+  width: 100%;
+  padding: 12px 12px 12px 40px;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  background-color: var(--background-light);
+  color: var(--text-light);
+  transition: all 0.3s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--link-light);
+  box-shadow: 0 0 0 2px rgba(255, 107, 107, 0.1);
+}
+
+.close-button {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
+
+.close-button:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  color: var(--text-light);
+}
+
+.search-results {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.search-result-item {
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.search-result-item:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.result-main {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.result-title {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--primary-color);
+}
+
+.result-path {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.result-preview {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin: 4px 0;
+  line-height: 1.3;
+  max-height: 2.6em;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.result-meta {
+  display: flex;
+  gap: 12px;
+  margin-top: 4px;
+  font-size: 0.8rem;
+  color: var(--text-secondary, #666);
+}
+
+.result-author,
+.result-date {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.result-author svg,
+.result-date svg {
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
+.no-results {
+  text-align: center;
+  color: var(--text-secondary);
+  padding: 20px;
+  font-size: 1.1rem;
+}
+
+/* Dark mode styles */
+.dark-mode .search-popup-container {
+  background-color: var(--background-dark);
+}
+
+.dark-mode .search-input {
+  background-color: var(--background-dark);
+  color: var(--text-dark);
+  border-color: var(--border-dark);
+}
+
+.dark-mode .search-input:focus {
+  border-color: var(--link-dark);
+  box-shadow: 0 0 0 2px rgba(179, 152, 0, 0.1);
+}
+
+.dark-mode .close-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--text-dark);
+}
+
+.dark-mode .search-result-item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.dark-mode .result-title {
+  color: var(--primary-color-dark);
+}
+
+.dark-mode .result-path,
+.dark-mode .result-preview,
+.dark-mode .result-meta {
+  color: var(--text-secondary-dark);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .search-popup-container {
+    width: 95%;
+    height: 80vh;
+  }
+
+  .search-popup-header {
+    padding: 15px;
+  }
+
+  .search-input {
+    font-size: 1rem;
+  }
+
+  .result-title {
+    font-size: 1rem;
+  }
+
+  .result-path {
+    font-size: 0.8rem;
+  }
+
+  .result-meta {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .result-title {
+    color: var(--primary-color-dark);
+  }
+
+  .result-path,
+  .result-preview,
+  .result-meta {
+    color: var(--text-secondary-dark);
+  }
+}
+
+/* When dark mode class is explicitly set */
+.dark-mode .result-title {
+  color: var(--primary-color-dark);
+}
+
+.dark-mode .result-path,
+.dark-mode .result-preview,
+.dark-mode .result-meta {
+  color: var(--text-secondary-dark);
+} 
