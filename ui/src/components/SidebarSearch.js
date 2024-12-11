@@ -33,7 +33,6 @@ function SidebarSearch({ onSearch, initialSearchTerm = '' }) {
 
     const handleSearchChange = (value) => {
         setSearchTerm(value);
-        onSearch(value);
         setShowPopup(value.length > 0);
         if (value.length <= 0) {
             sidebarSearchInputRef.current?.focus();
