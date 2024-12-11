@@ -34,7 +34,7 @@ export function renderChildren(children) {
   }
 }
 
-export async function processRawContent(rawContent, path) {
+export async function processRawContent(rawContent, path, showNotification) {
     // Updated regex to specifically match image data URLs
     const base64Regex = /data:image\/(jpeg|png|gif|bmp|webp|svg\+xml);base64,([^"'\s]+)/g;
     let match;
@@ -57,6 +57,12 @@ export async function processRawContent(rawContent, path) {
             const attachmentUrl = `/attachments/${attachmentResponse.filename}`;
             updatedContent = updatedContent.replace(match[0], attachmentUrl);
         }
+        showNotification({
+            type: 'success',
+            title: 'Success',
+            message: 'Image processed successfully!',
+            duration: 1
+        });
     }
 
     return updatedContent;

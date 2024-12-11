@@ -5,10 +5,12 @@ function SidebarSearch({ onSearch, initialSearchTerm = '' }) {
     const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
     const [showPopup, setShowPopup] = useState(false);
     const sidebarSearchInputRef = useRef(null);
+    const [placeholder, setPlaceholder] = useState('');
 
     useEffect(() => {
         const handleKeyPress = (event) => {
-            if (event.shiftKey && event.key === '?') {
+            console.log(event.metaKey, event.key)
+            if (event.shiftKey && event.key === '?' || event.ctrlKey && event.key === '/' || event.metaKey && event.key === '/') {
                 event.preventDefault();
                 sidebarSearchInputRef.current?.focus();
             }
@@ -16,6 +18,17 @@ function SidebarSearch({ onSearch, initialSearchTerm = '' }) {
 
         document.addEventListener('keydown', handleKeyPress);
         return () => document.removeEventListener('keydown', handleKeyPress);
+    }, []);
+
+    useEffect(() => {
+        // Detect OS
+        const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+        
+        const shortcut = isMac 
+            ? 'Search... (⇧/ or ⌘/)'  // Mac symbols
+            : 'Search... (Shift+/ or Ctrl+/)'; // Windows/Linux
+            
+        setPlaceholder(shortcut);
     }, []);
 
     const handleSearchChange = (value) => {
@@ -33,7 +46,7 @@ function SidebarSearch({ onSearch, initialSearchTerm = '' }) {
                 <input
                     ref={sidebarSearchInputRef}
                     type="text"
-                    placeholder="Search... (Shift+?)"
+                    placeholder={placeholder}
                     value={searchTerm}
                     onChange={(e) => handleSearchChange(e.target.value)}
                     className="search-input"

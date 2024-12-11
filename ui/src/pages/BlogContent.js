@@ -11,11 +11,10 @@ import { parseContent } from '../utils/contentParser';
 import { useConfirmation } from '../contexts/ConfirmationContext';
 import { ROUTES, isNewPageRoute } from '../utils/routeConstants';
 import { useMenuContext } from '../contexts/MenuContext';
-import { attachmentProcessor } from '../processor/attachmentProcessor';
 import { processRawContent } from '../utils/contentUtils';
 
-async function updateBlogContent(rawContent, path, routeInfo) {
-    const processedContent = await processRawContent(rawContent, path);
+async function updateBlogContent(rawContent, path, routeInfo, showNotification) {
+    const processedContent = await processRawContent(rawContent, path, showNotification);
 
     const blogContentUpdate = {
         path: path,
@@ -125,7 +124,7 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
                 return;
             }
 
-            await updateBlogContent(rawContent, path, routeInfo);
+            await updateBlogContent(rawContent, path, routeInfo, showNotification);
             
             showNotification({
                 type: 'success',
