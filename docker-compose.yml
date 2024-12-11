@@ -35,7 +35,7 @@ services:
       - 5601:5601
     
   webserver:
-    image: longbui-blog-webserver
+    image: longbui-blog-webserver:latest
     build:
       context: ./webserver/builder
     volumes:
@@ -53,3 +53,4 @@ volumes:
   postgres_data:
   elasticsearch_data:
   webserver_data:
+ 
