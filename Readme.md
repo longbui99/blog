@@ -71,3 +71,5 @@ This configuration guarantees that the application is scalable, secure, and effi
    - Direct the domain to the public IP of your network.
    - Update the domain in the reverse proxy configuration file.
    - Patch and apply the Nginx configuration from the `blog.conf.template` file.
+
+5. **HAPPY CODING**
