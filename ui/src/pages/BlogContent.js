@@ -24,8 +24,11 @@ async function updateBlogContent(rawContent, path, routeInfo, showNotification) 
         previous: routeInfo.previous,
         next: routeInfo.next
     };
-
-    await blogContentProcessor.saveOrUpdateContent(blogContentUpdate);
+    if (processedContent){
+        return await blogContentProcessor.saveOrUpdateContent(blogContentUpdate);
+    } else {
+        return null;
+    }
 }
 
 function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onContentLoaded }) {
@@ -124,27 +127,27 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
                 return;
             }
 
-            await updateBlogContent(rawContent, path, routeInfo, showNotification);
-            
-            showNotification({
-                type: 'success',
-                title: 'Success',
-                message: 'Content saved successfully!',
-                duration: 1
-            });
-
-            setIsCreating(false);
-            setOriginalContent(null);
-            handleEditToggle();
-            
-            setTimeout(() => {
-                let location = window.location.href;
-                let index = location.indexOf('#');
-                if (index !== -1) {
-                    location = location.substring(0, index);
-                }
-                window.location.href = location;
-            }, 500);
+            var res = await updateBlogContent(rawContent, path, routeInfo, showNotification);
+            if (res){
+                showNotification({
+                    type: 'success',
+                    title: 'Success',
+                    message: 'Content saved successfully!',
+                    duration: 1
+                });
+                setIsCreating(false);
+                setOriginalContent(null);
+                handleEditToggle();
+                
+                setTimeout(() => {
+                    let location = window.location.href;
+                    let index = location.indexOf('#');
+                    if (index !== -1) {
+                        location = location.substring(0, index);
+                    }
+                    window.location.href = location;
+                }, 500);
+            }
 
         } catch (error) {
             console.error('Error saving content:', error);

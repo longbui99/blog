@@ -264,3 +264,6 @@ exec.sh
 last_cmt.txt 
 *.dump
 *.sql
+logs/
+storage/
+entrypoint.sh

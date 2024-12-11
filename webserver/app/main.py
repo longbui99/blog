@@ -1,6 +1,6 @@
 import logging
 from fastapi import FastAPI
-from app.api.v1 import auth, blog_menu, blog_content, chatgpt
+from app.api.v1 import auth, blog_menu, blog_content, chatgpt, attachment
 from app.core.database import init_db
 from app.core.cors import setup_cors
 from app.api.v1 import sitemap
@@ -24,6 +24,7 @@ setup_cors(app)
 # Include routers
 app.include_router(sitemap.router, tags=["sitemap"])
 app.include_router(auth.router, prefix="/api/v1/auth", tags=["auth"])
+app.include_router(attachment.router, prefix="/api/v1/attachments", tags=["attachments"])
 app.include_router(blog_menu.router, prefix="/api/v1/blog-menu", tags=["blog menu"])
 app.include_router(blog_content.router, prefix="/api/v1/blog-content", tags=["blog content"])
 app.include_router(chatgpt.router, prefix="/api/v1/chatgpt", tags=["Chat GPT"])

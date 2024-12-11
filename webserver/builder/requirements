@@ -1,4 +1,5 @@
-fastapi
+pydantic-settings
+fastapi[standard]
 tortoise-orm
 asyncpg
 python-jose[cryptography]
@@ -9,3 +10,4 @@ openai
 beautifulsoup4
 elasticsearch
 aiohttp
+pyjwt

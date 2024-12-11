@@ -33,7 +33,23 @@ services:
       - elasticsearch
     ports:
       - 5601:5601
+    
+  webserver:
+    image: longbui-blog-webserver
+    build:
+      context: ./webserver/builder
+    volumes:
+      - ./webserver:/opt/source
+      - ./webserver/logs:/opt/logs
+      - ./webserver/storage:/opt/storage
+      - webserver_data:/opt/webserver
+    ports:
+      - 8000:8000
+    depends_on:
+      - postgres
+      - elasticsearch
 
 volumes:
   postgres_data:
   elasticsearch_data:
+  webserver_data:

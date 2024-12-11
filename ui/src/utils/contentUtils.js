@@ -56,13 +56,21 @@ export async function processRawContent(rawContent, path, showNotification) {
             // Replace base64 data with attachment URL
             const attachmentUrl = `/attachments/${attachmentResponse.filename}`;
             updatedContent = updatedContent.replace(match[0], attachmentUrl);
+            showNotification({
+                type: 'success',
+                title: 'Success',
+                message: 'Image processed successfully!',
+                duration: 1
+            });
+        } else {
+            showNotification({
+                type: 'error',
+                title: 'Error',
+                message: 'Failed to process image!',
+                duration: 1
+            });
+            return null;
         }
-        showNotification({
-            type: 'success',
-            title: 'Success',
-            message: 'Image processed successfully!',
-            duration: 1
-        });
     }
 
     return updatedContent;
