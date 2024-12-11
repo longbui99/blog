@@ -490,6 +490,7 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
                         {
                             isEditing && (
                                 <EditPageContent 
+                                    isCreating={isCreating}
                                     onSave={handleSave}
                                     onCancel={handleEditToggle}
                                     currentPath={location.pathname}

@@ -5,7 +5,7 @@ import debounce from 'lodash/debounce';
 import { blogMenuProcessor } from '../processor/blogMenuProcessor';
 import { isNewPageRoute } from '../utils/routeConstants';
 
-function EditPageContent({ onSave, onCancel, currentPath, routes, blogPost }) {
+function EditPageContent({isCreating,onSave, onCancel, currentPath, routes, blogPost }) {
   const [title, setTitle] = useState('');
   const [urlPath, setUrlPath] = useState(currentPath);
   const [parent, setParent] = useState(null);
@@ -51,7 +51,22 @@ function EditPageContent({ onSave, onCancel, currentPath, routes, blogPost }) {
     fetchBlogContent();
   }, [currentPath, routes, blogPost]);
 
-  const handleTitleChange = (e) => setTitle(e.target.value);
+  const handleTitleChange = (e) => {
+    const newTitle = e.target.value;
+    setTitle(newTitle);
+    if(isCreating){
+        // Generate URL-friendly path from title
+        const urlPath = "/" +newTitle
+        .toLowerCase()                     // Convert to lowercase
+        .trim()                           // Remove leading/trailing spaces
+        .replace(/[^a-z0-9\s-]/g, '')     // Remove special characters except spaces and hyphens
+        .replace(/\s+/g, '-')             // Replace spaces with hyphens
+        .replace(/-+/g, '-');             // Replace multiple hyphens with single hyphen
+    
+        // Only update path if it hasn't been manually edited
+        setUrlPath(urlPath);
+    }
+  };
 
   const checkPathExists = useCallback(
     debounce(async (path) => {
@@ -132,6 +147,10 @@ function EditPageContent({ onSave, onCancel, currentPath, routes, blogPost }) {
     onSave(urlPath, { title, parent, previous, next });
   };
 
+  const handlePathChange = (e) => {
+    setUrlPath(e.target.value);
+  };
+
   return (
     <div className="edit-page-content">
       {isLoading && <p>Loading content...</p>}
@@ -165,7 +184,7 @@ function EditPageContent({ onSave, onCancel, currentPath, routes, blogPost }) {
             <input
               type="text"
               value={urlPath}
-              onChange={handleUrlPathChange}
+              onChange={handlePathChange}
               placeholder="Enter URL path *"
               className={`url-path-input ${
                 pathExists || validationErrors.urlPath || validationErrors.newPageUrl ? 'input-error' : ''
