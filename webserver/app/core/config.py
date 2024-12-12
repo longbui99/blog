@@ -1,4 +1,4 @@
-from typing import List
+from typing import Any
 from pydantic_settings import BaseSettings
 from functools import lru_cache
 import logging
@@ -17,9 +17,17 @@ class Settings(BaseSettings):
     ATTACHMENT_PATH: str = ""
 
     class Config:
-        env_file = "builder/.env"
+        env_file = ("builder/.env", ".env")  # Try multiple possible locations
         env_file_encoding = 'utf-8'
         case_sensitive = True
+        env_prefix = ""  
+
+    def check_not_empty(self) -> None:
+        """Validate all fields are not empty after model initialization"""
+        for field_name, field_value in self:
+            logging.info(f"Checking field {field_name} with value {field_value}")
+            if not field_value or (isinstance(field_value, str) and field_value.strip() == ""):
+                raise ValueError(f"Field {field_name} cannot be empty")
 
 # Configure logging
 logging.basicConfig(
@@ -33,6 +41,7 @@ def get_settings() -> Settings:
     settings = Settings()
     # Convert ALLOWED_ORIGINS string to list
     settings.ALLOWED_ORIGINS = [origin.strip() for origin in settings.ALLOWED_ORIGINS.split(',')]
+    settings.check_not_empty()
     return settings
 
 # Create settings instance
