@@ -14,7 +14,7 @@ class Settings(BaseSettings):
     OPENAI_API_KEY: str
     LOG_FILE: str
     ELASTICSEARCH_HOST: str = "http://localhost:9200"
-    ATTACHMENT_PATH: str = "/Users/longbui/Documents/Software Engineer/Blogs/env/storage"
+    ATTACHMENT_PATH: str = ""
 
     class Config:
         env_file = "builder/.env"
