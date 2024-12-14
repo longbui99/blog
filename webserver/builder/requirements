@@ -6,7 +6,6 @@ python-jose[cryptography]
 passlib[bcrypt]
 python-multipart
 bcrypt
-openai
 beautifulsoup4
 elasticsearch
 aiohttp

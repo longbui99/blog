@@ -35,13 +35,14 @@ services:
       - 5601:5601
     
   webserver:
-    image: longbui-blog-webserver:latest
+    image: builong99/blog-webserver:latest
     build:
-      context: ./webserver/builder
+      context: ./webserver
+      dockerfile: ./builder/Dockerfile
     volumes:
-      - ./webserver:/opt/source
-      - ./webserver/logs:/opt/logs
-      - ./webserver/storage:/opt/storage
+      # - ./webserver:/opt/source
+      # - ./webserver/logs:/opt/logs
+      # - ./webserver/storage:/opt/storage
       - webserver_data:/opt/webserver
     ports:
       - 8000:8000

@@ -14,7 +14,12 @@ class BlogpostElasticService:
     def __init__(self):
         self.es_service = ElasticsearchService()
         self.blog_index = "blog_posts"
-        logger.info("BlogpostElasticService initialized")
+        logger.info("BlogpostElasticService initialized")\
+    
+    def __new__(cls):
+        if not hasattr(cls, 'instance'):
+            cls.instance = super(BlogpostElasticService, cls).__new__(cls)
+        return cls.instance
 
     async def _convert_menu_to_doc(self, menu: BlogMenu) -> Dict[str, Any]:
         """Convert BlogMenu to Elasticsearch document"""
@@ -208,10 +213,6 @@ class BlogpostElasticService:
 
             await self.es_service.create_index(index_settings)
 
-            # Reindex all menus
-            # menus = await BlogMenu.all()
-            # for menu in menus:
-            #     await self.publish_menu(menu)
 
             # Reindex all contents
             contents = await BlogContent.all()

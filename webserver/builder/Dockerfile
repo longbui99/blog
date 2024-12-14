@@ -11,21 +11,18 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements and env files
-COPY ../.env .env.template /opt/
-COPY requirements /opt/
-
-# # Set up virtual environment
-# RUN python3 -m venv /opt/venv
-# ENV PATH="/opt/venv/bin:$PATH"
+COPY builder/requirements /opt/
 
 # Install Python dependencies
 RUN pip3 install --upgrade pip && \
-    pip3 install --no-cache-dir -r /opt/requirements
+    pip3 install -r /opt/requirements
 
 RUN mkdir -p /opt/logs || touch /opt/logs/app.log
 
+COPY . /opt/source
+COPY builder/.env builder/.env.template /opt/
 # Copy entrypoint script
-COPY entrypoint.sh /opt/
+COPY builder/entrypoint.sh /opt/
 RUN chmod +x /opt/entrypoint.sh
 
 # Set entrypoint

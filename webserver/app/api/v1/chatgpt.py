@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Depends, HTTPException
-from app.services.chatgpt import generate_text
 from app.api.v1.auth import get_current_user
 from app.schemas.chatgpt import ChatGPTRequest, ChatGPTResponse
 
