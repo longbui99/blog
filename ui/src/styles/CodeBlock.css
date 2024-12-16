@@ -188,9 +188,9 @@ pre code {
 
 .line-numbers span {
   color: #999;
-  font-size: 15px;
+  font-size: 12px;
   text-align: right;
-  min-width: 1.5em;
+  min-width: 1.88em;
 }
 
 .python-code pre {
