@@ -173,7 +173,7 @@ pre code {
 .line-numbers {
   display: flex;
   flex-direction: column;
-  padding: 1em 0.5em;
+  padding: 1.15em 0.5em 1em 0.5em;
   border-right: 1px solid #ddd;
   background: rgba(0, 0, 0, 0.05);
   user-select: none;
@@ -190,7 +190,7 @@ pre code {
   color: #999;
   font-size: 12px;
   text-align: right;
-  min-width: 1.88em;
+  min-width: 1.875em;
 }
 
 .python-code pre {
