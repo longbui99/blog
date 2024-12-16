@@ -32,7 +32,6 @@ To ensure security, please duplicate the `.env.template` file to create an `.env
 - `ALGORITHM`: The algorithm employed for token encoding.
 - `ACCESS_TOKEN_EXPIRE_MINUTES`: The duration for which access tokens remain valid, measured in minutes.
 - `ALLOWED_ORIGINS`: A comma-separated list of origins permitted for CORS.
-- `OPENAI_API_KEY`: The API key required for accessing OpenAI services.
 
 ## Proxy Block
 

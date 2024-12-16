@@ -11,7 +11,6 @@ class Settings(BaseSettings):
     ALGORITHM: str
     ACCESS_TOKEN_EXPIRE_MINUTES: int
     ALLOWED_ORIGINS: str  # Will be converted to list in get_settings()
-    OPENAI_API_KEY: str
     LOG_FILE: str
     ELASTICSEARCH_HOST: str = "http://localhost:9200"
     ATTACHMENT_PATH: str = ""

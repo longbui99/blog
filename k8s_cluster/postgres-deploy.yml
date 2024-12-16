@@ -1,0 +1,78 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: postgres-volume
+  namespace: blog
+  labels:
+    type: local
+    app: postgres
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: /data/postgresql
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-volume-claim
+  namespace: blog
+  labels:
+    app: postgres
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-deploy
+  namespace: blog
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: 'postgres:15'
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - secretRef:
+                name: postgres-secret
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: postgresdata
+      volumes:
+        - name: postgresdata
+          persistentVolumeClaim:
+            claimName: postgres-volume-claim
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-service
+  namespace: blog
+  labels:
+    app: postgres
+spec:
+  type: ClusterIP
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+  selector:
+    app: postgres

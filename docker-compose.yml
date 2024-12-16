@@ -35,7 +35,7 @@ services:
       - 5601:5601
     
   webserver:
-    image: builong99/blog-webserver:latest
+    image: builong99/blog-server:18
     build:
       context: ./webserver
       dockerfile: ./builder/Dockerfile
@@ -49,6 +49,16 @@ services:
     depends_on:
       - postgres
       - elasticsearch
+    environment:
+      PROJECT_NAME: BlogAPI
+      DATABASE_URL: postgres://longbui:longbui@postgres:5432/blogdb
+      SECRET_KEY: your-secret-key
+      ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: 30
+      ALLOWED_ORIGINS: http://localhost:3000
+      LOG_FILE: /opt/logs/app.log
+      ELASTICSEARCH_HOST: http://elasticsearch:9200
+      ATTACHMENT_PATH: /opt/storage
 
 volumes:
   postgres_data:
