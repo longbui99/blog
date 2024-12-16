@@ -9,7 +9,6 @@ function SidebarSearch({ onSearch, initialSearchTerm = '' }) {
 
     useEffect(() => {
         const handleKeyPress = (event) => {
-            console.log(event.metaKey, event.key)
             if (event.shiftKey && event.key === '?' || event.ctrlKey && event.key === '/' || event.metaKey && event.key === '/') {
                 event.preventDefault();
                 sidebarSearchInputRef.current?.focus();

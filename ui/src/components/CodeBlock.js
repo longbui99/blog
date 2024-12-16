@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { FaCopy } from 'react-icons/fa';
 import '../styles/CodeBlock.css';
-import tokenizePythonCode from '../utils/syntaxHighlighter';
+import tokenizeCode  from '../utils/syntaxHighlighter';
 
 // Import ThemeContext if it exists, otherwise create a dummy context
 let ThemeContext;
@@ -48,10 +48,11 @@ function CodeBlock({ code, language, inline }) {
   };
 
   const getHighlightedCode = () => {
-    if (language === 'python') {
-      return { __html: tokenizePythonCode(code) };
+    if (language != "plaintext"){
+      return { __html: tokenizeCode(code, language) };
+    } else {
+      return { __html: escapeHtml(code) };
     }
-    return { __html: escapeHtml(code) };
   };
 
   if (inline || !isMultiLine) {
@@ -75,7 +76,7 @@ function CodeBlock({ code, language, inline }) {
         </button>
       </div>
       <div className="code-container">
-        {language === 'python' && renderLineNumbers(lines)}
+        {language !== 'plaintext' && renderLineNumbers(lines)}
         <pre className={`language-${language}`}
              dangerouslySetInnerHTML={getHighlightedCode()} />
       </div>

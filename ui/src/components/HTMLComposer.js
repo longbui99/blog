@@ -357,14 +357,40 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
         // Handle heading shortcuts
         const isModifierKey = isMac ? e.metaKey : e.ctrlKey;
         const isSecondModifier = isMac ? e.shiftKey : e.altKey;
-
+        // In handleKeyDown function
+        if (e.key === 'Tab') {
+            const {selection, range, parentElement, isCodeBlock} = getSelectionInfo();
+            if (!selection.rangeCount) return;
+            if (isCodeBlock) {
+                e.preventDefault();
+                e.stopPropagation();
+                const textNode = document.createTextNode('    ');
+                range.insertNode(textNode);
+                range.setStartAfter(textNode);
+                range.setEndAfter(textNode);
+                handleContentChange(); // Update content if needed
+                return;
+            }
+            handleContentChange();
+            return;
+        }
         // Check for Enter key
         if (e.key === 'Enter') {
             // e.preventDefault(); // Prevent default behavior (like adding a new line)
-            const selection = window.getSelection();
-            if (!selection.rangeCount) return;
 
-            const range = selection.getRangeAt(0);
+            const {selection, range, parentElement, isCodeBlock} = getSelectionInfo();
+            if (!selection.rangeCount) return;
+            if (isCodeBlock) {
+                e.preventDefault();
+                e.stopPropagation();
+                const textNode = document.createTextNode('\n');
+                range.insertNode(textNode);
+                range.setStartAfter(textNode);
+                range.setEndAfter(textNode);
+                handleContentChange(); // Update content if needed
+                return;
+            }
+
             let currentNode = range.startContainer;
             
             // If we're in a text node, get its parent
@@ -653,6 +679,26 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
         if (!isEditing) return;
         e.preventDefault();
 
+        const {selection, range, parentElement, isCodeBlock} = getSelectionInfo();
+        if (!selection) return;
+
+        if (isCodeBlock) {
+            const text = e.clipboardData.getData('text/plain');
+            if (isCodeBlock) {
+                e.preventDefault();
+                e.stopPropagation();
+                const textNode = document.createTextNode(text);
+                range.insertNode(textNode);
+                range.setStartAfter(textNode);
+                range.setEndAfter(textNode);
+                handleContentChange(); // Update content if needed
+                return;
+            }
+            handleContentChange();
+            return;
+        }
+
+        // Rest of your paste handler...
         const items = e.clipboardData.items;
         for (let i = 0; i < items.length; i++) {
             const item = items[i];
@@ -741,7 +787,6 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
 
         // Check if the pasted text is a valid URL
         const urlPattern = /^(https?:\/\/[^\s]+)$/; // Basic regex for URL validation
-        const selection = window.getSelection();
         if (selectedContent) {
             const range = selection.getRangeAt(0);
             if (urlPattern.test(text)) {
@@ -959,6 +1004,24 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
                 console.error('Failed to copy: ', err); // Handle any errors
             });
         }
+    };
+
+    const getSelectionInfo = () => {
+        const selection = window.getSelection();
+        if (!selection.rangeCount) return null;
+        
+        const range = selection.getRangeAt(0);
+        const parentElement = range.commonAncestorContainer.parentElement;
+        
+        return {
+            selection,
+            range,
+            parentElement,
+            isCodeBlock: parentElement.tagName === 'CODE' || 
+                         parentElement.tagName === 'PRE' || 
+                         parentElement.closest('code') || 
+                         parentElement.closest('pre')
+        };
     };
 
     return (

@@ -20,16 +20,31 @@ function getLanguage(codeContent) {
     /\bimport\s+\w+/,        // import statements
     /\bfrom\s+\w+\s+import/, // from imports
     /__\w+__/,               // dunder methods
-    /:\s*$/m,                // lines ending with colon
     /\bself\b/,              // self parameter
     /\bpass\b/,              // pass statement
-    /#.*/,                   // Python comments
+    /\bprint\b/,              // pass statement
   ];
 
-  // Check if any Python pattern matches
-  const isPython = pythonPatterns.some(pattern => pattern.test(codeContent));
+  // Common YAML syntax patterns
+  const yamlPatterns = [
+    /^---(?:\s|$)/m,         // Document start marker
+    /^\s*[\w-]+:\s*(?:\S|$)/m, // Key-value pairs
+    /^\s*-\s+\w+/m,         // List items
+    /^\s*-?\s*[\w-]+:\s*>[^\S\r\n]*$/m, // Multiline string indicators
+    /^\s*-?\s*[\w-]+:\s*\|[^\S\r\n]*$/m, // Literal block indicators
+    /^\s*&\w+\s/m,          // Anchors
+    /^\s*\*\w+\s/m,         // Aliases
+    /^[^\s#].*:(?:\s+\S.*|\s*)$/m, // Key with optional value
+  ];
 
-  return isPython ? 'python' : 'plaintext';
+  const isPython = pythonPatterns.some(pattern => pattern.test(codeContent));
+  // If neither match, return plaintext
+  if (isPython) return 'python';
+  // Check for YAML patterns
+  const isYaml = yamlPatterns.some(pattern => pattern.test(codeContent));
+  if (isYaml) return 'yaml';
+  // Check for Python patterns
+  return 'plaintext';
 }
 
 export function styleMap(style){
