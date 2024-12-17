@@ -339,7 +339,7 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
                         "@type": "BlogPosting",
                         "headline": "${pageTitle}",
                         "description": "${pageDescription}",
-                        "image": "https://longbui.net/assets/images/logo.png",
+                        "image": "https://longbui.net/assets/images/logo/low-avatar.jpg",
                         "author": {
                             "@type": "Personal",
                             "name": "Long Bui"
@@ -349,7 +349,7 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
                             "name": "Long Bui",
                             "logo": {
                                 "@type": "ImageObject",
-                                "url": "https://longbui.net/assets/images/logo.png"
+                                "url": "https://longbui.net/assets/images/logo/low-avatar.jpg"
                             }
                         },
                         "datePublished": "2024-10-23T08:00:00+08:00",
@@ -363,7 +363,7 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
                 <div className="author-info">
                     <div className="author-avatar">
                         <img 
-                            src="https://longbui.net/assets/images/logo.png" 
+                            src="https://longbui.net/assets/images/logo/low-avatar.jpg" 
                             alt={author}
                             className="avatar-image"
                         />
