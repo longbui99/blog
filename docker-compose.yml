@@ -40,9 +40,9 @@ services:
       context: ./webserver
       dockerfile: ./builder/Dockerfile
     volumes:
-      # - ./webserver:/opt/source
-      # - ./webserver/logs:/opt/logs
-      # - ./webserver/storage:/opt/storage
+      - ./webserver:/opt/source
+      - ./webserver/logs:/opt/logs
+      - ./webserver/storage:/opt/storage
       - webserver_data:/opt/webserver
     ports:
       - 8000:8000
