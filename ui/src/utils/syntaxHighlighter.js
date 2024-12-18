@@ -2,7 +2,7 @@
 const TOKEN_PATTERNS = {
   python: {
     keyword: {
-      pattern: /(?<!\.)(?<!\w)\b(class|if|from|import|while|for|in|is|as|with|try|except|finally|raise|assert|and|or|not|elif|else|pass|break|continue|lambda|yield|global|nonlocal|def|return)\b/g,
+      pattern: /(?<!\.)(?<!\w)\b(class|if|from|import|while|for|in|is|as|with|try|except|finally|raise|assert|and|or|not|elif|else|pass|break|continue|lambda|yield|global|nonlocal|def|async|await|return)\b/g,
       className: 'token keyword'
     },
     dunder: {
