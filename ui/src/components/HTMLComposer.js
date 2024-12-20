@@ -164,6 +164,8 @@ const ImageComponent = ({ src, alt, initialWidth, onDelete, handleContentChange 
 
     const handleClick = (e) => {
         // Only delete if we weren't resizing
+        e.stopPropagation();
+        e.preventDefault();
         if (!isResizing && imageRef.current.offsetWidth === startWidthRef.current) {
             onDelete(e);
         }
