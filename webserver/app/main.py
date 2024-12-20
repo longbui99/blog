@@ -1,6 +1,6 @@
 import logging
 from fastapi import FastAPI
-from app.api.v1 import auth, blog_menu, blog_content, chatgpt, attachment
+from app.api.v1 import auth, blog_menu, blog_content, chatgpt, attachment, admin
 from app.core.database import init_db
 from app.core.cors import setup_cors
 from app.api.v1 import sitemap
@@ -28,6 +28,7 @@ app.include_router(attachment.router, prefix="/api/v1/attachments", tags=["attac
 app.include_router(blog_menu.router, prefix="/api/v1/blog-menu", tags=["blog menu"])
 app.include_router(blog_content.router, prefix="/api/v1/blog-content", tags=["blog content"])
 app.include_router(chatgpt.router, prefix="/api/v1/chatgpt", tags=["Chat GPT"])
+app.include_router(admin.router, prefix="/api/v1/admin", tags=["admin"])
 
 es_service = ElasticsearchService()
 
