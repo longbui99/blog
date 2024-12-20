@@ -101,8 +101,17 @@ function processNode(node, currentRoute) {
     if (tagName === 'img') {
       const src = node.getAttribute('src');
       const alt = node.getAttribute('alt') || '';
-      const style = styleMap(node.getAttribute('style') || '') 
-      return <img key={Math.random()} src={src} alt={alt} style={style}/>;
+      const style = styleMap(node.getAttribute('style') || '');
+      return <img 
+        key={Math.random()} 
+        src={src} 
+        alt={alt} 
+        style={{
+          ...style,
+          maxWidth: '100%',
+          height: 'auto'
+        }}
+      />;
     }
 
     if (tagName === 'a') {

@@ -713,3 +713,15 @@ h3 {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+.main-content img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 1rem auto;
+}
+
+/* For images inside paragraphs */
+.main-content p img {
+    margin: 1rem auto;
+}

@@ -12,6 +12,7 @@ import { useConfirmation } from '../contexts/ConfirmationContext';
 import { ROUTES, isNewPageRoute } from '../utils/routeConstants';
 import { useMenuContext } from '../contexts/MenuContext';
 import { processRawContent } from '../utils/contentUtils';
+import ImageViewer from '../components/ImageViewer';
 
 async function updateBlogContent(rawContent, path, routeInfo, showNotification) {
     const processedContent = await processRawContent(rawContent, path, showNotification);
@@ -55,6 +56,22 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
     const navigate = useNavigate();
     const currentRoute = routes?.find(route => route.path === path);
     const { publishToEvent } = useMenuContext();
+    const [selectedImage, setSelectedImage] = useState(null);
+    const [isImageViewerOpen, setIsImageViewerOpen] = useState(false);
+
+    const addImageClickHandler = () => {
+        // Add click handlers to images after content update
+        setTimeout(() => {
+            const images = document.querySelectorAll('.blog-content img');
+            images.forEach(img => {
+                img.style.cursor = 'pointer';
+                img.addEventListener('click', () => {
+                    setSelectedImage(img.src);
+                    setIsImageViewerOpen(true);
+                });
+            });
+        }, 0);
+    }
 
     const updateContent = (blogData) => {
         if (!blogData) {
@@ -71,6 +88,7 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
             setLastUpdated(blogData.updated_at || new Date().toISOString());
             // Update MainContent's editable content
             updateMainContentEditableContent(blogData.content);
+            addImageClickHandler()
         } else {
             setContent(<p>No content found for this path.</p>);
             updateMainContentEditableContent('');
@@ -526,7 +544,13 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
                 </>
             ) : content}
         </article>
-        }</>
+        }
+        <ImageViewer 
+            isOpen={isImageViewerOpen}
+            onClose={() => setIsImageViewerOpen(false)}
+            imageUrl={selectedImage}
+        />
+        </>
         
     );
 }
