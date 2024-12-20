@@ -611,3 +611,16 @@ textarea::placeholder {
 .input-error:focus {
   box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
 }
+
+.resize-handle {
+  position: absolute;
+  bottom: 5px;
+  right: 0px;
+  font-size: 2em;
+  color: var(--link-light);
+  cursor: ew-resize;
+}
+
+.dark-mode .resize-handle {
+  color: var(--link-dark);
+}

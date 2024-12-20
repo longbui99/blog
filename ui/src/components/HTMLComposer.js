@@ -1,13 +1,11 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { createRoot } from 'react-dom/client'; // Import createRoot
 import { FaAlignLeft, FaAlignCenter, FaAlignRight, FaLink, FaImage } from 'react-icons/fa';
 import { useLocation } from 'react-router-dom';
 import DOMPurify from 'dompurify';
 import '../styles/HtmlComposer.css';
 import { COLOR_PALETTE } from '../const/colors';
-import ReactDOM from 'react-dom';
-import { styleMap } from '../utils/contentParser'
-
+import { FaArrowsLeftRight } from 'react-icons/fa6';
 // Color Picker Component
 const ColorPicker = ({ colors, onSelectColor }) => {
     return (
@@ -126,89 +124,69 @@ const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
 // New Image Component
 const ImageComponent = ({ src, alt, initialWidth, onDelete, handleContentChange }) => {
     const [isResizing, setIsResizing] = useState(false);
-    const [width, setWidth] = useState(initialWidth || "1120px"); // Track width in pixels, starting at 960px
-    const resizeHandleRef = useRef(null); // Reference for the resize handle
-    const minWidth = parseFloat(initialWidth)
+    const [width, setWidth] = useState(initialWidth || "1120px");
+    const imageRef = useRef(null);
+    const startXRef = useRef(0);
+    const startWidthRef = useRef(0);
 
     const handleMouseDown = (e) => {
+        e.preventDefault();
         setIsResizing(true);
+        startXRef.current = e.clientX;
+        startWidthRef.current = imageRef.current.offsetWidth;
     };
 
-    const handleMouseMove = (e) => {
-        if (isResizing) {
-            const newWidth = e.clientX - e.target.getBoundingClientRect().left; // Calculate new width in pixels
-            setWidth((newWidth > 0 ? Math.min(Math.max(minWidth, newWidth), 960) : 0) + "px"); // Prevent negative width and cap at 960px
+    const handleMouseMove = useCallback((e) => {
+        if (!isResizing) return;
+        
+        const delta = e.clientX - startXRef.current;
+        if (Math.abs(delta) > 5) { // Only resize if movement is more than 5px
+            const newWidth = Math.min(Math.max(200, startWidthRef.current + delta), 1120);
+            setWidth(`${newWidth}px`);
         }
-    };
+    }, [isResizing]);
 
-    const handleMouseUp = () => {
-        setIsResizing(false);
-        handleContentChange(); // Trigger content change after res
-    };
-
-    const handleMouseEnter = () => {
-        // Create the resize handle dynamically
-        if (!resizeHandleRef.current) {
-            const handle = document.createElement('div');
-            handle.className = 'resize-handle';
-            handle.style.width = '30px';
-            handle.style.height = '30px';
-            handle.style.position = 'absolute';
-            handle.style.bottom = '20px';
-            handle.style.right = '20px';
-            handle.style.cursor = 'ew-resize';
-            handle.style.zIndex = '10';
-            handle.style.background = 'red';
-            handle.style.borderRadius = '50%';
-
-            // Append the handle to the image wrapper
-            resizeHandleRef.current = handle;
-            document.querySelector('.image-wrapper').appendChild(handle);
-
-            // Add event listeners for resizing
-            handle.addEventListener('mousedown', handleMouseDown);
-        }
-    };
-
-    const handleMouseLeave = () => {
-        // Remove the resize handle when mouse leaves
-        if (resizeHandleRef.current) {
-            resizeHandleRef.current.remove();
-            resizeHandleRef.current = null; // Reset the reference
-        }
-        handleContentChange(); // Trigger content change after resizing
+    const handleMouseUp = (e) => {
+        setIsResizing(false);   
+        handleContentChange();
     };
 
     useEffect(() => {
         if (isResizing) {
             window.addEventListener('mousemove', handleMouseMove);
             window.addEventListener('mouseup', handleMouseUp);
-        } else {
-            window.removeEventListener('mousemove', handleMouseMove);
-            window.removeEventListener('mouseup', handleMouseUp);
         }
         return () => {
             window.removeEventListener('mousemove', handleMouseMove);
             window.removeEventListener('mouseup', handleMouseUp);
         };
-    }, [isResizing]);
+    }, [isResizing, handleMouseMove]);
+
+    const handleClick = (e) => {
+        // Only delete if we weren't resizing
+        if (!isResizing && imageRef.current.offsetWidth === startWidthRef.current) {
+            onDelete(e);
+        }
+    };
 
     return (
-        <div 
-            className="image-wrapper" 
-            style={{ display: 'inline-block', position: 'relative' }} 
-            onMouseEnter={handleMouseEnter} 
-            onMouseLeave={handleMouseLeave}
-        >
-            <img
-                src={src}
-                alt={alt}
-                style={{ width: `${width}`, height: 'auto', cursor: 'pointer' }} // Maintain aspect ratio
-                onClick={onDelete}
-            />
-        </div>
+        <img
+            ref={imageRef}
+            src={src}
+            alt={alt}
+            className="resizable-image"
+            style={{ 
+                width, 
+                height: 'auto', 
+                cursor: isResizing ? 'ew-resize' : 'pointer',
+                position: 'relative',
+                display: 'inline-block'
+            }}
+            onClick={handleClick}
+            onMouseDown={handleMouseDown}
+        />
     );
-}
+};
 
 const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
     const editorRef = useRef(null);

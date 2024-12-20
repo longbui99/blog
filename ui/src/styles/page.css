@@ -717,11 +717,47 @@ h3 {
 .main-content img {
     max-width: 100%;
     height: auto;
-    display: block;
-    margin: 1rem auto;
 }
 
-/* For images inside paragraphs */
-.main-content p img {
-    margin: 1rem auto;
+.image-container {
+    border-radius: 8px;
+    padding: 6px;
+    background: #ffffff;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease-in-out;
+    display: inline-block;
+    margin-left: 5px;
+}
+
+.image-container:hover {
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+}
+
+.dark-mode .image-container {
+    border-color: var(--link-dark);
+    background: #2a2a2a;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+}
+
+.dark-mode .image-container:hover {
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Add styles for the image itself */
+.resizable-image {
+    border-radius: 4px;
+    transition: filter 0.2s ease;
+}
+
+.resizable-image:hover {
+    filter: brightness(1.02);
+}
+
+.dark-mode .resizable-image {
+    filter: brightness(0.95);
+}
+
+.dark-mode .resizable-image:hover {
+    filter: brightness(1);
 }
