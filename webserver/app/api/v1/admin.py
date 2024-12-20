@@ -187,7 +187,6 @@ async def restore_database_backup(
 
             # Clean up environment variable
             os.environ.pop('PGPASSWORD', None)
-            
 
             return {"message": "Database and filestore restored successfully"}
 
