@@ -61,16 +61,18 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
 
     const addImageClickHandler = () => {
         // Add click handlers to images after content update
-        setTimeout(() => {
-            const images = document.querySelectorAll('.blog-content img');
-            images.forEach(img => {
+        if (!isCreating && !isEditing) {
+            setTimeout(() => {
+                const images = document.querySelectorAll('.blog-content img');
+                images.forEach(img => {
                 img.style.cursor = 'pointer';
                 img.addEventListener('click', () => {
                     setSelectedImage(img.src);
-                    setIsImageViewerOpen(true);
+                        setIsImageViewerOpen(true);
+                    });
                 });
-            });
-        }, 0);
+            }, 0);
+        }
     }
 
     const updateContent = (blogData) => {
