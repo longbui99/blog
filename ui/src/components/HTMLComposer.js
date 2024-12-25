@@ -336,7 +336,7 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
         if (e.key === 'Escape') {
             if (showSlashMenu) {
                 e.preventDefault();
-                closeSlashMenu();
+                closeSlashMenu(true);
             }
             setShowLinkInput(false);
             setShowImageInput(false);
@@ -454,12 +454,12 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
                 }
                 break;
             case 'Escape':
-                closeSlashMenu();
+                closeSlashMenu(true);
                 break;
             case 'Backspace':
                 e.preventDefault();
                 if (commandFilter.length === 0) {
-                    closeSlashMenu();
+                    closeSlashMenu(true);
                 } else {
                     setCommandFilter(prev => prev.slice(0, -1));
                 }
@@ -650,9 +650,9 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
         return ''; // Return an empty string if no selection
     };
 
-    const closeSlashMenu = () => {
-        // Restore the "/" character and any command text at the current selection
-        if (currentSelection) {
+    const closeSlashMenu = (fromEscape = false) => {
+        // Only restore text if triggered by Escape key
+        if (fromEscape && currentSelection) {
             const textToRestore = '/' + commandFilter;
             const textNode = document.createTextNode(textToRestore);
             currentSelection.insertNode(textNode);
