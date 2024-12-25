@@ -5,7 +5,6 @@ import { useLocation } from 'react-router-dom';
 import DOMPurify from 'dompurify';
 import '../styles/HtmlComposer.css';
 import { COLOR_PALETTE } from '../const/colors';
-import { FaArrowsLeftRight } from 'react-icons/fa6';
 // Color Picker Component
 const ColorPicker = ({ colors, onSelectColor }) => {
     return (
@@ -334,12 +333,22 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
     const handleKeyDown = (e) => {
         if (!isEditing) return;
 
+        if (e.key === 'Escape') {
+            if (showSlashMenu) {
+                e.preventDefault();
+                closeSlashMenu();
+            }
+            setShowLinkInput(false);
+            setShowImageInput(false);
+            return;
+        }
+
         // Handle heading shortcuts
         const isModifierKey = isMac ? e.metaKey : e.ctrlKey;
         const isSecondModifier = isMac ? e.shiftKey : e.altKey;
         // In handleKeyDown function
         if (e.key === 'Tab') {
-            const {selection, range, parentElement, isCodeBlock} = getSelectionInfo();
+            const {selection, range, isCodeBlock} = getSelectionInfo();
             if (!selection.rangeCount) return;
             if (isCodeBlock) {
                 e.preventDefault();
@@ -358,7 +367,7 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
         if (e.key === 'Enter') {
             // e.preventDefault(); // Prevent default behavior (like adding a new line)
 
-            const {selection, range, parentElement, isCodeBlock} = getSelectionInfo();
+            const {selection, range, isCodeBlock} = getSelectionInfo();
             if (!selection.rangeCount) return;
             if (isCodeBlock) {
                 e.preventDefault();
@@ -417,13 +426,6 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
             return;
         }
 
-        if (e.key === 'Escape') {
-            setShowLinkInput(false);
-            setShowImageInput(false);
-            setShowSlashMenu(false);
-            return;
-        }
-
         if (showSlashMenu) {
             handleSlashMenuInput(e);
         }
@@ -455,6 +457,7 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
                 closeSlashMenu();
                 break;
             case 'Backspace':
+                e.preventDefault();
                 if (commandFilter.length === 0) {
                     closeSlashMenu();
                 } else {
@@ -503,7 +506,7 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
             const selectionInfo = getEditorSelection();
         if (commandFilter.length > 0 && selectionInfo) {
             if (!selectionInfo) return;
-            var { range, rect } = selectionInfo;
+            var { range } = selectionInfo;
         } else {
             if (!currentSelection) return;
             var range = currentSelection.cloneRange();
@@ -566,21 +569,18 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
                     newElement = document.createElement('pre');
                     const codeElement = document.createElement('code');
                     codeElement.className = 'language-javascript'; // Default to JavaScript
-                    codeElement.textContent = content || '\u200B';
+                    codeElement.textContent = '\n'; // Add two empty lines
                     newElement.appendChild(codeElement);
-                    
-                    // Add copy button container
-                    const wrapper = document.createElement('div');
-                    wrapper.className = 'code-block-wrapper';
-                    
-                    // Add copy button
-                    const copyButton = document.createElement('button');
-                    copyButton.className = 'copy-button';
-                    copyButton.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>';
-                    
-                    wrapper.appendChild(copyButton);
-                    wrapper.appendChild(newElement);
-                    newElement = wrapper;
+
+                    // Position cursor after insertion
+                    setTimeout(() => {
+                        const selection = window.getSelection();
+                        const range = document.createRange();
+                        range.setStart(codeElement, 1); // Position after first newline
+                        range.collapse(true);
+                        selection.removeAllRanges();
+                        selection.addRange(range);
+                    }, 0);
                     break;
                 case 'align':
                     if (commandItem.showAlignmentPicker) {
@@ -651,15 +651,28 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
     };
 
     const closeSlashMenu = () => {
+        // Restore the "/" character and any command text at the current selection
+        if (currentSelection) {
+            const textToRestore = '/' + commandFilter;
+            const textNode = document.createTextNode(textToRestore);
+            currentSelection.insertNode(textNode);
+            // Move cursor after the restored text
+            currentSelection.setStartAfter(textNode);
+            currentSelection.setEndAfter(textNode);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(currentSelection);
+        }
         setShowSlashMenu(false);
         setSelectedCommandIndex(0);
+        setCommandFilter('');
     };
 
     const handlePaste = (e) => {
         if (!isEditing) return;
         e.preventDefault();
 
-        const {selection, range, parentElement, isCodeBlock} = getSelectionInfo();
+        const {selection, range, isCodeBlock} = getSelectionInfo();
         if (!selection) return;
 
         if (isCodeBlock) {

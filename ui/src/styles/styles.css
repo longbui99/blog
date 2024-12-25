@@ -764,13 +764,48 @@ h6 {
 .sidebar-nav {
   overflow-y: auto;
   height: calc(100vh - 160px);
-  padding: 0px 10px 0px 10px;
+  padding: 0px 10px 0px 5px;
+  direction: rtl;
+  /* Always hide scrollbar initially */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+/* Hide webkit scrollbar by default */
+.sidebar-nav::-webkit-scrollbar {
+  width: 0;
+  background: transparent;
+}
+
+/* Show scrollbar on hover */
+.sidebar-nav:hover {
+  scrollbar-width: thin;
+  -ms-overflow-style: auto;
+}
+
+.sidebar-nav:hover::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar-nav:hover::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-nav:hover::-webkit-scrollbar-thumb {
+  background-color: var(--link-light);
+  border-radius: 3px;
+}
+
+/* Dark mode */
+.dark-mode .sidebar-nav:hover::-webkit-scrollbar-thumb {
+  background-color: var(--link-dark);
 }
 
 .sidebar-nav ul {
   list-style-type: none;
   padding: 0;
   margin: 0;
+  direction: ltr;
 }
 
 .sidebar-nav li {
@@ -1148,6 +1183,26 @@ tbody tr:hover {
 
 .dark-mode tbody tr:hover {
     background-color: #414141; /* Darker blue on hover for dark mode */
+}
+
+/* Add custom scrollbar styles */
+.sidebar-nav::-webkit-scrollbar {
+  width: 6px; /* Reduced width */
+}
+
+.sidebar-nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb {
+  background-color: rgba(155, 155, 155, 0.5);
+  border-radius: 3px;
+  border: none;
+}
+
+/* Dark mode scrollbar */
+.dark-mode .sidebar-nav::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
 
