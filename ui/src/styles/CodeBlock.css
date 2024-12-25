@@ -53,12 +53,6 @@ code {
 
 /* New styles */
 :root {
-  --code-bg-light: #b7b7b7;
-  --code-bg-dark: #2d2d2d;
-  --code-color-light: #333;
-  --code-color-dark: #f8f8f2;
-  --inline-code-bg-light: #e8e8e8;
-  --inline-code-bg-dark: #3a3a3a;
 }
 
 .code-block-wrapper {

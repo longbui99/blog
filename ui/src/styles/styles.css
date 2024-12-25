@@ -1,22 +1,5 @@
 /* Copy the contents of your existing CSS file here */
 /* You may need to adjust some selectors to work with React components */
-:root {
-    --background-light: #ffffff;
-    --background-dark: #1e1e1e;
-    --text-light: #4d4d4d;
-    --text-dark: #f0f0f0;
-    --link-light: #ff6b6b; /* Light red color for light mode */
-    --link-dark: #b39800; /* Blue color for dark mode */
-    --sidebar-light: #f8f8f8;
-    --sidebar-dark: #2a2a2a;
-    --transition-speed: 0.3s;
-    --color-primary: var(--link-light);
-    --color-primary-dark: #ffffff; /* A darker shade of the primary color for dark mode */
-    --text-secondary: #666666;
-    --border-color: #e5e7eb;
-    --text-secondary-dark: #9ca3af;
-    --border-dark: #374151;
-}
 
 body {
     margin: 0;
@@ -85,10 +68,6 @@ body {
     margin-left: 20px;
 }
 
-/* Dark mode adjustments */
-.dark-mode .sidebar {
-    background-color: #2a2a2a; /* Dark gray background for dark mode */
-}
 
 .dark-mode .sidebar-nav a,
 .dark-mode .sidebar-nav span {
@@ -162,7 +141,6 @@ main h2 {
 .dark-mode {
     background-color: var(--background-dark);
     color: var(--text-dark);
-    --color-primary: var(--link-dark);
 }
 
 .dark-mode .sidebar {
@@ -531,11 +509,6 @@ main h2 {
   display: block;
 }
 
-/* Dark mode adjustments */
-.dark-mode .sidebar {
-  background-color: #2a2a2a;
-}
-
 .dark-mode .multi-level-nav a {
   color: var(--text-dark);
 }
@@ -874,10 +847,6 @@ h6 {
   border-bottom: 1px solid #e0e0e0;
 }
 
-.dark-mode .sidebar-handle {
-  background-color: #2a2a2a;
-  border-bottom-color: #3a3a3a;
-}
 
 .App {
   display: flex;
