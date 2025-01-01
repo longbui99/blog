@@ -18,7 +18,7 @@ class Settings(BaseSettings):
     QDRANT_PORT: int = 6333
     GEMINI_API_KEY: str = ""
     EMBEDDING_MODEL_CACHE_DIR: str = ""
-    VECTOR_MIN_MATCH_THRESHOLD: float = 0.7
+    VECTOR_MIN_MATCH_THRESHOLD: float = 0.5
     class Config:
         env_file = ("builder/.env", ".env")  # Try multiple possible locations
         env_file_encoding = 'utf-8'
