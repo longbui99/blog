@@ -10,9 +10,11 @@ from app.crud.blog_menu import get_blog_menu_by_path
 from app.api.v1.auth import get_current_user
 from app.models.user import User
 from app.services.blogpost_elastic import BlogpostElasticService
+from app.services.qdrant import QdrantService
 
 router = APIRouter()
 blog_elastic = BlogpostElasticService()
+qdrant_service = QdrantService()
 
 # Add constant at the top of the file
 RESERVED_PATHS = {'/new-page'}  # Can be expanded for other reserved paths
@@ -32,6 +34,8 @@ async def create_blog_content(blog_content_data: BlogContentCreate, current_user
     
     # Sync to Elasticsearch
     await blog_elastic.publish_content(content)
+    # Sync content to Qdrant
+    await qdrant_service.publish_content(content)
     
     return await BlogContentSchema.from_tortoise_orm(content)
 
@@ -135,6 +139,8 @@ async def update_or_create_blog_content(blog_content_data: BlogContentUpdate, cu
     
     # Sync content to Elasticsearch
     await blog_elastic.publish_content(content)
+    # Sync content to Qdrant
+    await qdrant_service.update_content(content)
     
     # Convert the Tortoise ORM model to a dict, then to a Pydantic model
     content_dict = await BlogContent.get(id=content.id).values()

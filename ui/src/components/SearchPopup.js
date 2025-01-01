@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes, faSearch, faUser, faClock } from '@fortawesome/free-solid-svg-icons';
+import { faTimes, faUser, faClock } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 import { blogMenuProcessor } from '../processor/blogMenuProcessor';
 import '../styles/SearchPopup.css';

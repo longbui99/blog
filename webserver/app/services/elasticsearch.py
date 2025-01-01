@@ -81,12 +81,13 @@ async def init_indices(client: AsyncElasticsearch) -> None:
             print(f"Error creating index {index_name}: {str(e)}")
 
 class ElasticsearchService:
-    def __init__(self):
+    def initialization(self):
         self.client = AsyncElasticsearch(settings.ELASTICSEARCH_HOST)
     
     def __new__(cls):
         if not hasattr(cls, 'instance'):
             cls.instance = super(ElasticsearchService, cls).__new__(cls)
+            cls.instance.initialization()
         return cls.instance
         
     async def initialize(self):

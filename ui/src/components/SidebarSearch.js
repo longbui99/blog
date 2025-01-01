@@ -1,15 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
 import SearchPopup from './SearchPopup';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faAtom } from '@fortawesome/free-solid-svg-icons';
+import ChatPopup from './ChatPopup';
 
 function SidebarSearch({ onSearch, initialSearchTerm = '' }) {
     const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
     const [showPopup, setShowPopup] = useState(false);
     const sidebarSearchInputRef = useRef(null);
     const [placeholder, setPlaceholder] = useState('');
+    const [isChatOpen, setIsChatOpen] = useState(false);
 
     useEffect(() => {
         const handleKeyPress = (event) => {
-            if (event.shiftKey && event.key === '?' || event.ctrlKey && event.key === '/' || event.metaKey && event.key === '/') {
+            if ((event.ctrlKey && event.key === '/') || (event.metaKey && event.key === '/')) {
                 event.preventDefault();
                 sidebarSearchInputRef.current?.focus();
             }
@@ -20,7 +24,6 @@ function SidebarSearch({ onSearch, initialSearchTerm = '' }) {
     }, []);
 
     useEffect(() => {
-        // Detect OS
         const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
         
         const shortcut = isMac 
@@ -49,6 +52,11 @@ function SidebarSearch({ onSearch, initialSearchTerm = '' }) {
                     onChange={(e) => handleSearchChange(e.target.value)}
                     className="search-input"
                 />
+                <FontAwesomeIcon 
+                icon={faAtom} 
+                className="chat-icon"
+                onClick={() => setIsChatOpen(true)}
+                />
             </div>
             <SearchPopup 
                 isOpen={showPopup} 
@@ -59,6 +67,7 @@ function SidebarSearch({ onSearch, initialSearchTerm = '' }) {
                 searchTerm={searchTerm}
                 onSearchChange={handleSearchChange}
             />
+            <ChatPopup isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
         </div>
     );
 }

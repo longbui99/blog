@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { useNotification } from '../contexts/NotificationContext';
 
 // Create a singleton notification handler
 let notificationHandler = null;

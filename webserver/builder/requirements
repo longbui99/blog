@@ -10,3 +10,9 @@ beautifulsoup4
 elasticsearch
 aiohttp
 pyjwt
+qdrant-client>=1.7.0
+beautifulsoup4>=4.9.3
+tiktoken>=0.5.0
+tenacity>=8.0.0
+sentence-transformers
+google-generativeai==0.3.2

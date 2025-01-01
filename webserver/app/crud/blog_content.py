@@ -1,3 +1,4 @@
+from typing import List
 from app.models.blog_content import BlogContent
 from app.schemas.blog_content import BlogContentCreate, BlogContentUpdate
 
@@ -9,6 +10,9 @@ async def get_blog_content(content_id: int):
 
 async def get_blog_contents(skip: int = 0, limit: int = 100):
     return await BlogContent.all().offset(skip).limit(limit)
+
+async def get_blog_contents_by_ids(content_ids: List[int]):
+    return await BlogContent.filter(id__in=content_ids).prefetch_related('blog_menu')
 
 async def update_blog_content(content_id: int, content_data: BlogContentUpdate):
     content = await BlogContent.get(id=content_id)

@@ -14,7 +14,11 @@ class Settings(BaseSettings):
     LOG_FILE: str
     ELASTICSEARCH_HOST: str = "http://localhost:9200"
     ATTACHMENT_PATH: str = ""
-
+    QDRANT_HOST: str = "localhost"
+    QDRANT_PORT: int = 6333
+    GEMINI_API_KEY: str = ""
+    EMBEDDING_MODEL_CACHE_DIR: str = ""
+    VECTOR_MIN_MATCH_THRESHOLD: float = 0.7
     class Config:
         env_file = ("builder/.env", ".env")  # Try multiple possible locations
         env_file_encoding = 'utf-8'
@@ -24,7 +28,7 @@ class Settings(BaseSettings):
     def check_not_empty(self) -> None:
         """Validate all fields are not empty after model initialization"""
         for field_name, field_value in self:
-            logging.info(f"Checking field {field_name} with value {field_value}")
+            logging.info(f"Checking field {field_name}")
             if not field_value or (isinstance(field_value, str) and field_value.strip() == ""):
                 raise ValueError(f"Field {field_name} cannot be empty")
 

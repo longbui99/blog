@@ -11,7 +11,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 class BlogpostElasticService:
-    def __init__(self):
+    def initialization(self):
         self.es_service = ElasticsearchService()
         self.blog_index = "blog_posts"
         logger.info("BlogpostElasticService initialized")\
@@ -19,6 +19,7 @@ class BlogpostElasticService:
     def __new__(cls):
         if not hasattr(cls, 'instance'):
             cls.instance = super(BlogpostElasticService, cls).__new__(cls)
+            cls.instance.initialization()
         return cls.instance
 
     async def _convert_menu_to_doc(self, menu: BlogMenu) -> Dict[str, Any]:
