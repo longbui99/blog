@@ -39,6 +39,9 @@ services:
     build:
       context: ./webserver
       dockerfile: ./builder/Dockerfile
+      platforms:
+        - "linux/amd64"
+        - "linux/arm64"
     volumes:
       - ./webserver:/opt/source
       - ./webserver/logs:/opt/logs

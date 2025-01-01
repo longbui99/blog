@@ -11,6 +11,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 class BlogpostElasticService:
+    instance = None
     def initialization(self):
         self.es_service = ElasticsearchService()
         self.blog_index = "blog_posts"

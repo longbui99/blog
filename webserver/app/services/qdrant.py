@@ -15,6 +15,7 @@ class QdrantDocument(BaseModel):
     vector: List[float]
 
 class QdrantService:
+    instance = None
     def initialization(self):
         self.client = QdrantClient(
             host=settings.QDRANT_HOST,
