@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes, faRobot, faUser, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import '../styles/ChatPopup.css';
 import { aiBotProcessor } from '../processor/aiBotProcessor';
-import { ReactComponent as Logo } from '../static/logo.svg';
+import { marked } from 'marked';
 
 function ChatPopup({ isOpen, onClose }) {
   const [messages, setMessages] = useState([]);
@@ -56,7 +56,7 @@ function ChatPopup({ isOpen, onClose }) {
     try {
       const response = await aiBotProcessor.sendInquiry(inputMessage);
       const botResponse = {
-        text: response.answer.replace('```html', '').replace('```', ''),
+        text: marked(response.answer),
         sender: 'bot',
         timestamp: new Date(),
         references: response.reference_contents
@@ -102,7 +102,7 @@ function ChatPopup({ isOpen, onClose }) {
                 )}
                 {message.references && message.references.length > 0 && (
                   <div className="references">
-                    <h4>Related Articles:</h4>
+                    <h3>Related Articles:</h3>
                     <ul>
                       {message.references.map((ref, idx) => (
                         <li key={idx}>

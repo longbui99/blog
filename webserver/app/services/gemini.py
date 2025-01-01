@@ -60,7 +60,7 @@ class GeminiService:
                 Please provide your response based on all the above content and the command.
                 Consider the relationships and connections between the articles in your response.
 
-                Response in HTML format is a MUST.
+                Response in Markdown format is a MUST but breakdown to header and content.
                 """
             else:
                 prompt = f"""{command}"""
@@ -72,7 +72,7 @@ class GeminiService:
                     'temperature': temperature,
                     'top_p': 0.8,
                     'top_k': 40,
-                    'max_output_tokens': 2048,
+                    'max_output_tokens': 3096,
                 }
             )
 

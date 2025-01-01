@@ -217,9 +217,7 @@
 }
 
 .references ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+  margin-left: 1rem;
 }
 
 .references li {
@@ -227,13 +225,18 @@
 }
 
 .references a {
-  color: #0066cc;
-  text-decoration: none;
+  text-decoration: underline;
   font-size: 0.9em;
+  color: var(--link-light);
+
 }
 
 .references a:hover {
   text-decoration: underline;
+}
+
+.dark-mode .references a {
+  color: var(--link-dark);
 }
 
 .typing-indicator {
@@ -299,5 +302,33 @@
 
 /* Ensure proper spacing after paragraphs */
 .message.bot p {
+  margin: 0.5em 0;
+}
+
+.chat-message {
+  /* Existing styles */
+}
+
+/* Style markdown elements */
+.chat-message p {
+  margin: 0.5em 0;
+}
+
+.chat-message pre {
+  background: #f4f4f4;
+  padding: 1em;
+  border-radius: 4px;
+  overflow-x: auto;
+}
+
+.chat-message code {
+  background: #f4f4f4;
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+  font-family: monospace;
+}
+
+.chat-message ul, .chat-message ol {
+  padding-left: 2em;
   margin: 0.5em 0;
 }
