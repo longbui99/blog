@@ -72,7 +72,7 @@ class GeminiService:
                     'temperature': temperature,
                     'top_p': 0.8,
                     'top_k': 40,
-                    'max_output_tokens': 3096,
+                    'max_output_tokens': 4096,
                 }
             )
 
