@@ -323,9 +323,14 @@
 
 .chat-message code {
   background: #f4f4f4;
+  color: var(--text-light) !important;
   padding: 0.2em 0.4em;
   border-radius: 3px;
   font-family: monospace;
+}
+
+.dark-mode .chat-message code {
+  color: var(--text-dark) !important;
 }
 
 .chat-message ul, .chat-message ol {

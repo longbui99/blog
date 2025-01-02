@@ -1,5 +1,5 @@
 # Project Title
-
+![alt text](/docs/image.png)
 ## Introduction
 This project is a blogging application that employs a FastAPI backend alongside a React.js frontend. It is designed to efficiently deliver blog content while offering a user-friendly interface. The backend is responsible for processing API requests and providing the necessary data, while the frontend focuses on rendering the user interface and managing user interactions.
 
