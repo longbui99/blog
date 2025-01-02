@@ -1,3 +1,5 @@
+import logging
+
 from typing import Dict, Any, Optional, List
 import google.generativeai as genai
 from app.core.config import settings
@@ -33,7 +35,8 @@ class GeminiService:
         self,
         contents: List[Any],
         command: str,
-        temperature: Optional[float] = 0.7
+        temperature: Optional[float] = 0.7,
+        history: Optional[List[str]] = []
     ) -> Dict[str, Any]:
         """Process multiple blog contents with Gemini"""
         try:
@@ -64,6 +67,16 @@ class GeminiService:
                 """
             else:
                 prompt = f"""{command}"""
+            
+            if history:
+                prompt = f"""
+                History:
+                {history}
+
+                {prompt}
+                """
+
+            logging.info(f"Prompt: {prompt}")
 
             # Generate response from Gemini
             response = self.model.generate_content(

@@ -266,18 +266,36 @@ class QdrantService:
     ) -> List[Dict[str, Any]]:
         """Search for similar documents and merge by content_id"""
         try:
-            query_vector = await get_embedding(query)
-            # Get more results initially to ensure we have enough after merging
-            raw_results = self.client.search(
+            # Split query into chunks
+            query_chunks = self._chunk_text(query)
+            
+            # Get embeddings for all chunks
+            query_vectors = [await get_embedding(chunk) for chunk in query_chunks]
+            
+            # Create batch search requests
+            search_requests = [
+                {
+                    "vector": vector,
+                    "limit": limit * 2,
+                    "score_threshold": settings.VECTOR_MIN_MATCH_THRESHOLD,
+                    "with_payload": True
+                } for vector in query_vectors
+            ]
+            
+            # Execute batch search in one API call
+            batch_results = self.client.search_batch(
                 collection_name=collection_name,
-                query_vector=query_vector,
-                limit=limit * 3,  # Get more results to account for merging
-                score_threshold=settings.VECTOR_MIN_MATCH_THRESHOLD
+                requests=search_requests
             )
+            
+            # Flatten batch results
+            all_raw_results = []
+            for chunk_results in batch_results:
+                all_raw_results.extend(chunk_results)
 
-            # Group results by content_id
+            # Group results by content_id, keeping highest score
             content_groups = {}
-            for result in raw_results:
+            for result in all_raw_results:
                 content_id = result.payload.get('content_id')
                 if content_id not in content_groups or result.score > content_groups[content_id]['score']:
                     content_groups[content_id] = {

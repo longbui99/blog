@@ -6,10 +6,11 @@ class AIBotProcessor extends BaseProcessor {
     this.baseEndpoint = `${process.env.REACT_APP_AI_PATH}`;
   }
 
-  async sendInquiry(message, topK = 5) {
+  async sendInquiry(message, history, topK = 5) {
     return await this.makeRequest('post', `${this.baseEndpoint}/inquiry`, {
       query: message,
-      top_k: topK
+      top_k: topK,
+      history: history
     });
   }
 }

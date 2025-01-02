@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes, faRobot, faUser, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+import { faTimes, faRobot, faUser, faPaperPlane, faUndo } from '@fortawesome/free-solid-svg-icons';
 import '../styles/ChatPopup.css';
 import { aiBotProcessor } from '../processor/aiBotProcessor';
 import { marked } from 'marked';
@@ -11,6 +11,9 @@ function ChatPopup({ isOpen, onClose }) {
   const [isClosing, setIsClosing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
+  const [history, setHistory] = useState([]);
+  const inputRef = useRef(null);
+  const [isLimited, setIsLimited] = useState(false);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -40,6 +43,8 @@ function ChatPopup({ isOpen, onClose }) {
   };
 
   const handleSendMessage = async (e) => {
+    if (isLoading) return;
+    if (isLimited) return;
     e.preventDefault();
     if (!inputMessage.trim()) return;
 
@@ -54,7 +59,7 @@ function ChatPopup({ isOpen, onClose }) {
     setIsLoading(true);
 
     try {
-      const response = await aiBotProcessor.sendInquiry(inputMessage);
+      const response = await aiBotProcessor.sendInquiry(inputMessage, history);
       const botResponse = {
         text: marked(response.answer),
         sender: 'bot',
@@ -62,6 +67,7 @@ function ChatPopup({ isOpen, onClose }) {
         references: response.reference_contents
       };
       setMessages(prev => [...prev, botResponse]);
+      setHistory(prev => [...prev, response.answer]);
     } catch (error) {
       console.error('Error getting bot response:', error);
       const errorResponse = {
@@ -72,7 +78,23 @@ function ChatPopup({ isOpen, onClose }) {
       setMessages(prev => [...prev, errorResponse]);
     } finally {
       setIsLoading(false);
+      setTimeout(() => {
+        inputRef.current.focus();
+      }, 100);
     }
+  };
+
+  useEffect(() => {
+    if (messages.length >= 14) {
+      setIsLimited(true);
+    }
+  }, [messages]);
+
+  const resetChat = () => {
+    setMessages([]);
+    setHistory([]);
+    setInputMessage('');
+    setIsLimited(false);
   };
 
   if (!isOpen) return null;
@@ -81,10 +103,17 @@ function ChatPopup({ isOpen, onClose }) {
     <div className={`chat-popup-overlay ${isClosing ? 'closing' : ''}`} onClick={handleClose}>
       <div className="chat-popup-container" onClick={e => e.stopPropagation()}>
         <div className="chat-popup-header">
-          <h4>AI Assistant</h4>
-          <button className="close-button" onClick={handleClose}>
-            <FontAwesomeIcon icon={faTimes} />
-          </button>
+          <div className="header-title">
+            <h4>AI Assistant</h4>
+            <button className="icon-button" onClick={resetChat} title="New Chat">
+              <FontAwesomeIcon icon={faUndo} />
+            </button>
+          </div>
+          <div className="header-buttons">
+            <button className="icon-button" onClick={handleClose} title="Close">
+              <FontAwesomeIcon icon={faTimes} />
+            </button>
+          </div>
         </div>
         
         <div className="chat-messages">
@@ -138,11 +167,16 @@ function ChatPopup({ isOpen, onClose }) {
             type="text"
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
-            placeholder="Type your message..."
+            placeholder={isLimited ? "You've reached the chat limit. Please start a new session." : "Type your message..."}
             className="chat-input"
-            disabled={isLoading}
+            style={{
+              color: isLimited ? 'var(--text-light)' : 'var(--text-dark)'
+            }}
+            disabled={isLimited}
+            autoFocus
+            ref={inputRef}
           />
-          <button type="submit" className="send-button" disabled={isLoading}>
+          <button type="submit" className="send-button" disabled={isLoading || isLimited}>
             <FontAwesomeIcon icon={faPaperPlane} />
           </button>
         </form>

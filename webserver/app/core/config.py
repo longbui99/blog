@@ -28,7 +28,7 @@ class Settings(BaseSettings):
     def check_not_empty(self) -> None:
         """Validate all fields are not empty after model initialization"""
         for field_name, field_value in self:
-            logging.info(f"Checking field {field_name}")
+            logging.info(f"Checking config {field_name}")
             if not field_value or (isinstance(field_value, str) and field_value.strip() == ""):
                 raise ValueError(f"Field {field_name} cannot be empty")
 

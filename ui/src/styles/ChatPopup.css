@@ -332,3 +332,121 @@
   padding-left: 2em;
   margin: 0.5em 0;
 }
+
+.limit-modal-overlay {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.limit-modal {
+  background: var(--background-light);
+  color: var(--text-light);
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.dark-mode .limit-modal {
+  background: var(--background-dark);
+  color: var(--text-dark);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.limit-modal h3 {
+  color: var(--link-light);
+  margin-bottom: 1rem;
+}
+
+.dark-mode .limit-modal h3 {
+  color: var(--link-dark);
+}
+
+.limit-modal button {
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.limit-modal button:first-child {
+  background: var(--link-color);
+  color: var(--text-dark);
+}
+
+.dark-mode .limit-modal button:first-child {
+  background: var(--link-dark);
+  color: var(--text-dark);
+}
+
+.limit-modal button:last-child {
+  background: var(--inline-code-bg-light);
+  color: var(--text-light);
+}
+
+.dark-mode .limit-modal button:last-child {
+  background: var(--inline-code-bg-dark);
+  color: var(--text-dark);
+}
+
+.limit-modal button:hover {
+  opacity: 0.9;
+}
+
+.limit-modal-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 20px;
+}
+.header-title{
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header-buttons {
+  display: flex;
+  gap: 8px;
+  margin-right: 1rem;
+  font-size: 2rem;
+}
+
+.icon-button {
+  background: transparent;
+  border: none;
+  color: var(--text-light);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dark-mode .icon-button {
+  color: var(--text-dark);
+}
+
+.icon-button:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.dark-mode .icon-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.icon-button svg {
+  width: 16px;
+  height: 16px;
+}

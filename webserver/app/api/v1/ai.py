@@ -18,6 +18,7 @@ gemini_service = GeminiService()
 class InquiryRequest(BaseModel):
     query: str
     top_k: Optional[int]
+    history: Optional[List[str]]
 
 @router.post("/load-data-to-qdrant")
 async def load_data_to_qdrant(current_user: Annotated[User, Depends(get_current_user)]):
@@ -99,6 +100,7 @@ async def inquiry(
             response_text = await gemini_service.process_contents(
                 contents=contents,
                 command=query,
+                history=request.history,
                 temperature=0.7
             )
 
@@ -110,7 +112,7 @@ async def inquiry(
                         "title": content.title,
                         "path": content.blog_menu.path if hasattr(content, 'blog_menu') and content.blog_menu else None
                     }
-                    for content in contents
+                    for content in contents[::-1]
                 ]
             }
 
