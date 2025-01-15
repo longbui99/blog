@@ -74,7 +74,6 @@ class GeminiService:
                 2. Identify key patterns and relationships
                 3. Extract practical implementations
                 4. Highlight best practices
-                5. Consider technical evolution and trends
 
                 ARTICLES TO ANALYZE:
                 {final_context}
@@ -92,11 +91,6 @@ class GeminiService:
                 # Summary
                 [Brief overview of key findings]
 
-                ## Technical Analysis
-                - Core concepts identified
-                - Implementation patterns
-                - Technical considerations
-
                 ## Best Practices & Insights
                 - Recommended approaches
                 - Common pitfalls
@@ -108,14 +102,13 @@ class GeminiService:
                 - Code examples (if applicable)
 
                 ## Key Takeaways
-                - Main technical insights
                 - Action items
                 - Next steps
                 """
             else:
                 prompt = f"""Task: {command}
 
-                Please provide a detailed technical response following Markdown format."""
+                Please provide a detailed response following Markdown format."""
             
             if history:
                 prompt = f"""Previous Context:
