@@ -32,20 +32,51 @@ class EmbeddingService:
             )
         return cls.instance
 
+    def _chunk_text(self, text: str, chunk_size: int = 500, overlap: float = 0.1) -> List[str]:
+        """Split text into chunks with overlap"""
+        if not text:
+            return []
+            
+        # Calculate overlap size
+        overlap_size = int(chunk_size * overlap)
+        step_size = chunk_size - overlap_size
+        
+        chunks = []
+        for i in range(0, len(text), step_size):
+            chunk = text[i:i + chunk_size]
+            if chunk.strip():
+                chunks.append(chunk)
+        
+        return chunks
 
     async def get_embedding(self, text: str) -> List[float]:
         """
-        Get embedding for a text using Sentence Transformers
+        Get embedding for a text using Sentence Transformers with chunking
         """
         try:
             # Preprocess text
             text = text.replace("\n", " ").strip()
             
-            # Generate embedding
-            embedding = self.model.encode(text)
+            # Split into chunks
+            chunks = self._chunk_text(text)
             
-            # Convert to list of floats
-            return embedding.tolist()
+            if not chunks:
+                return [0.0] * self.dimension
+            
+            # Generate embeddings for each chunk
+            chunk_embeddings = []
+            for chunk in chunks:
+                embedding = self.model.encode(chunk)
+                chunk_embeddings.append(embedding)
+            
+            # Average the embeddings if there are multiple chunks
+            if chunk_embeddings:
+                # Stack embeddings and calculate mean along axis 0
+                import numpy as np
+                final_embedding = np.mean(chunk_embeddings, axis=0)
+                return final_embedding.tolist()
+            
+            return [0.0] * self.dimension
 
         except Exception as e:
             print(f"Error getting embedding: {str(e)}")

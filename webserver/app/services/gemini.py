@@ -40,45 +40,92 @@ class GeminiService:
     ) -> Dict[str, Any]:
         """Process multiple blog contents with Gemini"""
         try:
-            # Clean and combine all content
+            # Clean and combine all content with metadata
             combined_content = []
             for content in contents:
                 clean_text = self._clean_html_content(content.content)
+                metadata = {
+                    'id': content.id,
+                    'title': content.title,
+                    'author': getattr(content, 'author', 'Unknown'),
+                    'date': getattr(content, 'created_at', 'Unknown'),
+                    'tags': getattr(content, 'tags', [])
+                }
                 combined_content.append(
                     f"""
-                    --- Article {content.id} ---
-                    Title: {content.title}
-                    Content: {clean_text}
+                    === Article {metadata['id']} ===
+                    Title: {metadata['title']}
+                    Author: {metadata['author']}
+                    Date: {metadata['date']}
+                    Tags: {', '.join(metadata['tags']) if metadata['tags'] else 'None'}
+                    ---
+                    {clean_text}
+                    ---
                     """
                 )
-            final_context = '\n'.join(combined_content)
-            if combined_content:
-                prompt = f"""
-                Here are multiple articles to analyze:
-                
-                {final_context}
-                
-                Command: {command}
-                
-                Please provide your response based on all the above content and the command.
-                Consider the relationships and connections between the articles in your response.
+            final_context = '\n\n'.join(combined_content)
 
-                Response in Markdown format is a MUST but breakdown to header and content.
+            if combined_content:
+                prompt = f"""You are an expert content analyst and technical writer. 
+                Analyze the following articles with these guidelines:
+
+                ANALYSIS GUIDELINES:
+                1. Focus on technical accuracy and depth
+                2. Identify key patterns and relationships
+                3. Extract practical implementations
+                4. Highlight best practices
+                5. Consider technical evolution and trends
+
+                ARTICLES TO ANALYZE:
+                {final_context}
+
+                SPECIFIC TASK:
+                {command}
+
+                RESPONSE REQUIREMENTS:
+                1. Use clear, professional language
+                2. Support claims with specific examples from articles
+                3. Include relevant code snippets if present
+                4. Provide actionable insights
+                5. Structure response in Markdown format:
+
+                # Summary
+                [Brief overview of key findings]
+
+                ## Technical Analysis
+                - Core concepts identified
+                - Implementation patterns
+                - Technical considerations
+
+                ## Best Practices & Insights
+                - Recommended approaches
+                - Common pitfalls
+                - Performance considerations
+
+                ## Practical Applications
+                - Real-world use cases
+                - Implementation steps
+                - Code examples (if applicable)
+
+                ## Key Takeaways
+                - Main technical insights
+                - Action items
+                - Next steps
                 """
             else:
-                prompt = f"""{command}"""
+                prompt = f"""Task: {command}
+
+                Please provide a detailed technical response following Markdown format."""
             
             if history:
-                prompt = f"""
-                History:
+                prompt = f"""Previous Context:
                 {history}
 
-                {prompt}
-                """
+                Current Analysis:
+                {prompt}"""
 
-            logging.info(f"Prompt: {prompt}")
+            logging.info(f"Sending prompt to Gemini with temperature {temperature}")
 
-            # Generate response from Gemini
             response = self.model.generate_content(
                 prompt,
                 generation_config={
@@ -92,5 +139,6 @@ class GeminiService:
             return response.text
 
         except Exception as e:
+            logging.error(f"Error processing contents with Gemini: {str(e)}")
             raise ValueError(f"Error processing contents with Gemini: {str(e)}")
 
