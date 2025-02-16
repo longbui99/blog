@@ -13,6 +13,8 @@ import { ROUTES, isNewPageRoute } from '../utils/routeConstants';
 import { useMenuContext } from '../contexts/MenuContext';
 import { processRawContent } from '../utils/contentUtils';
 import ImageViewer from '../components/ImageViewer';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBookReader } from '@fortawesome/free-solid-svg-icons';
 
 async function updateBlogContent(rawContent, path, routeInfo, showNotification) {
     const processedContent = await processRawContent(rawContent, path, showNotification);
@@ -49,6 +51,7 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
     const path = location.pathname.trimStart("/");
     const [author, setAuthor] = useState('Long Bui');
     const [lastUpdated, setLastUpdated] = useState(null);
+    const [totalViews, setTotalViews] = useState(0);
     const [isCreating, setIsCreating] = useState(false);
     const [originalContent, setOriginalContent] = useState(null);
     const [isPublished, setIsPublished] = useState(false); // State for published status
@@ -86,6 +89,7 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
             setPageDescription(blogData.title || blogData.title || '');
             setAuthor(blogData.author || 'Long Bui');
             setLastUpdated(blogData.updated_at || new Date().toISOString());
+            setTotalViews(blogData.total_views || 0);
             // Update MainContent's editable content
             updateMainContentEditableContent(blogData.content);
             addImageClickHandler()
@@ -107,7 +111,7 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
     useEffect(() => {
         const loadBlogContent = async () => {
             if (!isNewPageRoute(location.pathname)) {
-                const blogData = await blogMenuProcessor.createBlogMenuContentByPath(path);
+                const blogData = await blogMenuProcessor.getBlogMenuContentByPath(path);
                 setBlogPost(blogData);
                 return blogData;
             }
@@ -402,6 +406,9 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
                                 }) : 
                                 'Unknown date'
                             }
+                        </span>
+                        <span className="total-views">
+                            <FontAwesomeIcon icon={faBookReader} /> {totalViews || 0}
                         </span>
                     </div>
                 </div>

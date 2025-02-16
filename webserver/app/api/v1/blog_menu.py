@@ -150,6 +150,9 @@ async def read_blog_content_by_menu(menu_id: int, current_user: dict = Depends(c
         raise HTTPException(status_code=404, detail="Blog content not found for this menu")
     if not content.is_published and current_user is None:
         raise HTTPException(status_code=403, detail="This content is not published")
+    
+    await content.increment_views()
+    
     return await BlogContentSchema.from_tortoise_orm(content)
 
 @router.get("/path/content/{path}", response_model=BlogContentSchema)
@@ -162,7 +165,9 @@ async def read_blog_content_by_menu_path(path: str):
     content = await BlogContentModel.get_or_none(blog_menu_id=menu_item.id)
     if not content:
         raise HTTPException(status_code=404, detail="Blog content not found for this menu path")
-
+    
+    await content.increment_views()
+    
     return content
 
 @router.get("/path/content/")
@@ -175,6 +180,8 @@ async def add_blog_content_home_by_menu_path():
     content = await BlogContentModel.get_or_none(blog_menu_id=menu_item.id)
     if not content:
         raise HTTPException(status_code=404, detail="Blog content not found for this menu path")
+    
+    await content.increment_views()
 
     return content
 

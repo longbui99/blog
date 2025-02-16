@@ -2,3 +2,35 @@
     opacity: 0.5;
     cursor: not-allowed;
 } 
+
+.total-views {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.total-views svg {
+    width: 13px;
+    height: 13px;
+    color: #666;
+}
+
+.total-views svg {
+    font-weight: 600;
+}
+
+.dark-mode .total-views svg {
+    color: var(--text-dark);
+}
+
+.total-views-count {
+    font-weight: 600;
+    color: var(--text-light);
+    font-size: 1rem;
+}
+
+.dark-mode .total-views-count {
+    color: var(--text-dark);
+}

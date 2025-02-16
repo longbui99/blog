@@ -1,3 +1,4 @@
 #!/bin/bash
 
+cd ../
 cd webserver && source venv/bin/activate && fastapi dev app/main.py --reload

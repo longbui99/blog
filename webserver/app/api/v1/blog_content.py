@@ -157,6 +157,7 @@ async def read_blog_content(content_id: int):
     if blog_menu is None or not blog_menu.is_published:
         raise HTTPException(status_code=403, detail="This content is not associated with a published menu")
     
+    await content.increment_views()
     return await BlogContentSchema.from_tortoise_orm(content)
 
 @router.put("/{content_id}", response_model=BlogContentSchema)
@@ -202,6 +203,8 @@ async def read_blog_content_by_menu(menu_id: int):
     if not content:
         raise HTTPException(status_code=404, detail="Blog content not found for this menu")
     
+    await content.increment_views()
+    
     return await BlogContentSchema.from_tortoise_orm(content)
 
 @router.delete("/delete_by_path/{path}")
@@ -215,6 +218,8 @@ async def delete_blog_content_by_path(path: str, current_user: Annotated[User, D
 
     # Get content before deletion for Elasticsearch cleanup
     content = await BlogContent.get_or_none(blog_menu=blog_menu)
+    if content:
+        await content.increment_views()
 
     # Get the parent of the blog_menu
     parent = await BlogMenu.get_or_none(path=blog_menu.parent)

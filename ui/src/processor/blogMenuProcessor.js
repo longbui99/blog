@@ -22,7 +22,7 @@ class BlogMenuProcessor extends BaseProcessor {
     return await this.makeRequest('delete', `${this.baseEndpoint}/${menuId}`);
   }
 
-  async createBlogMenuContentByPath(pathData) {
+  async getBlogMenuContentByPath(pathData) {
     return await this.makeRequest('get', `${this.baseEndpoint}/path/content${pathData}`);
   }
 

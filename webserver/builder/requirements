@@ -15,4 +15,5 @@ beautifulsoup4>=4.9.3
 tiktoken>=0.5.0
 tenacity>=8.0.0
 sentence-transformers
+grpcio==1.59.0
 google-generativeai==0.3.2
