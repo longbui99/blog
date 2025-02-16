@@ -7,6 +7,7 @@ class BlogContentBase(BaseModel):
     content: str
     author: str
     blog_menu_id: int
+    total_views: int
 
 class BlogContentCreate(BlogContentBase):
     pass
