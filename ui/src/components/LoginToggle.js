@@ -1,7 +1,11 @@
 import React from 'react';
 import { IoPersonOutline } from "react-icons/io5";
+import { useDispatch, useSelector } from 'react-redux';
+import { toggleLoginModal } from '../redux/slices/loginSlice';
 
-function LoginToggle({ isLoggedIn, onLoginClick }) {
+function LoginToggle() {
+  const dispatch = useDispatch();
+  const isLoggedIn = useSelector((state) => state.login.isLoggedIn);
   const showLoginButton = window.location.hostname === process.env.REACT_APP_ADMIN_DOMAIN;
 
   if (!showLoginButton) {
@@ -11,8 +15,8 @@ function LoginToggle({ isLoggedIn, onLoginClick }) {
   return (
     <button
       className="login-toggle"
-      onClick={onLoginClick}
-      title="Login"
+      onClick={() => dispatch(toggleLoginModal())}
+      title={isLoggedIn ? "Account" : "Login"}
     >
       <IoPersonOutline />
     </button>

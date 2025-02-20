@@ -2,8 +2,12 @@ import React, { useState } from 'react';
 import { FaUser, FaLock, FaTimes } from 'react-icons/fa';
 import '../styles/LoginModal.css';
 import { loginProcessor } from '../processor/loginProcessor';
+import { useDispatch, useSelector } from 'react-redux';
+import { setLoginStatus, setLoginModal } from '../redux/slices/loginSlice';
 
-function LoginModal({ isOpen, onClose, onSubmit, isPopup = false, isLoggedIn }) {
+function LoginModal() {
+  const dispatch = useDispatch();
+  const { isLoggedIn, isLoginModalOpen, isLoginPopup } = useSelector((state) => state.login);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -14,30 +18,35 @@ function LoginModal({ isOpen, onClose, onSubmit, isPopup = false, isLoggedIn }) 
     const result = await loginProcessor.login(username, password);
     
     if (result.success) {
-      onSubmit(result.username);
-      onClose();
+      dispatch(setLoginStatus(true));
+      dispatch(setLoginModal(false));
       window.location.reload();
     } else {
       setError(result.error);
     }
   };
 
-  const handleCancel = () => {
-    loginProcessor.logout();
-    onClose();
-    if (isLoggedIn) {
-      window.location.reload();
-    } 
+  const handleClose = () => {
+    dispatch(setLoginModal(false));
   };
 
-  if (!isOpen) return null;
+  const handleCancel = () => {
+    loginProcessor.logout();
+    dispatch(setLoginModal(false));
+    if (isLoggedIn) {
+      dispatch(setLoginStatus(false));
+      window.location.reload();
+    }
+  };
 
-  const modalClass = isPopup ? 'login-popup' : 'login-modal';
+  if (!isLoginModalOpen) return null;
+
+  const modalClass = isLoginPopup ? 'login-popup' : 'login-modal';
 
   return (
-    <div className={`login-overlay ${isPopup ? 'popup' : ''}`}>
+    <div className={`login-overlay ${isLoginPopup ? 'popup' : ''}`}>
       <div className={modalClass}>
-        <button className="close-button" onClick={onClose}>
+        <button className="close-button" onClick={handleClose}>
           <FaTimes />
         </button>
         <h2>Welcome Back</h2>

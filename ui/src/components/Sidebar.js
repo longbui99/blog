@@ -7,6 +7,7 @@ import { isDeviceMobile } from '../utils/responsive';
 import { ROUTES } from '../utils/routeConstants';
 import { useMenuContext } from '../contexts/MenuContext';
 import Navigator from './Navigator'; // Import the Navigator component
+import { useSelector } from 'react-redux';
 
 const ItemTypes = {
     MENU_ITEM: 'menuItem'
@@ -142,7 +143,8 @@ const MenuItem = ({ id, title, path, index, is_published, children, searchTerm, 
     );
 };
 
-function Sidebar({ isOpen, toggleSidebar, className, routes, onItemClick, isLoggedIn }) {
+function Sidebar({ className, routes, onItemClick, isLoggedIn }) {
+    const isOpen = useSelector((state) => state.sidebar.isOpen);
     const [menuItems, setMenuItems] = useState([]);
     const [searchTerm, setSearchTerm] = useState(() => {
         return localStorage.getItem('sidebarSearchTerm') || '';

@@ -19,36 +19,31 @@ import { MenuProvider } from './contexts/MenuContext';
 import { ConfirmationProvider } from './contexts/ConfirmationContext';
 import { initializeBaseProcessor } from './processor/baseProcessor';
 import { getInitialPanelState, handleResponsiveState, isDeviceMobile } from './utils/responsive';
+import { Provider } from 'react-redux';
+import { store } from './redux/store';
+import { useSelector, useDispatch } from 'react-redux';
+import { setSidebar } from './redux/slices/sidebarSlice';
+import { setTOC } from './redux/slices/tocSlice';
+import ThemeToggle from './components/ThemeToggle';
+import { setLoginStatus } from './redux/slices/loginSlice';
 
 
 // Initialize GA with your measurement ID
 ReactGA.initialize("G-9VQG6QJLEK");
 
-function App() {
+// Move the App component content to a new component
+function AppContent() {
   const [routes, setRoutes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
-    const saved = localStorage.getItem('isSidebarOpen');
-    return saved !== null ? JSON.parse(saved) : getInitialPanelState();
-  });
+  // Get sidebar state from Redux
+  const isSidebarOpen = useSelector((state) => state.sidebar.isOpen);
+  const dispatch = useDispatch();
 
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    const saved = localStorage.getItem('isDarkMode');
-    if (saved !== null) {
-      return JSON.parse(saved);
-    }
-    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-  });
+  const isDarkMode = useSelector((state) => state.theme.isDarkMode);
 
-  const [isTOCOpen, setIsTOCOpen] = useState(() => {
-    const saved = localStorage.getItem('isTOCOpen');
-    return saved !== null ? JSON.parse(saved) : getInitialPanelState();
-  });
+  const isLoggedIn = useSelector((state) => state.login.isLoggedIn);
 
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-  const [isLoginPopup, setIsLoginPopup] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [currentPath, setCurrentPath] = useState('/');
 
@@ -65,62 +60,33 @@ function App() {
 
   useEffect(() => {
     document.body.classList.toggle('dark-mode', isDarkMode);
-    localStorage.setItem('isDarkMode', JSON.stringify(isDarkMode));
   }, [isDarkMode]);
 
   useEffect(() => {
-    localStorage.setItem('isSidebarOpen', JSON.stringify(isSidebarOpen));
-  }, [isSidebarOpen]);
-
-  useEffect(() => {
-    localStorage.setItem('isTOCOpen', JSON.stringify(isTOCOpen));
-  }, [isTOCOpen]);
-
-  useEffect(() => {
     const checkLoginStatus = async () => {
-      const isCurrentlyLoggedIn = loginProcessor.isLoggedIn();
-      
-      if (isCurrentlyLoggedIn) {
-        // Validate token if user appears to be logged in
+      if (loginProcessor.isLoggedIn()) {
         const isValid = await loginProcessor.validateToken();
-        if (!isValid) {
-          // Token is invalid, redirect to login
-          setIsLoggedIn(false);
-          setIsLoginModalOpen(true);
-        } else {
-          setIsLoggedIn(true);
-        }
+        dispatch(setLoginStatus(isValid));
       } else {
-        setIsLoggedIn(false);
+        dispatch(setLoginStatus(false));
       }
     };
 
     checkLoginStatus();
-  }, []); // Run on component mount
+  }, [dispatch]);
 
+  // Update the resize handler to use Redux
   useEffect(() => {
     const handleResize = () => {
       handleResponsiveState({
-        setSidebar: setIsSidebarOpen,
-        setTOC: setIsTOCOpen
+        setSidebar: (value) => dispatch(setSidebar(value)),
+        setTOC: (value) => dispatch(setTOC(value))
       });
     };
 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
-
-  const toggleDarkMode = () => {
-    setIsDarkMode(!isDarkMode);
-  };
-
-  const toggleTOC = () => {
-    setIsTOCOpen(!isTOCOpen);
-  };
+  }, [dispatch]);
 
   const handleAddPage = () => {
     setIsEditing(true);
@@ -128,14 +94,13 @@ function App() {
   };
 
   const handleLoginClick = () => {
-    setIsLoginModalOpen(true);
+    dispatch(setLoginStatus(true));
   };
 
   const handleLoginSubmit = async (username, password) => {
     const result = await loginProcessor.login(username, password);
     if (result.success) {
-      setIsLoggedIn(true);
-      setIsLoginModalOpen(false);
+      dispatch(setLoginStatus(true));
     } else {
       // Handle login failure (e.g., show an error message)
       console.error(result.message);
@@ -143,21 +108,20 @@ function App() {
   };
 
   const handleLoginModalClose = () => {
-    setIsLoginModalOpen(false);
-    setIsLoginPopup(false);
+    dispatch(setLoginStatus(false));
   };
 
   useEffect(() => {
-  }, [isLoginModalOpen, isLoginPopup]);
+  }, [isLoggedIn]);
 
   const handleMenuItemClick = () => {
     if (isDeviceMobile()) {
-      setIsSidebarOpen(false);
+      dispatch(setSidebar(false));
     }
   };
 
   if (isLoading) {
-    return <div class="loading-panel">Loading...</div>;
+    return <div className="loading-panel">Loading...</div>;
   }
 
   const handleRoutesUpdate = (updatedRoutes) => {
@@ -168,58 +132,60 @@ function App() {
     <NotificationProvider>
       <ProcessorInitializer />
       <ConfirmationProvider>
-      <MenuProvider>
-        <Router>
-          <RouteTracker />
-          <div className="App">
-            <Header 
-              isLoggedIn={isLoggedIn} 
-              onAddPage={handleAddPage}/>
-            <Sidebar 
-              isOpen={isSidebarOpen} 
-              toggleSidebar={toggleSidebar} 
-              className={isDarkMode ? 'dark-mode' : ''}
-              routes={routes}
-              onItemClick={handleMenuItemClick}
-              isLoggedIn={isLoggedIn}
-            />
-            <MainContent 
-              isSidebarOpen={isSidebarOpen} 
-              isTOCOpen={isTOCOpen}
-              isLoggedIn={isLoggedIn}
-              routes={routes}
-              onRoutesUpdate={handleRoutesUpdate}
-              isEditing={isEditing}
-              setIsEditing={setIsEditing}
-              currentPath={currentPath}
-              setCurrentPath={setCurrentPath}
-              setIsTOCOpen={setIsTOCOpen}
-            >
-              <Routes>
-                {routes.map(route => (
-                  <Route key={route.path} path={route.path} element={<route.component />} />
-                ))}
-              </Routes>
-            </MainContent>
-            <div className="toggle-container">
-              <SidebarToggle isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-              <TOCToggle isOpen={isTOCOpen} toggleTOC={toggleTOC} />
-              <LoginToggle isLoggedIn={isLoggedIn} onLoginClick={handleLoginClick} />
-              <button className="theme-toggle" onClick={toggleDarkMode}>
-                {isDarkMode ? '☀️' : '🌙'}
-              </button>
+        <MenuProvider>
+          <Router>
+            <RouteTracker />
+            <div className="App">
+              <Header 
+                isLoggedIn={isLoggedIn} 
+                onAddPage={handleAddPage}
+              />
+              <Sidebar 
+                className={isDarkMode ? 'dark-mode' : ''}
+                routes={routes}
+                onItemClick={handleMenuItemClick}
+                isLoggedIn={isLoggedIn}
+              />
+              <MainContent 
+                isLoggedIn={isLoggedIn}
+                routes={routes}
+                onRoutesUpdate={handleRoutesUpdate}
+                isEditing={isEditing}
+                setIsEditing={setIsEditing}
+                currentPath={currentPath}
+                setCurrentPath={setCurrentPath}
+              >
+                <Routes>
+                  {routes.map(route => (
+                    <Route key={route.path} path={route.path} element={<route.component />} />
+                  ))}
+                </Routes>
+              </MainContent>
+              <div className="toggle-container">
+                <SidebarToggle/>
+                <TOCToggle />
+                <LoginToggle />
+                <ThemeToggle />
+              </div>
+              <LoginModal 
+                isOpen={isLoggedIn}
+                onClose={handleLoginModalClose} 
+                onSubmit={handleLoginSubmit} 
+              />
             </div>
-            <LoginModal 
-              isOpen={isLoginModalOpen}
-              onClose={handleLoginModalClose} 
-              onSubmit={handleLoginSubmit} 
-              isPopup={isLoginPopup}
-              isLoggedIn={isLoggedIn}
-            />
-          </div>
-        </Router></MenuProvider>
+          </Router>
+        </MenuProvider>
       </ConfirmationProvider>
     </NotificationProvider>
+  );
+}
+
+// Main App component now just provides the Redux store
+function App() {
+  return (
+    <Provider store={store}>
+      <AppContent />
+    </Provider>
   );
 }
 

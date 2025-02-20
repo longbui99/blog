@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import TableOfContents from './TableOfContents';
 import { generateTOC } from '../utils/contentUtils';
 import '../styles/MainContent.css';
@@ -26,12 +27,11 @@ const scrollToElement = (elementId, offset = 80) => {
 };
 
 function MainContent({ 
-  isSidebarOpen, 
-  isTOCOpen, 
-  setIsTOCOpen, 
   isLoggedIn, 
   routes, 
 }) {
+  const isSidebarOpen = useSelector((state) => state.sidebar.isOpen);
+  const isTOCOpen = useSelector((state) => state.toc.isOpen);
   const [tocItems, setTocItems] = useState([]);
   const [editableContent, setEditableContent] = useState('');
   const location = useLocation();
@@ -75,12 +75,8 @@ function MainContent({
 
   return (
     <>
-      <Header 
-        isLoggedIn={isLoggedIn}
-      />
-      <main 
-        className={`main-content ${isSidebarOpen ? 'sidebar-open' : ''} ${isTOCOpen ? 'toc-open' : ''}`}
-      >
+      <Header isLoggedIn={isLoggedIn} />
+      <main className={`main-content ${isSidebarOpen ? 'sidebar-open' : ''} ${isTOCOpen ? 'toc-open' : ''}`}>
         <div className="content-wrapper" ref={contentRef}>
           <BreadCrumbs routes={routes} currentPath={location.pathname} />
           <BlogContent 
@@ -93,8 +89,7 @@ function MainContent({
         </div>
         <TableOfContents 
           items={tocItems} 
-          isOpen={isTOCOpen} 
-          onToggle={setIsTOCOpen} 
+          isOpen={isTOCOpen}
         />
       </main>
     </>
