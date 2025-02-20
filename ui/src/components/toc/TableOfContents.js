@@ -2,6 +2,7 @@ import React, { useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { isDeviceMobile } from '../../utils/responsive';
 import './styles/TableOfContents.css';
+import TOCToggle from '../toggle/TOCToggle';
 
 function TableOfContents({ items, isOpen, onToggle }) {
   const location = useLocation();
@@ -21,22 +22,24 @@ function TableOfContents({ items, isOpen, onToggle }) {
   }
 
   return (
-    <nav className={`table-of-contents ${isOpen ? 'open' : ''}`}>
-      <h2>Table of Contents</h2>
-      <ul>
-        {items.map((item, index) => (
-          <li key={index} className={`toc-level-${item.level}`}>
-            <Link 
-              to={`${location.pathname}#${item.id}`}
-              className="toc-link"
-              onClick={handleItemClick}
-            >
-              {item.text}
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </nav>
+    <div className={`toc-container ${isOpen ? 'open' : ''}`}>
+      <nav className={`table-of-contents`}>
+          <ul>
+            {items.map((item, index) => (
+            <li key={index} className={`toc-level-${item.level}`}>
+              <Link 
+                to={`${location.pathname}#${item.id}`}
+                className="toc-link"
+                onClick={handleItemClick}
+              >
+                {item.text}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
+      <TOCToggle/>
+    </div>
   );
 }
 

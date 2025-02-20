@@ -342,7 +342,24 @@ flex-flow: row;
   margin-right: 1rem;
 }
 
-.header-controls button {
+.header-controls > * {
+  display: flex;
+  align-items: center;
+}
+
+/* Update existing styles */
+.app-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-right: 1rem;
+}
+
+/* Ensure consistent button styling */
+.header-controls button,
+.search-button,
+.chat-button,
+.control-panel-toggle {
   background: none;
   border: none;
   color: var(--text-dark);
@@ -352,12 +369,14 @@ flex-flow: row;
   align-items: center;
   justify-content: center;
   border-radius: 4px;
-  transition: background-color 0.2s;
-  font-size: 1.2rem;
+  transition: all 0.2s ease;
 }
 
-.header-controls button:hover {
-  background-color: var(--hover-color);
+.header-controls button:hover,
+.search-button:hover,
+.chat-button:hover,
+.control-panel-toggle:hover {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 /* Responsive adjustments */
@@ -390,34 +409,8 @@ flex-flow: row;
   background-color: var(--background-dark);
 }
 
-.app-bar-right {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
 .search-bar {
   display: flex;
   align-items: center;
   margin-right: 0.5rem;
-}
-
-.search-button,
-.chat-button {
-  background: none;
-  border: none;
-  color: var(--text-color);
-  cursor: pointer;
-  padding: 0.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 4px;
-  transition: background-color 0.2s;
-  font-size: 1.2rem;
-}
-
-.search-button:hover,
-.chat-button:hover {
-  background-color: var(--hover-color);
 }

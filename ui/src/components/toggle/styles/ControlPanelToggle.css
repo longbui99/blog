@@ -1,0 +1,111 @@
+/* Sidebar Toggle Button */
+.control-panel-toggle {
+    background: none;
+    border: none;
+    color: var(--text-dark);
+    cursor: pointer;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    height: 36px;
+    width: 36px;
+    position: relative;
+    overflow: hidden;
+}
+
+.control-panel-toggle .text {
+    color: var(--text-dark);
+    opacity: 0.9;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 1;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(180deg);
+    }
+}
+
+.control-panel-toggle:hover .text {
+    opacity: 1;
+    color: var(--primary-color);
+    animation: spin 0.5s ease;
+}
+
+.control-panel-toggle::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, var(--primary-color) 0%, transparent 70%);
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform 0.3s ease, opacity 0.2s ease;
+}
+
+.control-panel-toggle:hover::before {
+    opacity: 0.15;
+    transform: translate(-50%, -50%) scale(1.5);
+}
+
+.control-panel-toggle:active .text {
+    transform: scale(0.95);
+}
+
+/* Dark mode adjustments */
+.dark-mode .control-panel-toggle .text {
+    color: var(--text-dark);
+}
+
+.dark-mode .control-panel-toggle:hover::before {
+    opacity: 0.2;
+}
+
+/* Add to header controls section */
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    .control-panel-toggle {
+        height: 32px;
+        width: 32px;
+    }
+
+    .control-panel-toggle .text {
+        font-size: 1rem;
+    }
+}
+
+/* Add these new styles */
+.control-panel-toggle.active {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.control-panel-toggle .rotating {
+  animation: rotate 0.5s ease;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(180deg);
+  }
+} 

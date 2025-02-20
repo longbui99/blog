@@ -14,9 +14,7 @@ function TOCToggle() {
       title={isOpen ? "Hide Table of Contents" : "Show Table of Contents"}
     >
       <span className="text">
-          <span className="line"></span>
-          <span className="line"></span>
-          <span className="line"></span>
+        Table of Contents
       </span>
     </button>
   );

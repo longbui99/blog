@@ -755,3 +755,55 @@ h3 {
 .dark-mode .resizable-image:hover {
     filter: brightness(1);
 }
+
+/* Custom scrollbar styles */
+.main-content {
+    /* Enable smooth scrolling */
+    scroll-behavior: smooth;
+}
+
+/* Webkit browsers (Chrome, Safari, newer Edge) */
+.main-content::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.main-content::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 4px;
+}
+
+.main-content::-webkit-scrollbar-thumb {
+    background: rgba(155, 155, 155, 0.5);
+    border-radius: 4px;
+    transition: background 0.2s ease;
+}
+
+.main-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(155, 155, 155, 0.7);
+}
+
+/* Firefox */
+.main-content {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(155, 155, 155, 0.5) transparent;
+}
+
+/* Dark mode adjustments */
+.dark-mode .main-content::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.dark-mode .main-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.dark-mode .main-content {
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+/* Keep existing image styles */
+.main-content img {
+    max-width: 100%;
+    height: auto;
+}

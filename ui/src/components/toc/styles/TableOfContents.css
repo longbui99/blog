@@ -1,19 +1,23 @@
 /* Adjust TableOfContents styles if needed */
-.table-of-contents {
+.toc-container {
   position: fixed;
   top: 60px;
   right: 0px;
   width: 300px;
-  max-height: 60vh;
+  height: 60vh;
+  transition: transform 0.3s ease;
+}
+
+.table-of-contents {
+  margin-top: 6px;
   overflow-y: auto;
   font-size: 14px;
   z-index: 500;
   background-color: transparent;
   border: none;
-  transition: transform 0.3s ease;
 }
 
-.table-of-contents:not(.open) {
+.toc-container:not(.open) {
   transform: translateX(100%);
 }
 
@@ -25,7 +29,7 @@
 
 .table-of-contents ul {
   list-style-type: none;
-  padding-left: 0;
+  padding-left: 5px!important;
   margin: 0;
 }
 
