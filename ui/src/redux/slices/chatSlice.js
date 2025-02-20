@@ -3,17 +3,14 @@ import { createSlice } from '@reduxjs/toolkit';
 const chatSlice = createSlice({
   name: 'chat',
   initialState: {
-    isOpen: false
+    isChatOpen: false
   },
   reducers: {
-    toggleChat: (state) => {
-      state.isOpen = !state.isOpen;
-    },
-    setChat: (state, action) => {
-      state.isOpen = action.payload;
+    setChatOpen: (state, action) => {
+      state.isChatOpen = action.payload;
     }
   }
 });
 
-export const { toggleChat, setChat } = chatSlice.actions;
+export const { setChatOpen } = chatSlice.actions;
 export default chatSlice.reducer; 

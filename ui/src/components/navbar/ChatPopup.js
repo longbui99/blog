@@ -4,8 +4,10 @@ import { faTimes, faRobot, faUser, faPaperPlane, faUndo } from '@fortawesome/fre
 import './styles/ChatPopup.css';
 import { aiBotProcessor } from '../../processor/aiBotProcessor';
 import { marked } from 'marked';
+import { useDispatch, useSelector } from 'react-redux';
+import { setChatOpen } from '../../redux/slices/chatSlice';
 
-function ChatPopup({ isOpen, onClose }) {
+function ChatPopup() {
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
   const [isClosing, setIsClosing] = useState(false);
@@ -14,6 +16,9 @@ function ChatPopup({ isOpen, onClose }) {
   const [history, setHistory] = useState([]);
   const inputRef = useRef(null);
   const [isLimited, setIsLimited] = useState(false);
+  
+  const dispatch = useDispatch();
+  const isOpen = useSelector(state => state.chat.isChatOpen);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -34,10 +39,21 @@ function ChatPopup({ isOpen, onClose }) {
     return () => document.removeEventListener('keydown', handleEscape);
   }, [isOpen]);
 
+  useEffect(() => {
+    if (isOpen) {
+      const timer = setTimeout(() => {
+        if (inputRef.current) {
+          inputRef.current.focus();
+        }
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen]);
+
   const handleClose = () => {
     setIsClosing(true);
     setTimeout(() => {
-      onClose();
+      dispatch(setChatOpen(false));
       setIsClosing(false);
     }, 200);
   };
@@ -100,7 +116,8 @@ function ChatPopup({ isOpen, onClose }) {
   if (!isOpen) return null;
 
   return (
-    <div className={`chat-popup-overlay ${isClosing ? 'closing' : ''}`} onClick={handleClose}>
+    <div className={`chat-popup-overlay ${!isOpen ? 'hidden' : ''} ${isClosing ? 'closing' : ''}`} 
+         onClick={handleClose}>
       <div className="chat-popup-container" onClick={e => e.stopPropagation()}>
         <div className="chat-popup-header">
           <div className="header-title">

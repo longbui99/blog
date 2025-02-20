@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setActiveRoute } from '../../redux/slices/routesSlice';
 import SidebarToggle from '../toggle/SidebarToggle';
 import ChatToggle from '../toggle/SearchToggle';
+import AIBotToggle from '../toggle/AIBotToggle';
 import "./styles/Sidebar.css";
 const MenuItem = ({ id, title, path, index, is_published, children, searchTerm, onItemClick, level = 0 }) => {
     const activeRoute = useSelector(state => state.routes.activeRoute);
@@ -131,7 +132,6 @@ function Sidebar({ className, onItemClick }) {
             ref={sidebarRef} 
             className={`sidebar ${className} ${!isSidebarOpen ? 'hidden' : ''}`}
         >
-            <ChatToggle />
             <SidebarToggle />
             <DndProvider backend={HTML5Backend}>
                 <nav className="sidebar-nav">

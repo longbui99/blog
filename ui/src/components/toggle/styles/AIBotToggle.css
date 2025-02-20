@@ -1,6 +1,6 @@
 
 /* Sidebar Toggle Button */
-.search-toggle {    
+.ai-bot-toggle {
     position: fixed;
     border-radius: 50%;
     background-color: var(--sidebar-bg);
@@ -12,7 +12,7 @@
     width: 50px;
     height: 50px;
     bottom: 20px;
-    right: 20px;
+    right: 80px;
     padding: 10px 0px 8px;
     font-weight: 400;
     letter-spacing: 1px;
@@ -21,12 +21,12 @@
     transition: opacity 0.3s ease;
 }
 
-.search-toggle:hover .text{
+.ai-bot-toggle:hover .text{
     opacity: 1;
 }
 
 /* Text styling */
-.search-toggle .text {
+.ai-bot-toggle .text {
     -webkit-writing-mode: vertical-rl;
     writing-mode: vertical-rl;
     text-orientation: upright;
@@ -37,7 +37,7 @@
 }
 
 /* Gradient background effect */
-.search-toggle::after {
+.ai-bot-toggle::after {
     content: "";
     position: absolute;
     transition: var(--transition);
@@ -52,11 +52,11 @@
 }
 
 /* Hover effect */
-.search-toggle:hover::after {
+.ai-bot-toggle:hover::after {
     opacity: 0.9;
     background: linear-gradient(to right bottom, var(--primary-color), var(--background-color-2, #1a1d23));
 }
 /* Dark mode adjustments */
-.dark-mode .search-toggle {
+.dark-mode .ai-bot-toggle {
     color: var(--text-dark);
 } 
