@@ -5,7 +5,7 @@ import TOCToggle from '../toggle/TOCToggle.js';
 import ChatToggle from '../toggle/SearchToggle.js';
 import AIBotToggle from '../toggle/AIBotToggle.js';
 import ControlPanelToggle from '../toggle/ControlPanelToggle.js';
-
+import ControlPanelPopup from './ControlPanelPopup.js';
 import './styles/Header.css';
 import SearchPopup from './SearchPopup.js';
 import ChatPopup from './ChatPopup.js';
@@ -30,6 +30,7 @@ function Header({ isLoggedIn }) {
         <AIBotToggle />
         <SearchPopup />
         <ChatPopup />
+        <ControlPanelPopup />
       </div>
     </header>
   );
