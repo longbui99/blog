@@ -354,7 +354,6 @@ flex-flow: row;
   border-radius: 4px;
   transition: background-color 0.2s;
   font-size: 1.2rem;
-  border: 1px solid var(--border-color);
 }
 
 .header-controls button:hover {
@@ -379,13 +378,16 @@ flex-flow: row;
   justify-content: space-between;
   align-items: center;
   padding: 0.5rem 1rem;
-  background-color: var(--background-color);
-  border-bottom: 1px solid var(--border-color);
+  background-color: var(--background-light);
   height: 3rem;
   position: fixed;
   width: 100%;
   top: 0;
   z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.dark-mode .app-bar {
+  background-color: var(--background-dark);
 }
 
 .app-bar-right {
@@ -418,43 +420,4 @@ flex-flow: row;
 .search-button:hover,
 .chat-button:hover {
   background-color: var(--hover-color);
-}
-
-.app-bar-controls {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-right: 1rem;
-}
-
-.app-bar-controls button {
-  background: none;
-  border: none;
-  color: var(--text-color);
-  cursor: pointer;
-  padding: 0.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 4px;
-  transition: background-color 0.2s;
-  font-size: 1.2rem;
-}
-
-.app-bar-controls button:hover {
-  background-color: var(--hover-color);
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .app-bar-right {
-    gap: 0.25rem;
-  }
-
-  .search-button,
-  .chat-button,
-  .app-bar-controls button {
-    padding: 0.25rem;
-    font-size: 1rem;
-  }
 }

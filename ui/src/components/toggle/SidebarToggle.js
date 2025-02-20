@@ -1,7 +1,7 @@
 import React from 'react';
-import { IoListOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleSidebar } from '../../redux/slices/sidebarSlice';
+import './styles/SidebarToggle.css';
 
 function SidebarToggle() {
   const dispatch = useDispatch();
@@ -9,11 +9,11 @@ function SidebarToggle() {
 
   return (
     <button 
-      className={`sidebar-toggle ${isOpen ? 'open' : ''}`} 
-      onClick={() => dispatch(toggleSidebar())} 
-      title={isOpen ? "Hide Sidebar" : "Show Sidebar"}
+        className="sidebar-toggle-right"
+        onClick={() => dispatch(toggleSidebar())}
+        title={isOpen ? "Hide Sidebar" : "Show Sidebar"}
     >
-      <IoListOutline />
+        <span className="text">Menu</span>
     </button>
   );
 }

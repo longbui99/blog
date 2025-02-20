@@ -7,32 +7,32 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setSearchOpen, setChatOpen, setSearchTerm } from '../../redux/slices/searchSlice';
 
 function SearchBar() {
-    const dispatch = useDispatch();
-    const { isSearchOpen, isChatOpen, searchTerm } = useSelector(state => state.search);
+    // const dispatch = useDispatch();
+    // const { isSearchOpen, isChatOpen, searchTerm } = useSelector(state => state.search);
 
-    useEffect(() => {
-        const handleKeyPress = (event) => {
-            if ((event.ctrlKey && event.key === '/') || (event.metaKey && event.key === '/')) {
-                event.preventDefault();
-                dispatch(setSearchOpen(true));
-            }
-        };
+    // useEffect(() => {
+    //     const handleKeyPress = (event) => {
+    //         if ((event.ctrlKey && event.key === '/') || (event.metaKey && event.key === '/')) {
+    //             event.preventDefault();
+    //             dispatch(setSearchOpen(true));
+    //         }
+    //     };
 
-        document.addEventListener('keydown', handleKeyPress);
-        return () => document.removeEventListener('keydown', handleKeyPress);
-    }, [dispatch]);
+    //     document.addEventListener('keydown', handleKeyPress);
+    //     return () => document.removeEventListener('keydown', handleKeyPress);
+    // }, [dispatch]);
 
-    const handleSearchClick = () => {
-        dispatch(setSearchOpen(true));
-    };
+    // const handleSearchClick = () => {
+    //     dispatch(setSearchOpen(true));
+    // };
 
-    const handleChatClick = () => {
-        dispatch(setChatOpen(true));
-    };
+    // const handleChatClick = () => {
+    //     dispatch(setChatOpen(true));
+    // };
 
     return (
         <div className="search-bar">
-            <button 
+            {/* <button 
                 className="search-button" 
                 onClick={handleSearchClick}
                 title="Search (Ctrl+/)"
@@ -58,7 +58,7 @@ function SearchBar() {
             <ChatPopup 
                 isOpen={isChatOpen} 
                 onClose={() => dispatch(setChatOpen(false))} 
-            />
+            /> */}
         </div>
     );
 }

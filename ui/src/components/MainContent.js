@@ -78,7 +78,6 @@ function MainContent() {
 
   return (
     <>
-      <Header />
       <main className={`main-content ${isSidebarOpen ? 'sidebar-open' : ''} ${isTOCOpen ? 'toc-open' : ''}`}>
         <div className="content-wrapper" ref={contentRef}>
           <BreadCrumbs />

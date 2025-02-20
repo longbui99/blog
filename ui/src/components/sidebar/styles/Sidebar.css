@@ -4,38 +4,37 @@
     top: 50px;
     left: 0;
     bottom: 60px;
-    width: 270px;
-    background-color: var(--sidebar-bg);
-    transition: all 0.3s ease;
-    z-index: 1000;
+    transition: all 0.5s linear;
+    z-index: 998;
     flex-shrink: 0;
-    padding: 10px 0;
     margin-top: 15px;
     height: calc(100vh - 50px);
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-    background-color: transparent;
     opacity: 1;
 }
 
-.sidebar.hidden {
+/* Sidebar Navigation */
+.sidebar-nav {
+    width: 270px;
+    overflow-y: auto;
+    height: 95%;
+    padding: 10px 0;
+    direction: rtl;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    background-color: var(--background-light);
+}
+.sidebar.hidden .sidebar-nav {
     width: 0;
     min-width: 0;
     max-width: 0;
     overflow: hidden;
-    opacity: 0;
     transition: all 0.3s ease;
 }
-
-
-/* Sidebar Navigation */
-.sidebar-nav {
-    overflow-y: auto;
-    height: 95%;
-    padding: 0 10px 0 5px;
-    direction: rtl;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+.dark-mode .sidebar-nav {
+    background-color: var(--background-dark);
 }
+
 
 /* Scrollbar styles */
 .sidebar-nav::-webkit-scrollbar {
@@ -85,7 +84,7 @@
 .menu-item a {
     flex: 1;
     padding: 5px 8px;
-    color: inherit;
+    color: var(--sidebar-text);
     text-decoration: none;
     font-size: 0.9rem;
     white-space: nowrap;
@@ -144,7 +143,7 @@
     padding: 0 !important;
     font-size: 0.8rem;
     transition: transform 0.3s;
-    color: var(--text-light);
+    color: var(--sidebar-text);
     border-radius: 3px;
     margin-left: 4px;
 }
@@ -240,7 +239,7 @@ ul.collapsed {
 
 /* Active item indicator */
 .menu-item a.active {
-    color: var(--primary-color);
+    color: var(--sidebar-text);
     font-weight: 500;
 }
 
@@ -269,4 +268,10 @@ ul.collapsed {
 /* Unpublished items */
 .menu-item.unpublished a {
     border-bottom: 1px dashed #dc2626;
-} 
+}
+
+/* Move button when sidebar is visible */
+.sidebar:not(.hidden) + .sidebar-toggle-right,
+.sidebar:not(.hidden) .sidebar-toggle-right {
+    left: 270px;
+}

@@ -1,6 +1,6 @@
 .main-content {
   flex-grow: 1;
-  transition: margin-left 0.3s ease-in-out;
+  transition: all 1s ease;
   overflow-y: auto;
   color: var(--text-light);
   position: relative;
@@ -8,7 +8,7 @@
 }
 
 .main-content.sidebar-open {
-  margin-left: 250px;
+  margin-left: 270px;
 }
 
 .main-content.toc-open {

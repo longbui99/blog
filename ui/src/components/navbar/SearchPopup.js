@@ -1,17 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes, faUser, faClock } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 import { blogMenuProcessor } from '../../processor/blogMenuProcessor';
 import './styles/SearchPopup.css';
-import { useDispatch } from 'react-redux';
-import { setSearchOpen, setSearchTerm } from '../../redux/slices/searchSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { setSearchOpen } from '../../redux/slices/searchSlice';
 
-function SearchPopup({ isOpen, onClose, searchTerm, onSearchChange }) {
+function SearchPopup() {
   const [searchResults, setSearchResults] = useState([]);
   const [isClosing, setIsClosing] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const inputRef = useRef(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  
+  const isOpen = useSelector(state => state.search.isSearchOpen);
 
   // Handle Escape key
   useEffect(() => {
@@ -43,11 +47,20 @@ function SearchPopup({ isOpen, onClose, searchTerm, onSearchChange }) {
     return () => clearTimeout(debounceTimer);
   }, [searchTerm]);
 
+  // Add this effect for auto-focus
+  useEffect(() => {
+    setTimeout(() => {
+      if (isOpen && inputRef.current) {
+        inputRef.current.focus();
+      }
+    }, 100);
+  }, [isOpen]);
+
   const handleClose = () => {
     setIsClosing(true);
     setTimeout(() => {
       dispatch(setSearchOpen(false));
-      dispatch(setSearchTerm(''));
+      setSearchTerm('');
       setIsClosing(false);
     }, 200);
   };
@@ -58,8 +71,7 @@ function SearchPopup({ isOpen, onClose, searchTerm, onSearchChange }) {
   };
 
   const handleSearchChange = (e) => {
-    const value = e.target.value;
-    onSearchChange(value);
+    setSearchTerm(e.target.value);
   };
 
   const formatDate = (dateString) => {
@@ -94,20 +106,19 @@ function SearchPopup({ isOpen, onClose, searchTerm, onSearchChange }) {
     });
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div className={`search-popup-overlay ${isClosing ? 'closing' : ''}`} onClick={handleClose}>
+    <div className={`search-popup-overlay ${!isOpen ? 'hidden' : ''} ${isClosing ? 'closing' : ''}`} 
+         onClick={handleClose}>
       <div className="search-popup-container" onClick={e => e.stopPropagation()}>
         <div className="search-popup-header">
           <div className="search-input-wrapper">
             <input
+              ref={inputRef}
               type="text"
-              placeholder="Search..."
+              placeholder="Type to search..."
               value={searchTerm}
               onChange={handleSearchChange}
               className="search-input"
-              autoFocus
             />
           </div>
           <button className="close-button" onClick={handleClose}>

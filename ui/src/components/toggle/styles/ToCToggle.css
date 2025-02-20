@@ -1,0 +1,65 @@
+.toc-toggle {
+  position: fixed;
+  border-radius: 6px 0 0 6px;
+  background-color: transparent;
+  transition: var(--transition);
+  color: var(--text-light);
+  z-index: 2;
+  font-size: 14px;
+  border: 0 none;
+  width: 30px;
+  top: 6%;
+  right: 0px;
+  padding: 15px;
+  font-weight: 400;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  opacity: 0.5;
+}
+
+.toc-toggle:hover {
+    opacity: 1;
+}
+
+
+.dark-mode .toc-toggle {
+  color: var(--text-dark);
+}
+
+.toc-toggle .text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: 12px; /* Space between lines */
+}
+
+/* Gradient background effect */
+.toc-toggle::after {
+    content: "";
+    position: absolute;
+    transition: var(--transition);
+    width: 100%;
+    height: 100%;
+    border-radius: 6px;
+    top: 0;
+    left: 0;
+    background: linear-gradient(to right bottom, var(--background-color-2), #16181c);
+    opacity: 0;
+    z-index: -1;
+}
+
+/* Individual lines */
+.toc-toggle .line {
+    width: 20px;
+    height: 2px;
+    background-color: var(--text-light);
+    display: block;
+    transition: var(--transition);
+}
+
+.dark-mode .toc-toggle .line {
+    background-color: var(--text-dark);
+}

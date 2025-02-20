@@ -5,11 +5,11 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { isDeviceMobile } from '../../utils/responsive';
 import { ROUTES } from '../../utils/routeConstants';
 import { useMenuContext } from '../../contexts/MenuContext';
-import Navigator from '../Navigator';
 import { useDispatch, useSelector } from 'react-redux';
 import { setActiveRoute } from '../../redux/slices/routesSlice';
+import SidebarToggle from '../toggle/SidebarToggle';
+import ChatToggle from '../toggle/SearchToggle';
 import "./styles/Sidebar.css";
-
 const MenuItem = ({ id, title, path, index, is_published, children, searchTerm, onItemClick, level = 0 }) => {
     const activeRoute = useSelector(state => state.routes.activeRoute);
     const isLoggedIn = useSelector(state => state.login.isLoggedIn);
@@ -90,6 +90,7 @@ const MenuItem = ({ id, title, path, index, is_published, children, searchTerm, 
 function Sidebar({ className, onItemClick }) {
     const routes = useSelector(state => state.routes.items);
     const isSidebarOpen = useSelector(state => state.sidebar.isOpen);
+    const dispatch = useDispatch();
     const [menuItems, setMenuItems] = useState([]);
     const [isContentLoaded, setIsContentLoaded] = useState(false);
     const sidebarRef = useRef(null);
@@ -130,6 +131,8 @@ function Sidebar({ className, onItemClick }) {
             ref={sidebarRef} 
             className={`sidebar ${className} ${!isSidebarOpen ? 'hidden' : ''}`}
         >
+            <ChatToggle />
+            <SidebarToggle />
             <DndProvider backend={HTML5Backend}>
                 <nav className="sidebar-nav">
                     <ul>

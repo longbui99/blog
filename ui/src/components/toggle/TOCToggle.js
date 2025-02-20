@@ -1,7 +1,7 @@
 import React from 'react';
-import { IoReorderThreeOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleTOC } from '../../redux/slices/tocSlice';
+import './styles/ToCToggle.css';
 
 function TOCToggle() {
   const dispatch = useDispatch();
@@ -13,7 +13,11 @@ function TOCToggle() {
       onClick={() => dispatch(toggleTOC())} 
       title={isOpen ? "Hide Table of Contents" : "Show Table of Contents"}
     >
-      <IoReorderThreeOutline />
+      <span className="text">
+          <span className="line"></span>
+          <span className="line"></span>
+          <span className="line"></span>
+      </span>
     </button>
   );
 }

@@ -2,7 +2,7 @@
 .table-of-contents {
   position: fixed;
   top: 60px;
-  right: 20px;
+  right: 0px;
   width: 300px;
   max-height: calc(100vh);
   overflow-y: auto;
