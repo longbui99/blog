@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes, faRobot, faUser, faPaperPlane, faUndo } from '@fortawesome/free-solid-svg-icons';
-import '../styles/ChatPopup.css';
-import { aiBotProcessor } from '../processor/aiBotProcessor';
+import './styles/ChatPopup.css';
+import { aiBotProcessor } from '../../processor/aiBotProcessor';
 import { marked } from 'marked';
 
 function ChatPopup({ isOpen, onClose }) {

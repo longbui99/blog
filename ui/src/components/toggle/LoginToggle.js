@@ -1,7 +1,7 @@
 import React from 'react';
 import { IoPersonOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from 'react-redux';
-import { toggleLoginModal } from '../redux/slices/loginSlice';
+import { toggleLoginModal } from '../../redux/slices/loginSlice';
 
 function LoginToggle() {
   const dispatch = useDispatch();

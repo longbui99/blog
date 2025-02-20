@@ -1,66 +1,64 @@
 /* ui/src/styles/navigator.css */
 .navigator {
     display: flex;
-    justify-content: space-around;
-    align-items: center;
-    height: 40px; /* Same height as toggle-container */
-    border-radius: 10px;
-    background-color: var(--background-light);
-    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 500; /* Ensure it appears above other content */
-    margin-left: 300px;
+    justify-content: space-between;
+    padding: 20px 0;
+    margin-top: 40px;
+    border-top: 1px solid var(--border-color);
 }
 
 .nav-item {
     display: flex;
-    flex-direction: row;
     align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 4px;
     cursor: pointer;
-    text-align: center; /* Center text under the icon */
-    width: 250px;;
-    color: var(--link-light);
+    transition: background-color 0.2s;
 }
-.nav-item.invisible{
-    visibility: hidden;
-}
-.nav-item:hover{
-    color: red;
+
+.nav-item:hover {
+    background-color: rgba(0, 0, 0, 0.05);
 }
 
 .nav-icon {
-    width: 20px; /* Set a specific width for the icon */
-    height: 20px; /* Set a specific height for the icon */
+    width: 16px;
+    height: 16px;
+    color: var(--text-light);
 }
 
 .nav-title {
-    height: 25px;
-    margin-left: 5px;
-    max-width: 200px;
-    overflow-x: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+    font-size: 0.9rem;
+    color: var(--text-light);
 }
 
-.dark-mode .navigator{
-    background-color: var(--background-dark);
-    box-shadow: 0 -2px 5px rgba(250, 255, 255, 0.1);
+.invisible {
+    visibility: hidden;
+    pointer-events: none;
 }
 
-.dark-mode .nav-item{
-    color: var(--link-dark);
+/* Dark mode styles */
+.dark-mode .nav-item:hover {
+    background-color: rgba(255, 255, 255, 0.05);
 }
 
-.dark-mode .nav-item:hover{
-    color: orange;
+.dark-mode .nav-icon,
+.dark-mode .nav-title {
+    color: var(--text-dark);
 }
 
-/* Mobile styles */
+/* Responsive styles */
 @media (max-width: 768px) {
     .navigator {
-        display: none; /* Hide title on mobile */
+        padding: 15px 0;
+        margin-top: 30px;
+    }
+
+    .nav-title {
+        display: none;
+    }
+
+    .nav-item {
+        padding: 8px;
     }
 }

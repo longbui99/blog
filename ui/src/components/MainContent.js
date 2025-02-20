@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import TableOfContents from './TableOfContents';
+import { useSelector, useDispatch } from 'react-redux';
+import { updateActiveRouteFromPath } from '../redux/slices/routesSlice';
+import TableOfContents from './toc/TableOfContents';
 import { generateTOC } from '../utils/contentUtils';
 import '../styles/MainContent.css';
 import BlogContent from '../pages/BlogContent';
-import Header from './Header';
+import Header from './navbar/Header';
 import BreadCrumbs from './BreadCrumbs';
+import Navigator from './Navigator';
 
 // Add scroll helper function
 const scrollToElement = (elementId, offset = 80) => {
@@ -26,59 +28,60 @@ const scrollToElement = (elementId, offset = 80) => {
     }
 };
 
-function MainContent({ 
-  isLoggedIn, 
-  routes, 
-}) {
+function MainContent() {
+  const dispatch = useDispatch();
+  const location = useLocation();
+  const routes = useSelector((state) => state.routes.items);
   const isSidebarOpen = useSelector((state) => state.sidebar.isOpen);
   const isTOCOpen = useSelector((state) => state.toc.isOpen);
+  const isLoggedIn = useSelector((state) => state.login.isLoggedIn);
   const [tocItems, setTocItems] = useState([]);
   const [editableContent, setEditableContent] = useState('');
-  const location = useLocation();
   const contentRef = useRef(null);
   const [isContentLoaded, setIsContentLoaded] = useState(false);
+
+  // Update active route when location changes
+  useEffect(() => {
+    dispatch(updateActiveRouteFromPath(location.pathname));
+  }, [location.pathname, dispatch]);
 
   const updateTOC = useCallback(() => {
     const items = generateTOC(contentRef);
     setTocItems(items);
   }, []);
 
-
   useEffect(() => {
     updateTOC();
-
     const observer = new MutationObserver(updateTOC);
     if (contentRef.current) {
       observer.observe(contentRef.current, { childList: true, subtree: true });
     }
-
     return () => observer.disconnect();
   }, [updateTOC]);
 
   useEffect(() => {
     const hash = location.hash.slice(1);
     if (hash && isContentLoaded) {
-      // Wait for content to be fully rendered
       const timeoutId = setTimeout(() => {
-        scrollToElement(hash);
-      }, 300); // Increased timeout for better reliability
-
+        const element = document.getElementById(hash);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 300);
       return () => clearTimeout(timeoutId);
     }
   }, [location.hash, isContentLoaded]);
 
-
-  // Add content loaded handler
   const handleContentLoaded = useCallback(() => {
     setIsContentLoaded(true);
   }, []);
 
   return (
     <>
-      <Header isLoggedIn={isLoggedIn} />
+      <Header />
       <main className={`main-content ${isSidebarOpen ? 'sidebar-open' : ''} ${isTOCOpen ? 'toc-open' : ''}`}>
         <div className="content-wrapper" ref={contentRef}>
-          <BreadCrumbs routes={routes} currentPath={location.pathname} />
+          <BreadCrumbs />
           <BlogContent 
             content={editableContent}
             updateMainContentEditableContent={setEditableContent}
@@ -86,6 +89,7 @@ function MainContent({
             routes={routes}
             onContentLoaded={handleContentLoaded}
           />
+          <Navigator />
         </div>
         <TableOfContents 
           items={tocItems} 

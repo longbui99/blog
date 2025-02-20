@@ -1,7 +1,7 @@
 import React from 'react';
 import { IoReorderThreeOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from 'react-redux';
-import { toggleTOC } from '../redux/slices/tocSlice';
+import { toggleTOC } from '../../redux/slices/tocSlice';
 
 function TOCToggle() {
   const dispatch = useDispatch();

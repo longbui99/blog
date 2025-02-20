@@ -1,67 +1,51 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import ReactGA from "react-ga4";
-import Header from './components/Header';
-import Sidebar from './components/Sidebar';
+import Header from './components/navbar/Header';
+import Sidebar from './components/sidebar/Sidebar';
 import MainContent from './components/MainContent';
-import TOCToggle from './components/TOCToggle';
-import SidebarToggle from './components/SidebarToggle';
-import LoginToggle from './components/LoginToggle';
 import LoginModal from './components/LoginModal';
-import './styles/styles.css'; 
-import './styles/page.css'; 
-import './styles/App.css';
-import './styles/Toggle.css';
-import { fetchRouteMap } from './const/routes';
-import { loginProcessor } from './processor/loginProcessor';
-import { NotificationProvider, useNotification } from './contexts/NotificationContext';
+import { NotificationProvider } from './contexts/NotificationContext';
 import { MenuProvider } from './contexts/MenuContext';
 import { ConfirmationProvider } from './contexts/ConfirmationContext';
+import { fetchRouteMap } from './const/routes';
+import { loginProcessor } from './processor/loginProcessor';
 import { initializeBaseProcessor } from './processor/baseProcessor';
-import { getInitialPanelState, handleResponsiveState, isDeviceMobile } from './utils/responsive';
-import { Provider } from 'react-redux';
+import { handleResponsiveState, isDeviceMobile } from './utils/responsive';
+import { Provider, useSelector, useDispatch } from 'react-redux';
 import { store } from './redux/store';
-import { useSelector, useDispatch } from 'react-redux';
+import { setLoginStatus } from './redux/slices/loginSlice';
 import { setSidebar } from './redux/slices/sidebarSlice';
 import { setTOC } from './redux/slices/tocSlice';
-import ThemeToggle from './components/ThemeToggle';
-import { setLoginStatus } from './redux/slices/loginSlice';
+import { fetchRoutes } from './redux/slices/routesSlice';
+import './styles/styles.css';
+import './styles/page.css';
+import './styles/App.css';
 
-
-// Initialize GA with your measurement ID
+// Initialize GA
 ReactGA.initialize("G-9VQG6QJLEK");
 
-// Move the App component content to a new component
 function AppContent() {
-  const [routes, setRoutes] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  // Get sidebar state from Redux
-  const isSidebarOpen = useSelector((state) => state.sidebar.isOpen);
-  const dispatch = useDispatch();
-
-  const isDarkMode = useSelector((state) => state.theme.isDarkMode);
-
-  const isLoggedIn = useSelector((state) => state.login.isLoggedIn);
-
   const [isEditing, setIsEditing] = useState(false);
   const [currentPath, setCurrentPath] = useState('/');
 
+  const dispatch = useDispatch();
+  const { items: routesRedux, isLoading: routesLoading, error: routesError } = useSelector((state) => state.routes);
+  const isDarkMode = useSelector((state) => state.theme.isDarkMode);
+  const isLoggedIn = useSelector((state) => state.login.isLoggedIn);
+
+  if (isDarkMode) {
+    document.body.classList.add('dark-mode');
+  } else {
+    document.body.classList.remove('dark-mode');
+  }
+
+  // Load routes
   useEffect(() => {
-    const loadRoutes = async () => {
-      setIsLoading(true);
-      const fetchedRoutes = await fetchRouteMap();
-      setRoutes(fetchedRoutes);
-      setIsLoading(false);
-    };
+    dispatch(fetchRoutes());
+  }, [dispatch]);
 
-    loadRoutes();
-  }, []);
-
-  useEffect(() => {
-    document.body.classList.toggle('dark-mode', isDarkMode);
-  }, [isDarkMode]);
-
+  // Check login status
   useEffect(() => {
     const checkLoginStatus = async () => {
       if (loginProcessor.isLoggedIn()) {
@@ -75,7 +59,7 @@ function AppContent() {
     checkLoginStatus();
   }, [dispatch]);
 
-  // Update the resize handler to use Redux
+  // Handle responsive state
   useEffect(() => {
     const handleResize = () => {
       handleResponsiveState({
@@ -88,45 +72,19 @@ function AppContent() {
     return () => window.removeEventListener('resize', handleResize);
   }, [dispatch]);
 
-  const handleAddPage = () => {
-    setIsEditing(true);
-    setCurrentPath('/new-page'); // Set a new path for the new page
-  };
-
-  const handleLoginClick = () => {
-    dispatch(setLoginStatus(true));
-  };
-
-  const handleLoginSubmit = async (username, password) => {
-    const result = await loginProcessor.login(username, password);
-    if (result.success) {
-      dispatch(setLoginStatus(true));
-    } else {
-      // Handle login failure (e.g., show an error message)
-      console.error(result.message);
-    }
-  };
-
-  const handleLoginModalClose = () => {
-    dispatch(setLoginStatus(false));
-  };
-
-  useEffect(() => {
-  }, [isLoggedIn]);
-
   const handleMenuItemClick = () => {
     if (isDeviceMobile()) {
       dispatch(setSidebar(false));
     }
   };
 
-  if (isLoading) {
+  if (routesLoading) {
     return <div className="loading-panel">Loading...</div>;
   }
 
-  const handleRoutesUpdate = (updatedRoutes) => {
-    setRoutes(updatedRoutes);
-  };
+  if (routesError) {
+    return <div className="error-panel">Error loading routes: {routesError}</div>;
+  }
 
   return (
     <NotificationProvider>
@@ -136,42 +94,24 @@ function AppContent() {
           <Router>
             <RouteTracker />
             <div className="App">
-              <Header 
-                isLoggedIn={isLoggedIn} 
-                onAddPage={handleAddPage}
-              />
+              <Header isLoggedIn={isLoggedIn} />
               <Sidebar 
-                className={isDarkMode ? 'dark-mode' : ''}
-                routes={routes}
-                onItemClick={handleMenuItemClick}
-                isLoggedIn={isLoggedIn}
               />
               <MainContent 
                 isLoggedIn={isLoggedIn}
-                routes={routes}
-                onRoutesUpdate={handleRoutesUpdate}
+                routes={routesRedux}
                 isEditing={isEditing}
                 setIsEditing={setIsEditing}
                 currentPath={currentPath}
                 setCurrentPath={setCurrentPath}
               >
                 <Routes>
-                  {routes.map(route => (
+                  {routesRedux.map(route => (
                     <Route key={route.path} path={route.path} element={<route.component />} />
                   ))}
                 </Routes>
               </MainContent>
-              <div className="toggle-container">
-                <SidebarToggle/>
-                <TOCToggle />
-                <LoginToggle />
-                <ThemeToggle />
-              </div>
-              <LoginModal 
-                isOpen={isLoggedIn}
-                onClose={handleLoginModalClose} 
-                onSubmit={handleLoginSubmit} 
-              />
+              <LoginModal />
             </div>
           </Router>
         </MenuProvider>
@@ -180,16 +120,7 @@ function AppContent() {
   );
 }
 
-// Main App component now just provides the Redux store
-function App() {
-  return (
-    <Provider store={store}>
-      <AppContent />
-    </Provider>
-  );
-}
-
-// Create a separate component for route tracking
+// Route tracking component
 function RouteTracker() {
   const location = useLocation();
 
@@ -200,15 +131,22 @@ function RouteTracker() {
   return null;
 }
 
-// Create a new component to handle the initialization
+// Processor initialization component
 function ProcessorInitializer() {
-  const { showNotification } = useNotification();
-
   useEffect(() => {
-    initializeBaseProcessor(showNotification);
-  }, [showNotification]);
+    initializeBaseProcessor();
+  }, []);
 
   return null;
+}
+
+// Main App component
+function App() {
+  return (
+    <Provider store={store}>
+      <AppContent />
+    </Provider>
+  );
 }
 
 export default App;

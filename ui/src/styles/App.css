@@ -37,21 +37,6 @@ body {
   color: var(--main-text);
 }
 
-/* Sidebar styles */
-.sidebar {
-  background-color: var(--sidebar-bg);
-  color: var(--sidebar-text);
-}
-
-.sidebar a {
-  color: var(--sidebar-text);
-}
-
-.sidebar a:hover,
-.sidebar a.active {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
 /* Footer styles */
 .bottom-nav {
   background-color: var(--footer-bg);
@@ -79,36 +64,6 @@ body {
   --link-color: #61dafb;
   --link-hover: #4fa3d1;
 }
-
-.sidebar {
-  position: fixed;
-  top: 30px;
-  left: -270px; /* Hide the sidebar by default */
-  width: 270px;
-  background-color: var(--sidebar-bg);
-  transition: left 0.3s ease;
-  z-index: 1000;
-  height: calc(100vh - 120px);
-}
-
-.sidebar.open {
-  left: 0; /* Show the sidebar when open */
-}
-
-
-@media (max-width: 768px) {
-  .sidebar {
-    left: -100%; /* Hide completely on mobile */
-    width: 100%;
-  }
-
-  .sidebar.open {
-    left: 0;
-  }
-
-}
-
-
 
 @media (max-width: 768px) {
   .main-content {

@@ -2,13 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes, faUser, faClock } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
-import { blogMenuProcessor } from '../processor/blogMenuProcessor';
-import '../styles/SearchPopup.css';
+import { blogMenuProcessor } from '../../processor/blogMenuProcessor';
+import './styles/SearchPopup.css';
+import { useDispatch } from 'react-redux';
+import { setSearchOpen, setSearchTerm } from '../../redux/slices/searchSlice';
 
 function SearchPopup({ isOpen, onClose, searchTerm, onSearchChange }) {
   const [searchResults, setSearchResults] = useState([]);
   const [isClosing, setIsClosing] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   // Handle Escape key
   useEffect(() => {
@@ -43,7 +46,8 @@ function SearchPopup({ isOpen, onClose, searchTerm, onSearchChange }) {
   const handleClose = () => {
     setIsClosing(true);
     setTimeout(() => {
-      onClose();
+      dispatch(setSearchOpen(false));
+      dispatch(setSearchTerm(''));
       setIsClosing(false);
     }, 200);
   };

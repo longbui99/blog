@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { isDeviceMobile } from '../utils/responsive';
-import '../styles/TableOfContents.css';
+import { isDeviceMobile } from '../../utils/responsive';
+import './styles/TableOfContents.css';
 
 function TableOfContents({ items, isOpen, onToggle }) {
   const location = useLocation();

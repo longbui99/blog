@@ -1,7 +1,7 @@
 import React from 'react';
 import { IoListOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from 'react-redux';
-import { toggleSidebar } from '../redux/slices/sidebarSlice';
+import { toggleSidebar } from '../../redux/slices/sidebarSlice';
 
 function SidebarToggle() {
   const dispatch = useDispatch();
