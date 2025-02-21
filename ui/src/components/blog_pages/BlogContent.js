@@ -16,6 +16,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookReader } from '@fortawesome/free-solid-svg-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { setEditing, setCreating, setPublished } from '../../redux/slices/editingSlice';
+import { loadBlogContent } from '../../utils/blogContentUtils';
 
 async function updateBlogContent(rawContent, path, routeInfo, showNotification) {
     const processedContent = await processRawContent(rawContent, path, showNotification);
@@ -63,6 +64,7 @@ function BlogContent({ updateMainContentEditableContent, onContentLoaded }) {
     const isRawEditor = useSelector((state) => state.editing.isRawEditor);
     const isLoggedIn = useSelector((state) => state.login.isLoggedIn);
 
+
     const addImageClickHandler = () => {
         setTimeout(() => {
             const images = document.querySelectorAll('.blog-content img:not(.resizable-image)');
@@ -77,20 +79,19 @@ function BlogContent({ updateMainContentEditableContent, onContentLoaded }) {
     }
 
     const updateContent = (blogData) => {
-        if (!blogData) {
-            blogData = blogPost;
-        }
-        if (blogData && blogData.content) {
-            let parsedContent = parseContent(blogData.content, path);
+        if (blogData) {
+            const { content: blogContent, title, description, author, last_updated, total_views } = blogData;
+            const parsedContent = parseContent(blogContent);
             setContent(parsedContent);
-            setRawContent(blogData.content);
-            setContentReadonly(blogData.content);
-            setPageTitle(`${blogData.title} | VectorDI`);
-            setPageDescription(blogData.title || blogData.title || '');
-            setAuthor(blogData.author || 'Long Bui');
-            setLastUpdated(blogData.updated_at || new Date().toISOString());
-            setTotalViews(blogData.total_views || 0);
-            updateMainContentEditableContent(blogData.content);
+            setRawContent(blogContent);
+            setContentReadonly(blogContent);
+            setOriginalContent(blogContent);
+            setPageTitle(title ? `${title} | VectorDI` : "Long Bui's Blog | VectorDI");
+            setPageDescription(description || "Explore our latest blog posts on various topics including technology, programming, and web development.");
+            setAuthor(author || 'Long Bui');
+            setLastUpdated(last_updated);
+            setTotalViews(total_views);
+            updateMainContentEditableContent(blogContent);
             addImageClickHandler()
         } else {
             setContent(<p>No content found for this path.</p>);
@@ -107,20 +108,12 @@ function BlogContent({ updateMainContentEditableContent, onContentLoaded }) {
     }, [location.pathname]);
     
     useEffect(() => {
-        const loadBlogContent = async () => {
-            if (!isNewPageRoute(location.pathname)) {
-                const blogData = await blogMenuProcessor.getBlogMenuContentByPath(path);
-                setBlogPost(blogData);
-                dispatch(setPublished(blogData?.is_published || false));
-                return blogData;
-            }
-        };
-
         const fetchBlogContent = async () => {
             try {
-                setisLoading(true)
-                const blogData = await loadBlogContent();
-                if (!isCreating) {
+                setisLoading(true);
+                const blogData = await loadBlogContent(path, dispatch);
+                
+                if (!isCreating && blogData) {
                     updateContent(blogData);
                 }
                 onContentLoaded?.();
@@ -129,12 +122,12 @@ function BlogContent({ updateMainContentEditableContent, onContentLoaded }) {
                 setContent(<p>Error loading blog content. Please try again later.</p>);
                 updateMainContentEditableContent('');
             } finally {
-                setisLoading(false)
+                setisLoading(false);
             }
         };
 
         fetchBlogContent();
-    }, [path, onContentLoaded, updateMainContentEditableContent, isCreating]);
+    }, [path, dispatch, onContentLoaded, updateMainContentEditableContent, isCreating]);
 
     const handleEditToggle = async () => {
         if (isEditing) {
@@ -252,10 +245,8 @@ function BlogContent({ updateMainContentEditableContent, onContentLoaded }) {
     };
 
     const handleContentChange = (newContent) => {
-        // Update the raw content when HTMLComposer content changes
-        if (rawContent !== newContent) {
-            setRawContent(newContent);
-        }
+        setRawContent(newContent);
+        updateMainContentEditableContent(newContent);
     };
 
     const setCreateData = () => {
@@ -378,7 +369,7 @@ function BlogContent({ updateMainContentEditableContent, onContentLoaded }) {
                         <textarea 
                             className="raw-content-editor"
                             value={rawContent} 
-                            onChange={(e) => setRawContent(e.target.value)}
+                            onChange={(e) => handleContentChange(e.target.value)}
                             placeholder="Enter raw HTML content..."
                         />
                     ) : (

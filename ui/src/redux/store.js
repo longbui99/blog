@@ -8,6 +8,7 @@ import routesReducer from './slices/routesSlice';
 import searchReducer from './slices/searchSlice';
 import controlPanelReducer from './slices/controlPanelSlice';
 import editingReducer from './slices/editingSlice';
+import blogReducer from './slices/blogSlice';
 
 export const store = configureStore({
   reducer: {
@@ -20,5 +21,6 @@ export const store = configureStore({
     search: searchReducer,
     controlPanel: controlPanelReducer,
     editing: editingReducer,
+    blog: blogReducer,
   },
 }); 

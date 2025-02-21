@@ -5,6 +5,7 @@ import debounce from 'lodash/debounce';
 import { blogMenuProcessor } from '../../processor/blogMenuProcessor';
 import { isNewPageRoute } from '../../utils/routeConstants';
 import { useDispatch, useSelector } from 'react-redux';
+import { setBlogContent } from '../../redux/slices/blogSlice';
 
 function EditPageContent() {
   // Redux state
@@ -13,10 +14,9 @@ function EditPageContent() {
   const isCreating = useSelector(state => state.editing.isCreating);
   const currentPath = useSelector(state => state.routes.activePath);
   const routes = useSelector(state => state.routes.items);
-  const blogPost = useSelector(state => state.routes.activeBlogContent);
+  const blogPost = useSelector(state => state.blog.content);
 
   const [title, setTitle] = useState('');
-  const [urlPath, setUrlPath] = useState(currentPath);
   const [parent, setParent] = useState(null);
   const [previous, setPrevious] = useState(null);
   const [next, setNext] = useState(null);
@@ -30,35 +30,20 @@ function EditPageContent() {
     newPageUrl: false
   });
 
+  // Initialize form with blog content from Redux
   useEffect(() => {
-    const fetchBlogContent = async () => {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const currentRoute = routes?.find(route => route.path === currentPath);
-        if (routes && currentRoute) {
-          setUrlPath(currentPath);
-          setTitle(currentRoute.title || 'page');
-          setParent(blogPost?.parent || currentRoute?.parent || null);
-          setPrevious(currentRoute?.previous || null);
-          setNext(currentRoute?.next || null);
-        } else {
-          setTitle('');
-          setUrlPath(currentPath);
-          setParent(blogPost?.parent || null);
-          setPrevious(null);
-          setNext(null);
-        }
-      } catch (error) {
-        console.error('Error fetching blog content:', error);
-        setError('Error loading blog content. Please try again later.');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchBlogContent();
-  }, [currentPath, routes, blogPost]);
+    if (blogPost && !isCreating) {
+      setTitle(blogPost.title || '');
+      setParent(blogPost.parent || null);
+      setPrevious(blogPost.previous || null);
+      setNext(blogPost.next || null);
+    } else {
+      setTitle('');
+      setParent(null);
+      setPrevious(null);
+      setNext(null);
+    }
+  }, [blogPost, isCreating]);
 
   const checkPathExists = useCallback(
     debounce(async (path) => {
@@ -85,42 +70,11 @@ function EditPageContent() {
     label: route.title || route.path
   })), [routes]);
 
-  // Only render if editing or creating
   if (!isEditing && !isCreating) return null;
 
   const handleTitleChange = (e) => {
     const newTitle = e.target.value;
     setTitle(newTitle);
-    if(isCreating){
-      const urlPath = "/" + newTitle
-        .toLowerCase()
-        .trim()
-        .replace(/[^a-z0-9\s-]/g, '')
-        .replace(/\s+/g, '-')
-        .replace(/-+/g, '-');
-      setUrlPath(urlPath);
-    }
-  };
-
-  const handleUrlPathChange = (e) => {
-    const newPath = e.target.value;
-    setUrlPath(newPath);
-    
-    setValidationErrors(prev => ({
-      ...prev,
-      urlPath: false,
-      newPageUrl: false
-    }));
-    
-    if (isNewPageRoute(newPath)) {
-      setValidationErrors(prev => ({
-        ...prev,
-        newPageUrl: true
-      }));
-      return;
-    }
-    
-    checkPathExists(newPath);
   };
 
   const handleParentChange = (selectedOption) => {
@@ -145,7 +99,7 @@ function EditPageContent() {
 
     const errors = {
       title: !title.trim(),
-      urlPath: !urlPath.trim()
+      urlPath: !currentPath.trim()
     };
 
     if (errors.title || errors.urlPath) {
@@ -154,14 +108,17 @@ function EditPageContent() {
     }
 
     try {
-      await blogMenuProcessor.saveOrUpdateContent({
-        path: urlPath,
+      const updatedContent = {
+        ...blogPost,
+        path: currentPath,
         title,
         parent,
         previous,
         next
-      });
-      // You might want to dispatch an action to update the Redux state here
+      };
+
+      await blogMenuProcessor.saveOrUpdateContent(updatedContent);
+      dispatch(setBlogContent(updatedContent));
     } catch (error) {
       console.error('Error saving content:', error);
       setError('Error saving content. Please try again later.');
@@ -200,16 +157,11 @@ function EditPageContent() {
             )}
             <input
               type="text"
-              value={urlPath}
-              onChange={handleUrlPathChange}
-              placeholder="Enter URL path *"
-              className={`url-path-input ${
-                pathExists || validationErrors.urlPath || validationErrors.newPageUrl ? 'input-error' : ''
-              }`}
+              value={currentPath}
+              readOnly
+              placeholder="URL path"
+              className="url-path-input"
             />
-            {isCheckingPath && (
-              <span className="checking-path">Checking...</span>
-            )}
           </div>
         </div>
         <div className="edit-actions">
