@@ -52,8 +52,7 @@ const MenuItem = ({ id, title, path, index, is_published, children, searchTerm, 
             ${hasActiveChild() ? "has-active-child" : ""}
         `}>
             <div className={`menu-item ${!isPublished ? 'unpublished' : ''}`} 
-                 title={title} 
-                 style={{ marginLeft: `${level * 15}px` }}>
+                 title={title} >
                 {isLoggedIn && (
                     <span className={`status-dot ${isPublished ? 'published' : 'unpublished'}`} />
                 )}

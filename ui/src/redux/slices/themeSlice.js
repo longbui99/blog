@@ -17,12 +17,12 @@ const themeSlice = createSlice({
     toggleTheme: (state) => {
       state.isDarkMode = !state.isDarkMode;
       localStorage.setItem('isDarkMode', JSON.stringify(state.isDarkMode));
-      document.body.classList.toggle('dark-mode', state.isDarkMode);
+      document.documentElement.setAttribute('data-theme', state.isDarkMode ? 'dark' : 'light');
     },
     setTheme: (state, action) => {
       state.isDarkMode = action.payload;
       localStorage.setItem('isDarkMode', JSON.stringify(action.payload));
-      document.body.classList.toggle('dark-mode', action.payload);
+      document.documentElement.setAttribute('data-theme', action.payload ? 'dark' : 'light');
     }
   }
 });

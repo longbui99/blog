@@ -4,15 +4,16 @@
   right: 0;
   width: 270px;
   height: 76vh;
-  background-color: var(--sidebar-bg);
-  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
-  transition: right 0.3s ease;
+  background-color: var(--bg-primary);
+  box-shadow: var(--shadow-lg);
+  transition: var(--transition-all);
   z-index: 1000;
-  padding: 30px;
+  padding: var(--spacing-6);
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: var(--spacing-6);
+  border-left: 1px solid var(--border-primary);
 }
 
 .edit-page-content.visible {
@@ -27,46 +28,46 @@
 .edit-header {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: var(--spacing-5);
 }
 
 .edit-title-group {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: var(--spacing-5);
 }
 
 .title-input-container,
 .url-input-container {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--spacing-2);
 }
 
 .title-input-container label,
 .url-input-container label {
-  font-size: 14px;
+  font-size: var(--text-sm);
   font-weight: 500;
-  color: var(--text-light);
+  color: var(--text-primary);
 }
 
 .title-input,
 .url-path-input {
   width: 100%;
-  padding: 12px;
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  background-color: var(--input-bg);
-  color: var(--text-light);
-  font-size: 14px;
-  transition: all 0.2s ease;
+  padding: var(--spacing-3);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: var(--text-sm);
+  transition: var(--transition-all);
 }
 
 .title-input:focus,
 .url-path-input:focus {
   outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px rgba(var(--primary-color-rgb), 0.1);
+  border-color: var(--primary-500);
+  box-shadow: var(--shadow-sm);
 }
 
 .dark-mode .title-input,
@@ -156,11 +157,9 @@
 }
 
 .route-select .select__control {
-  background-color: var(--input-bg);
-  border-color: var(--border-color);
-  border-radius: 8px;
-  min-height: 42px;
-  box-shadow: none;
+  background-color: var(--bg-secondary);
+  border-color: var(--border-primary);
+  box-shadow: var(--shadow-sm);
 }
 
 .route-select .select__control:hover {
@@ -178,22 +177,24 @@
 }
 
 .route-select .select__menu {
-  background-color: var(--background-color-1);
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background-color: var(--bg-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
 }
 
 .route-select .select__option {
-  padding: 10px 12px;
-  font-size: 14px;
+  padding: var(--spacing-2) var(--spacing-3);
+  font-size: var(--text-sm);
+  color: var(--text-primary);
 }
 
 .route-select .select__option--is-focused {
-  background-color: rgba(var(--primary-color-rgb), 0.1);
+  background-color: var(--bg-secondary);
 }
 
 .route-select .select__option--is-selected {
-  background-color: var(--primary-color);
+  background-color: var(--primary-500);
+  color: var(--color-white);
 }
 
 .dark-mode .route-select .select__menu {
@@ -203,20 +204,20 @@
 /* Loading and error states */
 .loading-panel,
 .error {
-  padding: 16px;
-  border-radius: 8px;
+  padding: var(--spacing-4);
+  border-radius: var(--radius-md);
   text-align: center;
-  font-size: 14px;
+  font-size: var(--text-sm);
 }
 
 .loading-panel {
-  background-color: var(--background-color-1);
-  color: var(--text-light);
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
 }
 
 .error {
-  background-color: var(--error-bg);
-  color: var(--error-color);
+  background-color: var(--error-50);
+  color: var(--error-500);
 }
 
 /* Mobile responsiveness */
@@ -224,7 +225,7 @@
   .edit-page-content {
     width: 100%;
     right: -100%;
-    padding: 20px;
+    padding: var(--spacing-4);
   }
 }
 

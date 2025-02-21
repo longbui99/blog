@@ -2,25 +2,26 @@
     width: fit-content;
     max-width: 100%;
     display: flex;
-    border-bottom: solid 1px var(--text-light);
-    margin-bottom: 10px;
+    border-bottom: 1px solid var(--border-primary);
+    margin-bottom: var(--spacing-4);
 }
 
 .breadcrumbs .breadcrumb-segment{
-    color: var(--text-light);
+    color: var(--text-tertiary);
     text-decoration: none;
-    margin-left: 8px;
-    font-weight: 200;
-    letter-spacing: 0px;
+    margin-left: var(--spacing-3);
+    font-weight: 300;
+    letter-spacing: 0;
+    transition: var(--transition-all);
 }
 
 .breadcrumbs .breadcrumb-segment.active{
-    color: var(--link-light);
-    font-weight: 600;
+    color: var(--primary-500);
+    font-weight: 500;
 }
 
 .breadcrumbs .breadcrumb-segment:hover{
-    color: var(--link-light);
+    color: var(--primary-600);
     cursor: pointer;
 }
 
@@ -30,7 +31,8 @@
 
 .breadcrumbs .breadcrumb-segment::before{
     content: "/";
-    margin-right: 2px; 
+    margin-right: var(--spacing-1);
+    color: var(--text-tertiary);
 }
 
 .dark-mode .breadcrumbs{

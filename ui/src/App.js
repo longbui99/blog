@@ -17,7 +17,6 @@ import { setLoginStatus } from './redux/slices/loginSlice';
 import { setSidebar } from './redux/slices/sidebarSlice';
 import { setTOC } from './redux/slices/tocSlice';
 import { fetchRoutes } from './redux/slices/routesSlice';
-import './styles/styles.css';
 import './styles/App.css';
 
 // Initialize GA
@@ -29,11 +28,10 @@ function AppContent() {
   const isDarkMode = useSelector((state) => state.theme.isDarkMode);
   const isLoggedIn = useSelector((state) => state.login.isLoggedIn);
 
-  if (isDarkMode) {
-    document.body.classList.add('dark-mode');
-  } else {
-    document.body.classList.remove('dark-mode');
-  }
+  // Initialize theme on app load
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', isDarkMode ? 'dark' : 'light');
+  }, []); // Run once on mount
 
   // Load routes
   useEffect(() => {

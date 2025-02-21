@@ -1,23 +1,25 @@
 /* Base styles for code blocks */
 .code-block-container {
   position: relative;
-  margin: 1em 0;
+  margin: var(--spacing-4) 0;
+  background-color: var(--code-bg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
 }
 
 .code-block-container pre {
-  background-color: #f0f0f0; /* Lighter gray background */
-  border: 1px solid #d0d0d0; /* Slightly darker border */
-  border-radius: 4px;
-  padding: 1em;
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-4);
   overflow-x: auto;
+  background-color: var(--code-bg);
+  color: var(--code-color);
 }
 
 .code-block-container code,
 code {
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 0.9em;
-  color: #333; /* Darker text color for better contrast */
-  background-color: transparent;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--code-color);
 }
 
 /* Inline code */
@@ -29,27 +31,27 @@ code {
 /* Copy button styles */
 .copy-button {
   position: absolute;
-  top: 5px;
-  right: 5px;
-  background: rgba(255, 255, 255, 0.1);
-  border: none;
-  border-radius: 3px;
-  color: rgba(255, 255, 255, 0.1);
-  padding: 5px 10px;
-  font-size: 0.8em;
+  top: var(--spacing-2);
+  right: var(--spacing-2);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  padding: var(--spacing-2) var(--spacing-3);
+  font-size: var(--text-sm);
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: var(--transition-all);
   z-index: 20000;
 }
 
 .copy-button:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--bg-tertiary);
+  border-color: var(--border-secondary);
 }
 
 .copy-button:active {
   background: rgba(255, 255, 255, 0.3);
 }
-
 
 /* New styles */
 :root {
@@ -202,53 +204,13 @@ pre code {
 }
 
 /* Python-specific syntax colors */
-.token.keyword {
-  color: #ed8c3c;  /* orange/coral */
-}
-
-.token.dunder {
-  color: #ce00ce;  /* purple */
-}
-
-.token.builtin {
-  color: #8888c6;  /* purple */
-}
-
-.token.decorator {
-  color: #d9d229;
-}
-
-.token.number{
-  color: #79acd2;
-}
-
-.token.inherit {
-  color: #8888c6;  /* purple */
-}
-
-.token.function {
-  color: #ffc66d;  /* light blue/turquoise */
-}
-
-.token.self {
-  color: #c466b9;  /* purple */
-}
-
-.token.string {
-  color: #6c9951;  /* muted red/coral */
-}
-
-.token.comment {
-  color: #808080;  /* green */
-}
-
-.token.method {
-  color: #cfd7e1;  /* light yellow */
-}
-
-.token.punctuation {
-  color: #cfd7e1;  /* light grey */
-}
+.token.keyword { color: var(--primary-500); }
+.token.string { color: var(--success-500); }
+.token.comment { color: var(--text-tertiary); }
+.token.function { color: var(--warning-500); }
+.token.number { color: var(--error-500); }
+.token.operator { color: var(--primary-400); }
+.token.punctuation { color: var(--text-secondary); }
 
 /* Code block background */
 .code-block-wrapper pre {

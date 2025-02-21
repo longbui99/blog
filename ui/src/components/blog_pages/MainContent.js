@@ -87,13 +87,13 @@ function MainContent() {
             onContentLoaded={handleContentLoaded}
           />
         </div>
-        <TableOfContents 
-          items={tocItems} 
-          isOpen={isTOCOpen}
-        />
-        <EditPageContent 
-        />
       </main>
+      <TableOfContents 
+        items={tocItems} 
+        isOpen={isTOCOpen}
+      />
+      <EditPageContent 
+      />
     </>
   );
 }

@@ -1,25 +1,35 @@
+/*
+This component uses the design system defined in App.css, which includes:
+- Color palette (--primary-*, --neutral-*, etc.)
+- Spacing scale (--spacing-*)
+- Typography scale (--text-*)
+- Border radius (--radius-*)
+- Shadows (--shadow-*)
+- Transitions (--transition-all)
+For the full design system reference, see ui/src/styles/App.css
+*/
 
 /* Sidebar Toggle Button */
 .toc-toggle {
     position: absolute;
-    border-radius: 6px 0 0 6px;
-    background-color: transparent;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    transition: var(--transition);
-    color: var(--sidebar-text);
+    border-radius: var(--radius-md) 0 0 var(--radius-md);
+    background-color: var(--bg-primary);
+    box-shadow: var(--shadow-md);
+    transition: var(--transition-all);
+    color: var(--text-primary);
     z-index: 1000;
-    font-size: 14px;
+    font-size: var(--text-sm);
     border: 0 none;
     width: 30px;
-    padding: 10px 0px 8px;
+    padding: var(--spacing-2) 0;
     font-weight: 400;
-    top: 0%;
+    top: 2%;
     left: -30px;
     letter-spacing: 1px;
     text-transform: uppercase;
     cursor: pointer;
     opacity: 0.5;
-    transition: opacity 0.3s ease; /* Smooth opacity transition */
+    transition: var(--transition-all);
 }
 
 .toc-toggle:hover {
@@ -31,21 +41,20 @@
     -webkit-writing-mode: vertical-rl;
     writing-mode: vertical-rl;
     text-orientation: upright;
-    padding-left: 5px;
-    padding-right: 5px;
+    padding: 0 var(--spacing-2);
 }
 
 /* Gradient background effect */
 .toc-toggle::after {
     content: "";
     position: absolute;
-    transition: var(--transition);
+    transition: var(--transition-all);
     width: 100%;
     height: 100%;
-    border-radius: 6px;
+    border-radius: var(--radius-md);
     top: 0;
     left: 0;
-    background: linear-gradient(to right bottom, var(--background-color-2), #16181c);
+    background: linear-gradient(to right bottom, var(--bg-secondary), var(--bg-tertiary));
     opacity: 0;
     z-index: -1;
 }
@@ -53,7 +62,7 @@
 /* Hover effect */
 .toc-toggle:hover::after {
     opacity: 0.9;
-    background: linear-gradient(to right bottom, var(--primary-color), var(--background-color-2, #1a1d23));
+    background: linear-gradient(to right bottom, var(--primary-500), var(--primary-700));
 }
 /* Dark mode adjustments */
 .dark-mode .toc-toggle {

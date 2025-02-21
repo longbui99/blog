@@ -1,15 +1,26 @@
+/*
+This component uses the design system defined in App.css, which includes:
+- Color palette (--primary-*, --neutral-*, etc.)
+- Spacing scale (--spacing-*)
+- Typography scale (--text-*)
+- Border radius (--radius-*)
+- Shadows (--shadow-*)
+- Transitions (--transition-all)
+For the full design system reference, see ui/src/styles/App.css
+*/
+
 /* Basic sidebar structure */
 .sidebar {
     position: fixed;
     top: 50px;
     left: 0;
     bottom: 60px;
-    transition: all 0.5s linear;
+    transition: var(--transition-all);
     z-index: 998;
     flex-shrink: 0;
-    margin-top: 15px;
+    margin-top: var(--spacing-4);
     height: calc(100vh - 50px);
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-md);
     opacity: 1;
 }
 
@@ -18,18 +29,18 @@
     width: 270px;
     overflow-y: auto;
     height: 95%;
-    padding: 10px 0;
+    padding: var(--spacing-4) 0;
     direction: rtl;
     scrollbar-width: none;
     -ms-overflow-style: none;
-    background-color: var(--background-light);
+    background-color: var(--bg-primary);
 }
 .sidebar.hidden .sidebar-nav {
     width: 0;
     min-width: 0;
     max-width: 0;
     overflow: hidden;
-    transition: all 0.3s ease;
+    transition: var(--transition-all);
 }
 .dark-mode .sidebar-nav {
     background-color: var(--background-dark);
@@ -56,8 +67,8 @@
 }
 
 .sidebar-nav:hover::-webkit-scrollbar-thumb {
-    background-color: var(--link-light);
-    border-radius: 3px;
+    background-color: var(--primary-400);
+    border-radius: var(--radius-sm);
 }
 
 /* Menu Items */
@@ -66,7 +77,7 @@
     padding: 0;
     margin: 0;
     direction: ltr;
-    padding-left: 10px;
+    padding-left: var(--spacing-4);
 }
 
 .sidebar-nav li {
@@ -76,16 +87,16 @@
 .menu-item {
     display: flex;
     align-items: center;
-    padding-right: 5px;
+    padding-right: var(--spacing-2);
     position: relative;
 }
 
 .menu-item a {
     flex: 1;
-    padding: 5px 8px;
-    color: var(--sidebar-text);
+    padding: var(--spacing-2) var(--spacing-3);
+    color: var(--text-primary);
     text-decoration: none;
-    font-size: 0.9rem;
+    font-size: var(--text-sm);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -94,19 +105,19 @@
 
 /* Status Icon */
 .status-icon {    
-    margin-right: 8px;
-    transition: stroke 0.3s ease;
+    margin-right: var(--spacing-3);
+    transition: var(--transition-all);
     width: 12px;
     position: absolute;
-    left: -8px;
+    left: calc(-1 * var(--spacing-3));
 }
 
 .status-icon.published {
-    stroke: #4CAF50;
+    stroke: var(--success-500);
 }
 
 .status-icon.unpublished {
-    stroke: #dc2626;
+    stroke: var(--error-500);
 }
 
 /* Add Child Icon */
@@ -116,17 +127,17 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 3px;
-    transition: opacity 0.2s ease;
+    border-radius: var(--radius-sm);
+    transition: var(--transition-all);
     position: absolute;
-    margin-left: -20px;
-    color: var(--text-light);
+    margin-left: calc(-1 * var(--spacing-5));
+    color: var(--text-primary);
     z-index: 100;
 }
 
 .menu-item:hover .add-child-icon {
     opacity: 0.6;
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: var(--bg-secondary);
 }
 
 .add-child-icon:hover {
@@ -139,16 +150,16 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    padding: 0 !important;
-    font-size: 0.8rem;
-    transition: transform 0.3s;
-    color: var(--sidebar-text);
-    border-radius: 3px;
-    margin-left: 4px;
+    padding: 0;
+    font-size: var(--text-sm);
+    transition: var(--transition-all);
+    color: var(--text-primary);
+    border-radius: var(--radius-sm);
+    margin-left: var(--spacing-2);
 }
 
 .expand-icon:hover {
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: var(--bg-secondary);
 }
 
 .expand-icon.expanded {
@@ -157,11 +168,11 @@
 
 /* Search Match */
 .search-match {
-    background-color: rgba(255, 255, 0, 0.1);
+    background-color: var(--warning-50);
 }
 
 .search-match > .menu-item {
-    font-weight: bold;
+    font-weight: 500;
 }
 
 /* Collapsed State */
@@ -208,19 +219,19 @@
 
 /* Active item styling */
 .menu-item.active {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: var(--bg-secondary);
 }
 
 .has-active-child > .menu-item {
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: var(--bg-tertiary);
 }
 
 .menu-item.active {
-    border-left-color: var(--primary-color);
+    border-left-color: var(--primary-500);
 }
 
 .has-active-child > .menu-item {
-    border-left-color: var(--primary-color);
+    border-left-color: var(--primary-500);
     opacity: 0.7;
 }
 
@@ -228,7 +239,7 @@
 ul.collapsed {
     height: 0;
     overflow: hidden;
-    transition: height 0.3s ease-out;
+    transition: var(--transition-all);
 }
 
 /* Active menu item styling */
@@ -238,35 +249,35 @@ ul.collapsed {
 
 /* Active item indicator */
 .menu-item a.active {
-    color: var(--sidebar-text);
+    color: var(--text-primary);
     font-weight: 500;
 }
 
 .menu-item a.active::before {
     content: '';
     position: absolute;
-    left: -15px;  /* Adjust based on your padding */
+    left: calc(-1 * var(--spacing-4));
     top: 50%;
     transform: translateY(-50%);
     width: 3px;
     height: 70%;
-    background-color: var(--primary-color);
-    border-radius: 2px;
+    background-color: var(--primary-500);
+    border-radius: var(--radius-sm);
 }
 
 /* Parent of active item */
 .has-active-child > .menu-item {
-    background-color: rgba(var(--primary-color-rgb), 0.05);
+    background-color: var(--bg-secondary);
 }
 
 /* Hover effect */
 .menu-item:hover {
-    background-color: rgba(var(--primary-color-rgb), 0.1);
+    background-color: var(--bg-secondary);
 }
 
 /* Unpublished items */
 .menu-item.unpublished a {
-    border-bottom: 1px dashed #dc2626;
+    border-bottom: 1px dashed var(--error-500);
 }
 
 /* Move button when sidebar is visible */

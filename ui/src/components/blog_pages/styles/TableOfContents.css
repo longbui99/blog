@@ -4,61 +4,59 @@
   top: 60px;
   right: 0px;
   width: 300px;
-  height: 60vh;
-  transition: transform 0.3s ease;
+  transition: var(--transition-all);
+  background-color: var(--bg-primary);
+  border-left: 1px solid var(--border-primary);
 }
-
-.table-of-contents {
-  margin-top: 6px;
-  overflow-y: auto;
-  font-size: 14px;
-  z-index: 500;
-  background-color: transparent;
-  border: none;
-}
-
 .toc-container:not(.open) {
   transform: translateX(100%);
 }
 
+.table-of-contents {
+  margin-top: var(--spacing-2);
+  overflow-y: auto;
+  font-size: var(--text-sm);
+  z-index: 500;
+  padding: var(--spacing-4);
+  height: 80vh;
+  overflow: auto;
+}
+
 .table-of-contents h2 {
-  margin-bottom: 10px;
-  font-size: 1.2em;
-  color: #333;
+  margin-bottom: var(--spacing-3);
+  font-size: var(--text-xl);
+  color: var(--text-tertiary);
+  font-weight: 600;
 }
 
 .table-of-contents ul {
   list-style-type: none;
-  padding-left: 5px!important;
+  padding-left: var(--spacing-2);
   margin: 0;
 }
 
 .table-of-contents li {
-  margin-bottom: 8px;
-  font-size: 0.9em;
-}
-
-.table-of-contents li:hover {
-  text-decoration: underline;
+  margin-bottom: var(--spacing-2);
+  font-size: var(--text-sm);
 }
 
 .toc-link {
   text-decoration: none;
-  color: #555;
-  transition: color 0.3s ease;
+  color: var(--text-tertiary);
+  transition: var(--transition-all);
 }
 
 .toc-link:hover {
-  color: #000;
+  color: var(--primary-500);
 }
 
+/* TOC levels */
 .toc-level-1 { margin-left: 0; }
-.toc-level-2 { margin-left: 12px; }
-.toc-level-3 { margin-left: 24px; }
-.toc-level-4 { margin-left: 36px; }
-.toc-level-5 { margin-left: 48px; }
-.toc-level-6 { margin-left: 60px; }
-.toc-level-7 { margin-left: 72px; }
+.toc-level-2 { margin-left: var(--spacing-3); }
+.toc-level-3 { margin-left: var(--spacing-6); }
+.toc-level-4 { margin-left: var(--spacing-9); }
+.toc-level-5 { margin-left: var(--spacing-12); }
+.toc-level-6 { margin-left: var(--spacing-15); }
 
 /* Dark mode styles */
 .dark-mode .table-of-contents {
@@ -81,13 +79,7 @@
 @media (max-width: 768px) {
   .table-of-contents {
     width: 100%;
-    left: 0;
-    right: 0;
-    top: 15px;
-    z-index: 1002;
-    background-color: var(--background-light);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    height: 100vh;
+    box-shadow: var(--shadow-lg);
   }
 
   .table-of-contents:not(.open) {

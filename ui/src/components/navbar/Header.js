@@ -21,38 +21,41 @@ function Header() {
   const isEditing = useSelector(state => state.editing.isEditing);
 
   return (
-    <header className="app-bar">
-      <div className="logo-container">
-        <Link to="/" className="logo">
-          <Logo />
-        </Link>
-        <h1 className="site-title">Long Bui</h1>
-      </div>
-      <p className="motto">You, not others</p>
-      <div className="app-bar-right">
-        <div className="app-bar-controls">
-          <ControlPanelToggle />
+    <>
+      <header className="app-bar">
+        <div className="logo-container">
+          <Link to="/" className="logo">
+            <Logo />
+          </Link>
+          <h1 className="site-title">Long Bui</h1>
         </div>
-      </div>
-      <div>
-        <ChatToggle />
-        <AIBotToggle />
-        <SearchPopup />
-        <ChatPopup />
-        <ControlPanelPopup />
-      </div>
-      <div>
-        {isLoggedIn && (
-          <>
-            <CreateToggle />
-            <EditToggle />
-            <DeleteToggle />
-            <PublishToggle />
-            {isEditing && <RawEditorToggle />}
-          </>
-        )}
-      </div>
-    </header>
+        <p className="motto">You, not others</p>
+        <div>
+          <ChatToggle />
+          <AIBotToggle />
+          <SearchPopup />
+          <ChatPopup />
+          <ControlPanelPopup />
+        </div>
+        <div>
+          {isLoggedIn && (
+            <>
+              <CreateToggle />
+              <EditToggle />
+              <DeleteToggle />
+              <PublishToggle />
+              {isEditing && <RawEditorToggle />}
+            </>
+          )}
+        </div>
+        <div className="app-bar-right">
+          <div className="app-bar-controls">
+            <ControlPanelToggle />
+          </div>
+        </div>
+      </header>
+
+    </>
   );
 }
 

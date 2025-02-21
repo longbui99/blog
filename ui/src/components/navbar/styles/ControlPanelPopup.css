@@ -1,17 +1,28 @@
+/*
+This component uses the design system defined in App.css, which includes:
+- Color palette (--primary-*, --neutral-*, etc.)
+- Spacing scale (--spacing-*)
+- Typography scale (--text-*)
+- Border radius (--radius-*)
+- Shadows (--shadow-*)
+- Transitions (--transition-all)
+For the full design system reference, see ui/src/styles/App.css
+*/
+
 .control-panel-popup {
     position: absolute;
     top: 100%;
-    right: 1rem;
-    background-color: var(--background-dark);
-    border-radius: 8px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    right: var(--spacing-4);
+    background-color: var(--bg-primary);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
     width: 220px;
     opacity: 0;
     visibility: hidden;
     transform: translateY(10px);
-    transition: all 0.2s ease;
+    transition: var(--transition-all);
     z-index: 1000;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--border-primary);
     overflow: hidden;
 }
 
@@ -22,7 +33,7 @@
 }
 
 .control-panel-content {
-    padding: 0.5rem;
+    padding: var(--spacing-2);
 }
 
 .menu-item {
@@ -31,21 +42,21 @@
 
 .menu-button {
     width: 100%;
-    padding: 0.75rem 1rem;
+    padding: var(--spacing-3) var(--spacing-4);
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: var(--spacing-3);
     border: none;
     background: none;
-    color: var(--text-dark);
+    color: var(--text-primary);
     cursor: pointer;
-    font-size: 0.9rem;
-    border-radius: 6px;
-    transition: all 0.2s ease;
+    font-size: var(--text-sm);
+    border-radius: var(--radius-md);
+    transition: var(--transition-all);
 }
 
 .menu-button:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: var(--bg-secondary);
 }
 
 .menu-button svg {
@@ -59,7 +70,7 @@
 }
 
 .submenu-indicator {
-    font-size: 0.8rem;
+    font-size: var(--text-xs);
     opacity: 0.6;
 }
 
@@ -67,15 +78,15 @@
     position: absolute;
     top: 0;
     left: 100%;
-    background-color: var(--background-dark);
-    border-radius: 8px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    background-color: var(--bg-primary);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
     width: 150px;
     opacity: 0;
     visibility: hidden;
     transform: translateX(10px);
-    transition: all 0.2s ease;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: var(--transition-all);
+    border: 1px solid var(--border-primary);
 }
 
 .menu-item:hover .submenu {
@@ -86,39 +97,39 @@
 
 .submenu-button {
     width: 100%;
-    padding: 0.75rem 1rem;
+    padding: var(--spacing-3) var(--spacing-4);
     border: none;
     background: none;
-    color: var(--text-dark);
+    color: var(--text-primary);
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: var(--text-sm);
     text-align: left;
-    transition: all 0.2s ease;
+    transition: var(--transition-all);
 }
 
 .submenu-button:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: var(--bg-secondary);
 }
 
 .menu-button.danger {
-    color: #ff4d4d;
+    color: var(--error-500);
 }
 
 .menu-button.danger:hover {
-    background-color: rgba(255, 77, 77, 0.1);
+    background-color: var(--error-100);
 }
 
 .submenu-button.active {
-    background-color: var(--primary-color);
-    color: white;
+    background-color: var(--primary-500);
+    color: var(--neutral-50);
 }
 
 .submenu-button.active:hover {
-    background-color: var(--primary-color-dark);
+    background-color: var(--primary-600);
 }
 
 .submenu-button svg {
-    margin-right: 8px;
+    margin-right: var(--spacing-2);
     width: 14px;
     opacity: 0.9;
 }
@@ -142,7 +153,7 @@
         left: 0;
         right: 0;
         width: 100%;
-        border-radius: 12px 12px 0 0;
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
         transform: translateY(100%);
     }
 
