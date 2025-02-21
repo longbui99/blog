@@ -1,6 +1,6 @@
 import React from 'react';
-import CodeBlock from '../components/CodeBlock';
-import { H1, H2, H3, H4, H5, H6, H7 } from '../components/ContentHeaders';
+import CodeBlock from '../components/blog_pages/CodeBlock';
+import { H1, H2, H3, H4, H5, H6, H7 } from '../components/blog_pages/ContentHeaders';
 
 function htmlToElement(html) {
   if (typeof html !== 'string') {

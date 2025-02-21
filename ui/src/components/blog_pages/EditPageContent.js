@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import Select from 'react-select';
-import '../styles/EditPageContent.css';
+import './styles/EditPageContent.css';
 import debounce from 'lodash/debounce';
-import { blogMenuProcessor } from '../processor/blogMenuProcessor';
-import { isNewPageRoute } from '../utils/routeConstants';
+import { blogMenuProcessor } from '../../processor/blogMenuProcessor';
+import { isNewPageRoute } from '../../utils/routeConstants';
 
 function EditPageContent({isCreating,onSave, onCancel, currentPath, routes, blogPost }) {
   const [title, setTitle] = useState('');

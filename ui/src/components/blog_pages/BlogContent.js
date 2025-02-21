@@ -1,20 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import '../styles/page.css';
-import { blogMenuProcessor } from '../processor/blogMenuProcessor';
-import { blogContentProcessor } from '../processor/blogContentProcessor';
-import EditPageContent from '../components/EditPageContent';
-import HTMLComposer from '../components/HTMLComposer';
-import { useNotification } from '../contexts/NotificationContext';
-import { parseContent } from '../utils/contentParser';
-import { useConfirmation } from '../contexts/ConfirmationContext';
-import { ROUTES, isNewPageRoute } from '../utils/routeConstants';
-import { useMenuContext } from '../contexts/MenuContext';
-import { processRawContent } from '../utils/contentUtils';
-import ImageViewer from '../components/ImageViewer';
+import './styles/page.css';
+import { blogMenuProcessor } from '../../processor/blogMenuProcessor';
+import { blogContentProcessor } from '../../processor/blogContentProcessor';
+import EditPageContent from './EditPageContent';
+import HTMLComposer from './HTMLComposer';
+import { useNotification } from '../../contexts/NotificationContext';
+import { parseContent } from '../../utils/contentParser';
+import { useConfirmation } from '../../contexts/ConfirmationContext';
+import { ROUTES, isNewPageRoute } from '../../utils/routeConstants';
+import { useMenuContext } from '../../contexts/MenuContext';
+import { processRawContent } from '../../utils/contentUtils';
+import ImageViewer from './ImageViewer';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookReader } from '@fortawesome/free-solid-svg-icons';
+import { useDispatch, useSelector } from 'react-redux';
+import { setEditing, setCreating, setPublished } from '../../redux/slices/editingSlice';
 
 async function updateBlogContent(rawContent, path, routeInfo, showNotification) {
     const processedContent = await processRawContent(rawContent, path, showNotification);
@@ -34,7 +36,7 @@ async function updateBlogContent(rawContent, path, routeInfo, showNotification) 
     }
 }
 
-function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onContentLoaded }) {
+function BlogContent({ updateMainContentEditableContent, onContentLoaded }) {
     const [content, setContent] = useState('');
     const [rawContent, setRawContent] = useState('');
     const [contentReadonly, setContentReadonly] = useState('');
@@ -46,24 +48,27 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
     const { showNotification } = useNotification();
     const [isRawEditor, setIsRawEditor] = useState(false);
     const { showConfirmation } = useConfirmation();
-    const [isEditing, setIsEditing] = useState(false);
-    const [isExiting, setIsExiting] = useState(false);
     const path = location.pathname.trimStart("/");
     const [author, setAuthor] = useState('Long Bui');
     const [lastUpdated, setLastUpdated] = useState(null);
     const [totalViews, setTotalViews] = useState(0);
-    const [isCreating, setIsCreating] = useState(false);
     const [originalContent, setOriginalContent] = useState(null);
-    const [isPublished, setIsPublished] = useState(false); // State for published status
-    const [isLoading, setisLoading] = useState(true)
+    const [isLoading, setisLoading] = useState(true);
     const navigate = useNavigate();
-    const currentRoute = routes?.find(route => route.path === path);
     const { publishToEvent } = useMenuContext();
     const [selectedImage, setSelectedImage] = useState(null);
     const [isImageViewerOpen, setIsImageViewerOpen] = useState(false);
 
+    // Redux
+    const dispatch = useDispatch();
+    const isEditing = useSelector((state) => state.editing.isEditing);
+    const isCreating = useSelector((state) => state.editing.isCreating);
+    const isPublished = useSelector((state) => state.editing.isPublished);
+    const isLoggedIn = useSelector((state) => state.login.isLoggedIn);
+    const routes = useSelector((state) => state.routes.items);
+    const currentRoute = routes?.find(route => route.path === path);
+
     const addImageClickHandler = () => {
-        // Add click handlers to images after content update
         setTimeout(() => {
             const images = document.querySelectorAll('.blog-content img:not(.resizable-image)');
             images.forEach(img => {
@@ -90,29 +95,28 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
             setAuthor(blogData.author || 'Long Bui');
             setLastUpdated(blogData.updated_at || new Date().toISOString());
             setTotalViews(blogData.total_views || 0);
-            // Update MainContent's editable content
             updateMainContentEditableContent(blogData.content);
             addImageClickHandler()
         } else {
             setContent(<p>No content found for this path.</p>);
             updateMainContentEditableContent('');
         }
-        setIsPublished(currentRoute.is_published || false); // Set published state
+        dispatch(setPublished(blogData?.is_published || false));
         onContentLoaded();
     }
 
-    // Add this new useEffect to handle auto-creation mode
     useEffect(() => {
         if (isNewPageRoute(location.pathname) && isLoggedIn) {
             handleCreate();
         }
-    }, [location.pathname]); // Add necessary dependencies if needed
+    }, [location.pathname]);
     
     useEffect(() => {
         const loadBlogContent = async () => {
             if (!isNewPageRoute(location.pathname)) {
                 const blogData = await blogMenuProcessor.getBlogMenuContentByPath(path);
                 setBlogPost(blogData);
+                dispatch(setPublished(blogData?.is_published || false));
                 return blogData;
             }
         };
@@ -129,14 +133,60 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
                 console.error('Error fetching blog content:', error);
                 setContent(<p>Error loading blog content. Please try again later.</p>);
                 updateMainContentEditableContent('');
-            } finally{
+            } finally {
                 setisLoading(false)
             }
         };
 
         fetchBlogContent();
     }, [path, onContentLoaded, updateMainContentEditableContent, isCreating]);
-    
+
+    const handleEditToggle = async () => {
+        if (isEditing) {
+            if (isCreating) {
+                navigate(-1);
+                setBlogPost(originalContent.blogPost);
+                setRawContent(originalContent.rawContent);
+                setContentReadonly(originalContent.contentReadonly);
+                setContent(originalContent.content);
+                dispatch(setCreating(false));
+                setOriginalContent(null);
+            }
+            dispatch(setEditing(false));
+            updateContent();
+        } else {
+            dispatch(setEditing(true));
+            updateContent();
+        }
+    };
+
+    // Add useEffect for keyboard shortcuts
+    useEffect(() => {
+        const handleKeyPress = (event) => {
+            if (!isLoggedIn) return;
+
+            const isModifierKey = navigator.platform.toUpperCase().indexOf('MAC') >= 0 
+                ? event.metaKey  // Command key for Mac
+                : event.ctrlKey; // Control key for Windows/Linux
+            if (!isModifierKey) return;
+
+            if (!isEditing) {
+                if (event.key === 'e') {
+                    handleEditToggle();
+                }
+            } else {
+                if (event.key === 'Escape') {
+                    handleEditToggle();
+                }
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyPress);
+        return () => {
+            document.removeEventListener('keydown', handleKeyPress);
+        };
+    }, [isEditing, isLoggedIn]);
+
     const handleSave = async (path, routeInfo) => {
         try {
             if (isNewPageRoute(path)) {
@@ -157,7 +207,7 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
                     message: 'Content saved successfully!',
                     duration: 1
                 });
-                setIsCreating(false);
+                dispatch(setCreating(false));
                 setOriginalContent(null);
                 handleEditToggle();
                 
@@ -213,31 +263,6 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
         }
     };
 
-    const handleEditToggle = async () => {
-        if (isEditing) {
-            if (isCreating) {
-                // Restore original content
-                navigate(-1); // This will go back to the previous page
-                setBlogPost(originalContent.blogPost);
-                setRawContent(originalContent.rawContent);
-                setContentReadonly(originalContent.contentReadonly);
-                setContent(originalContent.content);
-                setIsCreating(false);
-                setOriginalContent(null);
-            }
-            
-            setIsExiting(true);
-            setTimeout(async () => {
-                setIsEditing(false);
-                updateContent();
-                setIsExiting(false);
-            }, 0);
-        } else {
-            setIsEditing(true);
-            updateContent();
-        }
-    };
-    
     const setCreateData = () => {
         const { state } = location;
         const parentPath = state?.parentPath || '';
@@ -253,8 +278,7 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
         setRawContent('');
         setContentReadonly('');
         setContent('');
-        setIsEditing(true);
-        setIsCreating(true);
+        dispatch(setCreating(true));
     }
 
     const handleCreate = () => {
@@ -279,7 +303,7 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
         try {
             const newPublishStatus = !isPublished; // Toggle the publish status
             await blogMenuProcessor.publishBlogMenu(path, newPublishStatus); // Send the path and new publish status
-            setIsPublished(newPublishStatus); // Update the local state
+            dispatch(setPublished(newPublishStatus)); // Update the local state
             publishToEvent(path, newPublishStatus); // Update the context
             currentRoute.is_published = newPublishStatus;
             if (newPublishStatus){
@@ -308,40 +332,13 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
         }
     };
 
-    // Add useEffect for keyboard shortcuts
-    useEffect(() => {
-        const handleKeyPress = (event) => {
-            // Only handle shortcuts if logged in
-            if (!isLoggedIn) return;
-
-            const isModifierKey = navigator.platform.toUpperCase().indexOf('MAC') >= 0 
-                ? event.metaKey  // Command key for Mac
-                : event.ctrlKey; // Control key for Windows/Linux
-            if (!isModifierKey) return;
-
-            if (!isEditing) { // Only handle these shortcuts when not editing
-                if (event.key === 'e') {
-                    handleEditToggle();
-                }
-            } else {
-                if (event.key === 'Escape') {
-                    handleEditToggle();
-                }
-            }
-        };
-
-        document.addEventListener('keydown', handleKeyPress);
-        return () => {
-            document.removeEventListener('keydown', handleKeyPress);
-        };
-    }, [isEditing, isLoggedIn]);
     if (!content && !isCreating) {
-        return <div class="loading-panel">Loading...</div>;
+        return <div className="loading-panel">Loading...</div>;
     }
 
     return (
         <>{
-            isLoading? <div class="loading-panel">Loading...</div>:
+            isLoading ? <div className="loading-panel">Loading...</div> :
             <article className="blog-content">
             <Helmet>
                 <title>{pageTitle}</title>
@@ -414,143 +411,24 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
                 </div>
             </div>
 
-            {isLoggedIn ? (
-                <>
-                    <div className="content-actions">
-                        <div className="content-actions-controllers">
-                            <button 
-                                onClick={handleCreate}
-                                className={`action-button create-button ${isCreating ? 'active' : ''}`}
-                                title={isEditing ? "Finish editing first" : "Create New Page (C)"}
-                                disabled={isEditing || isCreating}
-                            >
-                                <svg 
-                                    width="16" 
-                                    height="16" 
-                                    viewBox="0 0 24 24" 
-                                    fill="none" 
-                                    stroke="currentColor" 
-                                    strokeWidth="2" 
-                                    strokeLinecap="round" 
-                                    strokeLinejoin="round"
-                                >
-                                    <line x1="12" y1="5" x2="12" y2="19"></line>
-                                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                                </svg>
-                            </button>
-                            <button 
-                                onClick={handleEditToggle} 
-                                className={`action-button edit-button ${isEditing ? 'active' : ''}`}
-                                title={isEditing ? "Exit Edit Mode (Esc)" : "Edit Page (E)"}
-                            >
-                                <svg 
-                                    width="16" 
-                                    height="16" 
-                                    viewBox="0 0 24 24" 
-                                    fill="none" 
-                                    stroke="currentColor" 
-                                    strokeWidth="2" 
-                                    strokeLinecap="round" 
-                                    strokeLinejoin="round"
-                                >
-                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                                </svg>
-                            </button>
-                            
-                            <button 
-                                onClick={handleDelete} 
-                                className="action-button delete-button"
-                                title="Delete page"
-                                disabled={isEditing || isCreating}
-                            >
-                                <svg 
-                                    width="16" 
-                                    height="16" 
-                                    viewBox="0 0 24 24" 
-                                    fill="none" 
-                                    stroke="currentColor" 
-                                    strokeWidth="2" 
-                                    strokeLinecap="round" 
-                                    strokeLinejoin="round"
-                                >
-                                    <path d="M3 6h18"></path>
-                                    <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
-                                    <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
-                                    <line x1="10" y1="11" x2="10" y2="17"></line>
-                                    <line x1="14" y1="11" x2="14" y2="17"></line>
-                                </svg>
-                            </button>
-
-                            {/* Publish Button as a boolean toggle */}
-                            <button 
-                                onClick={handlePublish} 
-                                className={`action-button publish-button ${isPublished ? 'active' : ''}`}
-                                title={isPublished ? "Unpublish Page" : "Publish Page"}
-                                disabled={isEditing || isCreating}
-                            >
-                                <svg 
-                                    width="16" 
-                                    height="16" 
-                                    viewBox="0 0 24 24" 
-                                    fill="none" 
-                                    stroke="currentColor" 
-                                    strokeWidth="2" 
-                                    strokeLinecap="round" 
-                                    strokeLinejoin="round"
-                                >
-                                    <path d={isPublished ? "M12 2L2 12h3v8h8v-3h3L12 2z" : "M12 2L2 12h3v8h8v-3h3L12 2z"} />
-                                </svg>
-                            </button>
-
-                            {isEditing && (
-                                <button 
-                                    onClick={() => setIsRawEditor(!isRawEditor)} 
-                                    className={`editor-toggle-button visible ${isRawEditor ? 'raw' : 'rich'}`}
-                                >
-                                    {isRawEditor ? '📝 Editor' : '</>HTML'}
-                                </button>
-                            )}
-                        </div>
-                        {
-                            isEditing && (
-                                <EditPageContent 
-                                    isCreating={isCreating}
-                                    onSave={handleSave}
-                                    onCancel={handleEditToggle}
-                                    currentPath={location.pathname}
-                                    routes={routes}
-                                    blogPost={blogPost}
-                                />
-                            )
-                        }
-                    </div>
-                    <div className={"content-body " + (isEditing ? 'editing' : '')}>
-                        {
-                            isEditing ? (
-                                isRawEditor ? (
-                                    <textarea 
-                                        className="raw-content-editor"
-                                        value={rawContent} 
-                                        onChange={(e) => {
-                                            setRawContent(e.target.value);
-                                        }}
-                                        placeholder="Enter raw HTML content..."
-                                    />
-                                ) : (
-                                    <HTMLComposer
-                                        initialContent={contentReadonly}
-                                        onChange={handleContentChange}
-                                        isEditing={isEditing}
-                                    />
-                                )
-                            ) : content
-                        }
-                    </div>
-                    
-                </>
-            ) : content}
-        </article>
+            <div className="content-body">
+                {isEditing ? (
+                    isRawEditor ? (
+                        <textarea 
+                            className="raw-content-editor"
+                            value={rawContent} 
+                            onChange={(e) => setRawContent(e.target.value)}
+                            placeholder="Enter raw HTML content..."
+                        />
+                    ) : (
+                        <HTMLComposer
+                            initialContent={contentReadonly}
+                            onChange={handleContentChange}
+                        />
+                    )
+                ) : content}
+            </div>
+            </article>
         }
         <ImageViewer 
             isOpen={isImageViewerOpen}
@@ -558,7 +436,6 @@ function BlogContent({ updateMainContentEditableContent, isLoggedIn, routes, onC
             imageUrl={selectedImage}
         />
         </>
-        
     );
 }
 

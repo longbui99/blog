@@ -2,7 +2,7 @@
 import React, { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import "../styles/navigator.css";
+import "./styles/navigator.css";
 
 const Navigator = () => {
     const navigate = useNavigate();

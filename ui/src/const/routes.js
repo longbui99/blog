@@ -1,5 +1,5 @@
 import { blogMenuProcessor } from '../processor/blogMenuProcessor';
-import BlogContent from '../pages/BlogContent';
+import BlogContent from '../components/blog_pages/BlogContent';
 
 
 // Function to resolve component from string key

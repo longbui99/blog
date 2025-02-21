@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import '../styles/ImageViewer.css';
+import './styles/ImageViewer.css';
 
 function ImageViewer({ isOpen, onClose, imageUrl }) {
   const [isClosing, setIsClosing] = useState(false);

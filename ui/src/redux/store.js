@@ -7,6 +7,7 @@ import chatReducer from './slices/chatSlice';
 import routesReducer from './slices/routesSlice';
 import searchReducer from './slices/searchSlice';
 import controlPanelReducer from './slices/controlPanelSlice';
+import editingReducer from './slices/editingSlice';
 
 export const store = configureStore({
   reducer: {
@@ -18,5 +19,6 @@ export const store = configureStore({
     routes: routesReducer,
     search: searchReducer,
     controlPanel: controlPanelReducer,
+    editing: editingReducer,
   },
 }); 

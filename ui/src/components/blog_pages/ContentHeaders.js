@@ -1,13 +1,13 @@
 import React, { useState, useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FaLink } from 'react-icons/fa';
-import { useNotification } from '../contexts/NotificationContext';
-import '../styles/ContentHeaders.css';
+import { useNotification } from '../../contexts/NotificationContext';
+import './styles/ContentHeaders.css';
 
 // Import ThemeContext if it exists, otherwise create a dummy context
 let ThemeContext;
 try {
-  ThemeContext = require('../contexts/ThemeContext').ThemeContext;
+  ThemeContext = require('../../contexts/ThemeContext').ThemeContext;
 } catch (error) {
   ThemeContext = React.createContext({ isDarkMode: false });
 }

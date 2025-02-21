@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { FaUser, FaLock, FaTimes } from 'react-icons/fa';
-import '../styles/LoginModal.css';
-import { loginProcessor } from '../processor/loginProcessor';
+import './styles/LoginModal.css';
+import { loginProcessor } from '../../processor/loginProcessor';
 import { useDispatch, useSelector } from 'react-redux';
-import { setLoginStatus, setLoginModal } from '../redux/slices/loginSlice';
+import { setLoginStatus, setLoginModal } from '../../redux/slices/loginSlice';
 
 function LoginModal() {
   const dispatch = useDispatch();

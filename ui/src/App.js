@@ -3,12 +3,11 @@ import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-route
 import ReactGA from "react-ga4";
 import Header from './components/navbar/Header';
 import Sidebar from './components/sidebar/Sidebar';
-import MainContent from './components/MainContent';
-import LoginModal from './components/LoginModal';
+import MainContent from './components/blog_pages/MainContent';
+import LoginModal from './components/navbar/LoginModal';
 import { NotificationProvider } from './contexts/NotificationContext';
 import { MenuProvider } from './contexts/MenuContext';
 import { ConfirmationProvider } from './contexts/ConfirmationContext';
-import { fetchRouteMap } from './const/routes';
 import { loginProcessor } from './processor/loginProcessor';
 import { initializeBaseProcessor } from './processor/baseProcessor';
 import { handleResponsiveState, isDeviceMobile } from './utils/responsive';
@@ -19,16 +18,12 @@ import { setSidebar } from './redux/slices/sidebarSlice';
 import { setTOC } from './redux/slices/tocSlice';
 import { fetchRoutes } from './redux/slices/routesSlice';
 import './styles/styles.css';
-import './styles/page.css';
 import './styles/App.css';
 
 // Initialize GA
 ReactGA.initialize("G-9VQG6QJLEK");
 
 function AppContent() {
-  const [isEditing, setIsEditing] = useState(false);
-  const [currentPath, setCurrentPath] = useState('/');
-
   const dispatch = useDispatch();
   const { items: routesRedux, isLoading: routesLoading, error: routesError } = useSelector((state) => state.routes);
   const isDarkMode = useSelector((state) => state.theme.isDarkMode);
@@ -72,12 +67,6 @@ function AppContent() {
     return () => window.removeEventListener('resize', handleResize);
   }, [dispatch]);
 
-  const handleMenuItemClick = () => {
-    if (isDeviceMobile()) {
-      dispatch(setSidebar(false));
-    }
-  };
-
   if (routesLoading) {
     return <div className="loading-panel">Loading...</div>;
   }
@@ -97,14 +86,7 @@ function AppContent() {
               <Header isLoggedIn={isLoggedIn} />
               <Sidebar 
               />
-              <MainContent 
-                isLoggedIn={isLoggedIn}
-                routes={routesRedux}
-                isEditing={isEditing}
-                setIsEditing={setIsEditing}
-                currentPath={currentPath}
-                setCurrentPath={setCurrentPath}
-              >
+              <MainContent >
                 <Routes>
                   {routesRedux.map(route => (
                     <Route key={route.path} path={route.path} element={<route.component />} />

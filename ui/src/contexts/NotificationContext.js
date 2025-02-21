@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
-import NotificationBanner from '../components/NotificationBanner';
+import NotificationBanner from '../components/wrapper/NotificationBanner';
 
 const NotificationContext = createContext();
 

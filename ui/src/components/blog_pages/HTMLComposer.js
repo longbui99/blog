@@ -3,8 +3,10 @@ import { createRoot } from 'react-dom/client'; // Import createRoot
 import { FaAlignLeft, FaAlignCenter, FaAlignRight, FaLink, FaImage } from 'react-icons/fa';
 import { useLocation } from 'react-router-dom';
 import DOMPurify from 'dompurify';
-import '../styles/HtmlComposer.css';
-import { COLOR_PALETTE } from '../const/colors';
+import './styles/HtmlComposer.css';
+import { COLOR_PALETTE } from '../../const/colors';
+import { useSelector } from 'react-redux';
+
 // Color Picker Component
 const ColorPicker = ({ colors, onSelectColor }) => {
     return (
@@ -189,7 +191,7 @@ const ImageComponent = ({ src, alt, initialWidth, onDelete, handleContentChange 
     );
 };
 
-const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
+const HTMLComposer = ({ initialContent, onChange }) => {
     const editorRef = useRef(null);
     const [showSlashMenu, setShowSlashMenu] = useState(false);
     const [selectedCommandIndex, setSelectedCommandIndex] = useState(0);
@@ -205,6 +207,7 @@ const HTMLComposer = ({ initialContent, onChange, isEditing }) => {
     const [showAlignmentPicker, setShowAlignmentPicker] = useState(false);
     const location = useLocation();
     const urlInputRef = useRef(null); // Create a ref for the URL input
+    const isEditing = useSelector((state) => state.editing.isEditing);
 
     useEffect(() => {
         if (location.pathname === '/new-page') {

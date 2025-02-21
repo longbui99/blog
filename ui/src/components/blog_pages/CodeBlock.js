@@ -1,12 +1,12 @@
 import React, { useState, useContext } from 'react';
 import { FaCopy } from 'react-icons/fa';
-import '../styles/CodeBlock.css';
-import tokenizeCode  from '../utils/syntaxHighlighter';
+import './styles/CodeBlock.css';
+import tokenizeCode  from '../../utils/syntaxHighlighter';
 
 // Import ThemeContext if it exists, otherwise create a dummy context
 let ThemeContext;
 try {
-  ThemeContext = require('../contexts/ThemeContext').ThemeContext;
+  ThemeContext = require('../../contexts/ThemeContext').ThemeContext;
 } catch (error) {
   ThemeContext = React.createContext({ isDarkMode: false });
 }

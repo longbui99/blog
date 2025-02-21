@@ -1,14 +1,12 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { updateActiveRouteFromPath } from '../redux/slices/routesSlice';
-import TableOfContents from './toc/TableOfContents';
-import { generateTOC } from '../utils/contentUtils';
-import '../styles/MainContent.css';
-import BlogContent from '../pages/BlogContent';
-import Header from './navbar/Header';
+import { updateActiveRouteFromPath } from '../../redux/slices/routesSlice';
+import TableOfContents from './TableOfContents';
+import { generateTOC } from '../../utils/contentUtils';
+import './styles/MainContent.css';
+import BlogContent from './BlogContent';
 import BreadCrumbs from './BreadCrumbs';
-import Navigator from './Navigator';
 
 // Add scroll helper function
 const scrollToElement = (elementId, offset = 80) => {
@@ -88,7 +86,6 @@ function MainContent() {
             routes={routes}
             onContentLoaded={handleContentLoaded}
           />
-          <Navigator />
         </div>
         <TableOfContents 
           items={tocItems} 

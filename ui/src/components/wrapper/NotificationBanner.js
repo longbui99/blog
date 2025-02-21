@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import '../styles/NotificationBanner.css';
+import './styles/NotificationBanner.css';
 
 const NotificationBanner = ({ duration = 3, type = 'info', title, message, onClose }) => {
   const [isVisible, setIsVisible] = useState(true);
