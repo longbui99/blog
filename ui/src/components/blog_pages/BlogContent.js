@@ -4,7 +4,6 @@ import { Helmet } from 'react-helmet';
 import './styles/page.css';
 import { blogMenuProcessor } from '../../processor/blogMenuProcessor';
 import { blogContentProcessor } from '../../processor/blogContentProcessor';
-import EditPageContent from './EditPageContent';
 import HTMLComposer from './HTMLComposer';
 import { useNotification } from '../../contexts/NotificationContext';
 import { parseContent } from '../../utils/contentParser';
@@ -46,7 +45,6 @@ function BlogContent({ updateMainContentEditableContent, onContentLoaded }) {
     const [pageDescription, setPageDescription] = useState("Explore our latest blog posts on various topics including technology, programming, and web development.");
     const canonicalUrl = `https://blog.longbui.net${location.href}`;
     const { showNotification } = useNotification();
-    const [isRawEditor, setIsRawEditor] = useState(false);
     const { showConfirmation } = useConfirmation();
     const path = location.pathname.trimStart("/");
     const [author, setAuthor] = useState('Long Bui');
@@ -55,7 +53,6 @@ function BlogContent({ updateMainContentEditableContent, onContentLoaded }) {
     const [originalContent, setOriginalContent] = useState(null);
     const [isLoading, setisLoading] = useState(true);
     const navigate = useNavigate();
-    const { publishToEvent } = useMenuContext();
     const [selectedImage, setSelectedImage] = useState(null);
     const [isImageViewerOpen, setIsImageViewerOpen] = useState(false);
 
@@ -63,10 +60,8 @@ function BlogContent({ updateMainContentEditableContent, onContentLoaded }) {
     const dispatch = useDispatch();
     const isEditing = useSelector((state) => state.editing.isEditing);
     const isCreating = useSelector((state) => state.editing.isCreating);
-    const isPublished = useSelector((state) => state.editing.isPublished);
+    const isRawEditor = useSelector((state) => state.editing.isRawEditor);
     const isLoggedIn = useSelector((state) => state.login.isLoggedIn);
-    const routes = useSelector((state) => state.routes.items);
-    const currentRoute = routes?.find(route => route.path === path);
 
     const addImageClickHandler = () => {
         setTimeout(() => {
@@ -295,40 +290,6 @@ function BlogContent({ updateMainContentEditableContent, onContentLoaded }) {
         // Only navigate if we're not already at new-page route
         if (!isNewPageRoute(location.pathname)) {
             navigate(ROUTES.NEW_PAGE);
-        }
-    };
-
-    // Add the handlePublish function
-    const handlePublish = async () => {
-        try {
-            const newPublishStatus = !isPublished; // Toggle the publish status
-            await blogMenuProcessor.publishBlogMenu(path, newPublishStatus); // Send the path and new publish status
-            dispatch(setPublished(newPublishStatus)); // Update the local state
-            publishToEvent(path, newPublishStatus); // Update the context
-            currentRoute.is_published = newPublishStatus;
-            if (newPublishStatus){
-                showNotification({
-                    type: 'success',
-                    title: 'Success',
-                    message: newPublishStatus ? 'Content published successfully!' : 'Content unpublished successfully!',
-                    duration: 3
-                });
-            } else {
-                showNotification({
-                    type: 'warning',
-                    title: 'Success',
-                    message: newPublishStatus ? 'Content published successfully!' : 'Content unpublished successfully!',
-                    duration: 3
-                });
-            }
-        } catch (error) {
-            console.error('Error publishing content:', error);
-            showNotification({
-                type: 'error',
-                title: 'Error',
-                message: 'Failed to update publish status.',
-                duration: 3
-            });
         }
     };
 

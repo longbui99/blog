@@ -15,7 +15,8 @@ const routesSlice = createSlice({
     items: [],
     isLoading: false,
     error: null,
-    activeRoute: window.location.pathname // Initialize with current path
+    activeRoute: window.location.pathname, // Initialize with current path
+    activeBlogContent: null
   },
   reducers: {
     setActiveRoute: (state, action) => {
@@ -27,6 +28,9 @@ const routesSlice = createSlice({
       if (state.items.some(route => route.path === path)) {
         state.activeRoute = path;
       }
+    },
+    setActiveBlogContent: (state, action) => {
+      state.activeBlogContent = action.payload;
     }
   },
   extraReducers: (builder) => {
@@ -51,5 +55,5 @@ const routesSlice = createSlice({
   },
 });
 
-export const { setActiveRoute, updateActiveRouteFromPath } = routesSlice.actions;
+export const { setActiveRoute, updateActiveRouteFromPath, setActiveBlogContent } = routesSlice.actions;
 export default routesSlice.reducer; 

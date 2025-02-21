@@ -14,9 +14,11 @@ import './styles/Header.css';
 import SearchPopup from './SearchPopup.js';
 import ChatPopup from './ChatPopup.js';
 import { useSelector } from 'react-redux';
+import RawEditorToggle from '../toggle/RawEditorToggle.js';
 
 function Header() {
   const isLoggedIn = useSelector(state => state.login.isLoggedIn);
+  const isEditing = useSelector(state => state.editing.isEditing);
 
   return (
     <header className="app-bar">
@@ -46,6 +48,7 @@ function Header() {
             <EditToggle />
             <DeleteToggle />
             <PublishToggle />
+            {isEditing && <RawEditorToggle />}
           </>
         )}
       </div>

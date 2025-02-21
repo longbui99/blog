@@ -4,8 +4,17 @@ import './styles/EditPageContent.css';
 import debounce from 'lodash/debounce';
 import { blogMenuProcessor } from '../../processor/blogMenuProcessor';
 import { isNewPageRoute } from '../../utils/routeConstants';
+import { useDispatch, useSelector } from 'react-redux';
 
-function EditPageContent({isCreating,onSave, onCancel, currentPath, routes, blogPost }) {
+function EditPageContent() {
+  // Redux state
+  const dispatch = useDispatch();
+  const isEditing = useSelector(state => state.editing.isEditing);
+  const isCreating = useSelector(state => state.editing.isCreating);
+  const currentPath = useSelector(state => state.routes.activePath);
+  const routes = useSelector(state => state.routes.items);
+  const blogPost = useSelector(state => state.routes.activeBlogContent);
+
   const [title, setTitle] = useState('');
   const [urlPath, setUrlPath] = useState(currentPath);
   const [parent, setParent] = useState(null);
@@ -28,11 +37,11 @@ function EditPageContent({isCreating,onSave, onCancel, currentPath, routes, blog
       try {
         const currentRoute = routes?.find(route => route.path === currentPath);
         if (routes && currentRoute) {
-            setUrlPath(currentPath);
-            setTitle(currentRoute.title || 'page');
-            setParent(blogPost?.parent || currentRoute?.parent || null);
-            setPrevious(currentRoute?.previous || null);
-            setNext(currentRoute?.next || null);
+          setUrlPath(currentPath);
+          setTitle(currentRoute.title || 'page');
+          setParent(blogPost?.parent || currentRoute?.parent || null);
+          setPrevious(currentRoute?.previous || null);
+          setNext(currentRoute?.next || null);
         } else {
           setTitle('');
           setUrlPath(currentPath);
@@ -50,23 +59,6 @@ function EditPageContent({isCreating,onSave, onCancel, currentPath, routes, blog
 
     fetchBlogContent();
   }, [currentPath, routes, blogPost]);
-
-  const handleTitleChange = (e) => {
-    const newTitle = e.target.value;
-    setTitle(newTitle);
-    if(isCreating){
-        // Generate URL-friendly path from title
-        const urlPath = "/" +newTitle
-        .toLowerCase()                     // Convert to lowercase
-        .trim()                           // Remove leading/trailing spaces
-        .replace(/[^a-z0-9\s-]/g, '')     // Remove special characters except spaces and hyphens
-        .replace(/\s+/g, '-')             // Replace spaces with hyphens
-        .replace(/-+/g, '-');             // Replace multiple hyphens with single hyphen
-    
-        // Only update path if it hasn't been manually edited
-        setUrlPath(urlPath);
-    }
-  };
 
   const checkPathExists = useCallback(
     debounce(async (path) => {
@@ -87,6 +79,28 @@ function EditPageContent({isCreating,onSave, onCancel, currentPath, routes, blog
     }, 300),
     [currentPath]
   );
+
+  const routeOptions = useMemo(() => routes.map(route => ({
+    value: route.path,
+    label: route.title || route.path
+  })), [routes]);
+
+  // Only render if editing or creating
+  if (!isEditing && !isCreating) return null;
+
+  const handleTitleChange = (e) => {
+    const newTitle = e.target.value;
+    setTitle(newTitle);
+    if(isCreating){
+      const urlPath = "/" + newTitle
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-');
+      setUrlPath(urlPath);
+    }
+  };
 
   const handleUrlPathChange = (e) => {
     const newPath = e.target.value;
@@ -109,11 +123,6 @@ function EditPageContent({isCreating,onSave, onCancel, currentPath, routes, blog
     checkPathExists(newPath);
   };
 
-  const routeOptions = useMemo(() => routes.map(route => ({
-    value: route.path,
-    label: route.title || route.path
-  })), [routes]);
-
   const handleParentChange = (selectedOption) => {
     setParent(selectedOption ? selectedOption.value : null);
     setPrevious(null);
@@ -128,7 +137,7 @@ function EditPageContent({isCreating,onSave, onCancel, currentPath, routes, blog
     setNext(selectedOption ? selectedOption.value : null);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     setValidationErrors({
       title: false,
       urlPath: false
@@ -144,15 +153,23 @@ function EditPageContent({isCreating,onSave, onCancel, currentPath, routes, blog
       return;
     }
 
-    onSave(urlPath, { title, parent, previous, next });
-  };
-
-  const handlePathChange = (e) => {
-    setUrlPath(e.target.value);
+    try {
+      await blogMenuProcessor.saveOrUpdateContent({
+        path: urlPath,
+        title,
+        parent,
+        previous,
+        next
+      });
+      // You might want to dispatch an action to update the Redux state here
+    } catch (error) {
+      console.error('Error saving content:', error);
+      setError('Error saving content. Please try again later.');
+    }
   };
 
   return (
-    <div className="edit-page-content">
+    <div className={`edit-page-content ${(isEditing || isCreating) ? 'visible' : ''}`}>
       {isLoading && <p>Loading content...</p>}
       {error && <p className="error">{error}</p>}
       
@@ -184,7 +201,7 @@ function EditPageContent({isCreating,onSave, onCancel, currentPath, routes, blog
             <input
               type="text"
               value={urlPath}
-              onChange={handlePathChange}
+              onChange={handleUrlPathChange}
               placeholder="Enter URL path *"
               className={`url-path-input ${
                 pathExists || validationErrors.urlPath || validationErrors.newPageUrl ? 'input-error' : ''

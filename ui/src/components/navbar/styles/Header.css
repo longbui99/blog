@@ -4,12 +4,13 @@
   align-items: center;
   padding: 1.5em 0em 1em 0.5em;
   background-color: var(--sidebar-bg);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 10px 10px 19px #1c1e22, -10px -10px 19px #262a2e;
   height: 15px;
   position: fixed;
   width: 100vw;
   top: 0;
   z-index: 1000;
+  
 }
 
 .logo-container {

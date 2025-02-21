@@ -42,20 +42,18 @@
 
 /* Position for each toggle button */
 .create-toggle {
-    right: 320px;
-}
-
-.edit-toggle {
     right: 260px;
 }
 
-.delete-toggle {
+.edit-toggle {
     right: 200px;
 }
 
-.publish-toggle {
-    right: 140px;
+.delete-toggle {
+    right: 20px;
+    bottom: 80px;
 }
+
 
 /* Text and icon styling */
 .action-toggle .text {
@@ -157,6 +155,10 @@
     .publish-toggle {
         right: 110px;
     }
+
+    .raw-editor-toggle {
+        right: 310px;
+    }
 }
 
 /* Small screens */
@@ -183,4 +185,26 @@
     .publish-toggle {
         right: 80px;
     }
+
+    .raw-editor-toggle {
+        right: 240px;
+    }
+}
+
+.publish-toggle {
+    right: 140px;
+}
+.publish-toggle .text {
+    color: red;
+}
+
+.raw-editor-toggle {
+    right: 200px;
+    bottom: 80px;
+    display: none; /* Hidden by default */
+}
+
+/* Show raw editor toggle only when editing */
+.raw-editor-toggle.visible {
+    display: block;
 }

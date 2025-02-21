@@ -7,7 +7,7 @@ import { generateTOC } from '../../utils/contentUtils';
 import './styles/MainContent.css';
 import BlogContent from './BlogContent';
 import BreadCrumbs from './BreadCrumbs';
-
+import EditPageContent from './EditPageContent';
 // Add scroll helper function
 const scrollToElement = (elementId, offset = 80) => {
     const element = document.getElementById(elementId);
@@ -90,6 +90,8 @@ function MainContent() {
         <TableOfContents 
           items={tocItems} 
           isOpen={isTOCOpen}
+        />
+        <EditPageContent 
         />
       </main>
     </>
