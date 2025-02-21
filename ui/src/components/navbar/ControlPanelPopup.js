@@ -1,23 +1,16 @@
 import React, { useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-  faMoon, 
-  faSun, 
-  faLanguage, 
-  faUser, 
-  faSignOut, 
-  faGear,
-  faPalette,
-  faChevronRight,
-  faDisplay
-} from '@fortawesome/free-solid-svg-icons';
+import { faSun, faMoon, faUser } from '@fortawesome/free-solid-svg-icons';
 import './styles/ControlPanelPopup.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { setControlPanelOpen, setTheme, setLanguage } from '../../redux/slices/controlPanelSlice';
+import { setControlPanelOpen } from '../../redux/slices/controlPanelSlice';
+import { toggleTheme } from '../../redux/slices/themeSlice';
+import { toggleLoginModal } from '../../redux/slices/loginSlice';
 
 function ControlPanelPopup() {
   const dispatch = useDispatch();
-  const { isOpen, theme, language } = useSelector(state => state.controlPanel);
+  const { isOpen } = useSelector(state => state.controlPanel);
+  const { isDarkMode } = useSelector(state => state.theme);
   const popupRef = useRef(null);
 
   useEffect(() => {
@@ -42,89 +35,15 @@ function ControlPanelPopup() {
     };
   }, [isOpen, dispatch]);
 
-  const handleThemeChange = (newTheme) => {
-    dispatch(setTheme(newTheme));
-    // Add your theme change logic here
+  const handleThemeToggle = () => {
+    dispatch(toggleTheme());
     dispatch(setControlPanelOpen(false));
   };
 
-  const handleLanguageChange = (newLanguage) => {
-    dispatch(setLanguage(newLanguage));
-    // Add your language change logic here
+  const handleSignIn = () => {
+    dispatch(toggleLoginModal());
     dispatch(setControlPanelOpen(false));
   };
-
-  const handleAction = (action) => {
-    action();
-  };
-
-  const menuItems = [
-    {
-      icon: faPalette,
-      label: 'Theme',
-      subItems: [
-        { 
-          label: 'Light', 
-          icon: faSun,
-          action: () => handleThemeChange('light'),
-          active: theme === 'light'
-        },
-        { 
-          label: 'Dark', 
-          icon: faMoon,
-          action: () => handleThemeChange('dark'),
-          active: theme === 'dark'
-        },
-        { 
-          label: 'System', 
-          icon: faDisplay,
-          action: () => handleThemeChange('system'),
-          active: theme === 'system'
-        }
-      ]
-    },
-    {
-      icon: faLanguage,
-      label: 'Language',
-      subItems: [
-        { 
-          label: 'English', 
-          action: () => handleLanguageChange('en'),
-          active: language === 'en'
-        },
-        { 
-          label: 'Chinese', 
-          action: () => handleLanguageChange('zh'),
-          active: language === 'zh'
-        }
-      ]
-    },
-    {
-      icon: faGear,
-      label: 'Settings',
-      action: () => {
-        console.log('Settings clicked');
-        dispatch(setControlPanelOpen(false));
-      }
-    },
-    {
-      icon: faUser,
-      label: 'Profile',
-      action: () => {
-        console.log('Profile clicked');
-        dispatch(setControlPanelOpen(false));
-      }
-    },
-    {
-      icon: faSignOut,
-      label: 'Sign Out',
-      action: () => {
-        console.log('Sign out clicked');
-        dispatch(setControlPanelOpen(false));
-      },
-      className: 'danger'
-    }
-  ];
 
   if (!isOpen) return null;
 
@@ -136,35 +55,22 @@ function ControlPanelPopup() {
       aria-label="Control Panel"
     >
       <div className="control-panel-content">
-        {menuItems.map((item, index) => (
-          <div key={index} className="menu-item">
-            <button 
-              className={`menu-button ${item.className || ''}`}
-              onClick={() => handleAction(item.action)}
-              role="menuitem"
-            >
-              <FontAwesomeIcon icon={item.icon} />
-              <span>{item.label}</span>
-              {item.subItems && <FontAwesomeIcon icon={faChevronRight} className="submenu-indicator" />}
-            </button>
-            {item.subItems && (
-              <div className="submenu" role="menu">
-                {item.subItems.map((subItem, subIndex) => (
-                  <button 
-                    key={subIndex}
-                    className={`submenu-button ${subItem.active ? 'active' : ''}`}
-                    onClick={() => handleAction(subItem.action)}
-                    role="menuitem"
-                    aria-current={subItem.active}
-                  >
-                    {subItem.icon && <FontAwesomeIcon icon={subItem.icon} />}
-                    {subItem.label}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        ))}
+        <button 
+          className="menu-button"
+          onClick={handleThemeToggle}
+          role="menuitem"
+        >
+          <FontAwesomeIcon icon={isDarkMode ? faSun : faMoon} />
+          <span>{isDarkMode ? 'Light Mode' : 'Dark Mode'}</span>
+        </button>
+        <button 
+          className="menu-button"
+          onClick={handleSignIn}
+          role="menuitem"
+        >
+          <FontAwesomeIcon icon={faUser} />
+          <span>Sign In</span>
+        </button>
       </div>
     </div>
   );

@@ -27,19 +27,9 @@
     z-index: 1;
 }
 
-@keyframes spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(180deg);
-    }
-}
-
 .control-panel-toggle:hover .text {
     opacity: 1;
     color: var(--primary-color);
-    animation: spin 0.5s ease;
 }
 
 .control-panel-toggle::before {
@@ -96,16 +86,3 @@
 .control-panel-toggle.active {
   background-color: rgba(255, 255, 255, 0.1);
 }
-
-.control-panel-toggle .rotating {
-  animation: rotate 0.5s ease;
-}
-
-@keyframes rotate {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(180deg);
-  }
-} 

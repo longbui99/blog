@@ -2,7 +2,7 @@
     position: fixed;
     top: 50px; /* Match header height */
     right: 0;
-    bottom: 60px; /* Match footer height */
+    bottom: 80px; /* Match footer height */
     width: 400px; /* Fixed width */
     background-color: var(--background-dark);
     display: flex;
