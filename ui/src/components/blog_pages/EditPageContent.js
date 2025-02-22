@@ -1,18 +1,16 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Select from 'react-select';
 import './styles/EditPageContent.css';
-import debounce from 'lodash/debounce';
-import { blogMenuProcessor } from '../../processor/blogMenuProcessor';
-import { isNewPageRoute } from '../../utils/routeConstants';
+import { blogContentProcessor } from '../../processor/blogContentProcessor';
 import { useDispatch, useSelector } from 'react-redux';
-import { setBlogContent } from '../../redux/slices/blogSlice';
+import { setEditing, setCreating } from '../../redux/slices/editingSlice';
+import storageRegistry from '../../storage/storage_registry';
 
 function EditPageContent() {
-  // Redux state
   const dispatch = useDispatch();
   const isEditing = useSelector(state => state.editing.isEditing);
   const isCreating = useSelector(state => state.editing.isCreating);
-  const currentPath = useSelector(state => state.routes.activePath);
+  const activeRoute = useSelector(state => state.routes.activeRoute);
   const routes = useSelector(state => state.routes.items);
   const blogPost = useSelector(state => state.blog.content);
 
@@ -20,50 +18,46 @@ function EditPageContent() {
   const [parent, setParent] = useState(null);
   const [previous, setPrevious] = useState(null);
   const [next, setNext] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [pathExists, setPathExists] = useState(false);
-  const [isCheckingPath, setIsCheckingPath] = useState(false);
   const [validationErrors, setValidationErrors] = useState({
     title: false,
-    urlPath: false,
-    newPageUrl: false
+    urlPath: false
   });
 
   // Initialize form with blog content from Redux
   useEffect(() => {
     if (blogPost && !isCreating) {
       setTitle(blogPost.title || '');
-      setParent(blogPost.parent || null);
-      setPrevious(blogPost.previous || null);
-      setNext(blogPost.next || null);
+      
+      // Find parent, previous, and next from routes
+      const currentPath = activeRoute;
+      
+      // Find the current route
+      const currentRoute = routes.find(route => route.path === currentPath);
+      
+      if (currentRoute) {
+        // Set parent
+        setParent(currentRoute.parent);
+        
+        // Find siblings (routes with same parent)
+        const siblings = routes
+          .filter(route => route.parent === currentRoute.parent)
+          .sort((a, b) => a.sequence - b.sequence);
+        
+        // Find current index
+        const currentIndex = siblings.findIndex(route => route.path === currentPath);
+        
+        // Set previous and next
+        setPrevious(currentIndex > 0 ? siblings[currentIndex - 1].path : null);
+        setNext(currentIndex < siblings.length - 1 ? siblings[currentIndex + 1].path : null);
+      }
     } else {
       setTitle('');
       setParent(null);
       setPrevious(null);
       setNext(null);
     }
-  }, [blogPost, isCreating]);
-
-  const checkPathExists = useCallback(
-    debounce(async (path) => {
-      if (path === currentPath) {
-        setPathExists(false);
-        return;
-      }
-
-      setIsCheckingPath(true);
-      try {
-        const response = await blogMenuProcessor.checkPathExists(path);
-        setPathExists(response.exists);
-      } catch (error) {
-        console.error('Error checking path:', error);
-      } finally {
-        setIsCheckingPath(false);
-      }
-    }, 300),
-    [currentPath]
-  );
+  }, [blogPost, isCreating, routes, activeRoute]);
 
   const routeOptions = useMemo(() => routes.map(route => ({
     value: route.path,
@@ -73,8 +67,7 @@ function EditPageContent() {
   if (!isEditing && !isCreating) return null;
 
   const handleTitleChange = (e) => {
-    const newTitle = e.target.value;
-    setTitle(newTitle);
+    setTitle(e.target.value);
   };
 
   const handleParentChange = (selectedOption) => {
@@ -99,7 +92,7 @@ function EditPageContent() {
 
     const errors = {
       title: !title.trim(),
-      urlPath: !currentPath.trim()
+      urlPath: !activeRoute.trim()
     };
 
     if (errors.title || errors.urlPath) {
@@ -108,26 +101,104 @@ function EditPageContent() {
     }
 
     try {
-      const updatedContent = {
-        ...blogPost,
-        path: currentPath,
-        title,
-        parent,
-        previous,
-        next
-      };
+      if (storageRegistry.has('currentContent')) {
+        const updatedContent = {
+          content: storageRegistry.get('currentContent'),
+          path: activeRoute,
+          title: title,
+          parent: parent,
+          previous: previous,
+          next: next
+        };
+        await blogContentProcessor.saveOrUpdateContent(updatedContent);
+        if (isCreating) {
+          dispatch(setEditing(false));
+        } else if (isEditing) {
+          dispatch(setCreating(false));
+          window.location.pathname = activeRoute;
+          window.location.reload();
+        }
+      }
 
-      await blogMenuProcessor.saveOrUpdateContent(updatedContent);
-      dispatch(setBlogContent(updatedContent));
     } catch (error) {
       console.error('Error saving content:', error);
       setError('Error saving content. Please try again later.');
     }
   };
 
+  const handleCancel = () => {
+    // Reset form state
+    // Close the popup by dispatching the appropriate action
+    if (isEditing) {
+      dispatch(setEditing(false));
+    } else if (isCreating) {
+      dispatch(setCreating(false));
+    }
+  };
+
+  const selectStyles = {
+    control: (base, state) => ({
+      ...base,
+      backgroundColor: 'var(--bg-primary)',
+      borderColor: state.isFocused ? 'var(--primary-500)' : 'var(--border-primary)',
+      borderRadius: 'var(--radius-md)',
+      minHeight: '40px',
+      boxShadow: 'none',
+      '&:hover': {
+        borderColor: 'var(--primary-400)'
+      }
+    }),
+    menu: (base) => ({
+      ...base,
+      backgroundColor: 'var(--bg-primary)',
+      border: '1px solid var(--border-primary)',
+      borderRadius: 'var(--radius-md)',
+      boxShadow: 'var(--shadow-lg)',
+      zIndex: 1000
+    }),
+    option: (base, state) => ({
+      ...base,
+      backgroundColor: state.isSelected 
+        ? 'var(--primary-500)'
+        : state.isFocused 
+          ? 'var(--bg-tertiary)'
+          : 'var(--bg-primary)',
+      color: state.isSelected 
+        ? 'var(--color-white)'
+        : 'var(--text-primary)',
+      padding: 'var(--spacing-2)',
+      cursor: 'pointer',
+      '&:active': {
+        backgroundColor: 'var(--primary-600)'
+      }
+    }),
+    input: (base) => ({
+      ...base,
+      color: 'var(--text-primary)'
+    }),
+    singleValue: (base) => ({
+      ...base,
+      color: 'var(--text-primary)'
+    }),
+    placeholder: (base) => ({
+      ...base,
+      color: 'var(--text-tertiary)'
+    }),
+    indicatorSeparator: (base) => ({
+      ...base,
+      backgroundColor: 'var(--border-primary)'
+    }),
+    dropdownIndicator: (base) => ({
+      ...base,
+      color: 'var(--text-tertiary)',
+      '&:hover': {
+        color: 'var(--text-primary)'
+      }
+    })
+  };
+
   return (
     <div className={`edit-page-content ${(isEditing || isCreating) ? 'visible' : ''}`}>
-      {isLoading && <p>Loading content...</p>}
       {error && <p className="error">{error}</p>}
       
       <div className="edit-header">
@@ -149,29 +220,14 @@ function EditPageContent() {
             {validationErrors.urlPath && (
               <span className="validation-error">URL path is required</span>
             )}
-            {validationErrors.newPageUrl && (
-              <span className="validation-error">Cannot use /new-page as the URL.</span>
-            )}
-            {pathExists && !validationErrors.newPageUrl && (
-              <span className="path-exists-warning">This path already exists</span>
-            )}
             <input
               type="text"
-              value={currentPath}
+              value={activeRoute}
               readOnly
               placeholder="URL path"
               className="url-path-input"
             />
           </div>
-        </div>
-        <div className="edit-actions">
-          <button 
-            onClick={handleSave} 
-            className="save-button"
-            disabled={pathExists}
-          >
-            Save
-          </button>
         </div>
       </div>
 
@@ -184,7 +240,8 @@ function EditPageContent() {
               value={routeOptions.find(option => option.value === parent)}
               onChange={handleParentChange}
               isClearable
-              className="route-select"
+              styles={selectStyles}
+              placeholder="Select..."
             />
           </div>
           <div className="select-container">
@@ -194,7 +251,8 @@ function EditPageContent() {
               value={routeOptions.find(option => option.value === previous)}
               onChange={handlePreviousChange}
               isClearable
-              className="route-select"
+              styles={selectStyles}
+              placeholder="Select..."
             />
           </div>
           <div className="select-container">
@@ -204,10 +262,25 @@ function EditPageContent() {
               value={routeOptions.find(option => option.value === next)}
               onChange={handleNextChange}
               isClearable
-              className="route-select"
+              styles={selectStyles}
+              placeholder="Select..."
             />
           </div>
         </div>
+      </div>
+      <div className="edit-actions">
+        <button 
+          onClick={handleSave} 
+          className="save-button"
+        >
+          Save
+        </button>
+        <button 
+          onClick={handleCancel} 
+          className="cancel-button"
+        >
+          Cancel
+        </button>
       </div>
     </div>
   );

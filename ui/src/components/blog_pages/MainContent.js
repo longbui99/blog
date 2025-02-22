@@ -60,12 +60,11 @@ function MainContent() {
   useEffect(() => {
     const hash = location.hash.slice(1);
     if (hash && isContentLoaded) {
+      // Wait for content to be fully rendered
       const timeoutId = setTimeout(() => {
-        const element = document.getElementById(hash);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 300);
+        scrollToElement(hash);
+      }, 300); // Increased timeout for better reliability
+
       return () => clearTimeout(timeoutId);
     }
   }, [location.hash, isContentLoaded]);

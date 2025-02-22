@@ -52,7 +52,7 @@ li {
 .raw-content-editor {
     width: 100%;
     min-height: 100px;
-    height: -webkit-fill-available;
+    height: calc(80vh);
     padding: var(--spacing-3);
     margin: var(--spacing-3) 0;
     border: 1px solid var(--border-primary);

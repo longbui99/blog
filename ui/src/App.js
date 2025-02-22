@@ -17,7 +17,7 @@ import { setLoginStatus } from './redux/slices/loginSlice';
 import { setSidebar } from './redux/slices/sidebarSlice';
 import { setTOC } from './redux/slices/tocSlice';
 import { fetchRoutes } from './redux/slices/routesSlice';
-import './styles/App.css';
+import './App.css';
 
 // Initialize GA
 ReactGA.initialize("G-9VQG6QJLEK");

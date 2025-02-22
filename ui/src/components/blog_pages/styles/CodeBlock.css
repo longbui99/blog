@@ -129,15 +129,6 @@ code {
   font-size: 0.9em;
 }
 
-pre {
-  background-color: var(--code-bg-light);
-  color: var(--code-color-light);
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  padding: 1em;
-  overflow-x: auto;
-}
-
 pre code {
   font-family: 'Courier New', Courier, monospace;
   font-size: 0.9em;

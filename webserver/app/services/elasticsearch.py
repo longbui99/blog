@@ -43,10 +43,7 @@ async def init_indices(client: AsyncElasticsearch) -> None:
                         "type": "keyword"
                     },
                     "author": {
-                        "properties": {
-                            "name": {"type": "text"},
-                            "email": {"type": "keyword"}
-                        }
+                        "type": "text",
                     },
                     "created_at": {
                         "type": "date"

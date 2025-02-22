@@ -4,10 +4,7 @@
 }
 
 .editor-content {
-    border: 1px solid var(--border-primary);
     border-radius: var(--radius-md);
-    padding: var(--spacing-4);
-    background-color: var(--bg-secondary);
     color: var(--text-primary);
     transition: var(--transition-all);
 }
@@ -278,7 +275,7 @@
 }
 
 /* Inline Code */
-.inline-code {
+.editor-content .inline-code {
     background-color: #f1f5f9;
     padding: 2px 6px;
     border-radius: 4px;
@@ -288,25 +285,20 @@
 }
 
 /* Code Block */
-.code-block-wrapper {
-    position: relative;
-    margin: 1em 0;
-    border: solid 1px #3d3d3d;
-    border-radius: 8px;
-    overflow-x: scroll;
-    width: fit-content;
-}
 
-.code-block-wrapper pre {
-    margin: 0;
+.editor-content pre {
+    background-color: #1e1e1e;
     padding: 1em;
-    overflow-x: auto;
+    border-radius: 4px;
+    color: #cfd7e1;
+    min-width: 901px;
 }
 
-.code-block-wrapper code {
-    font-family: 'Fira Code', monospace;
-    font-size: 0.9em;
-    line-height: 1.5;
+.editor-content code {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.8em;
+    background-color: transparent;
+    color: inherit;
 }
 
 .copy-button {
@@ -323,9 +315,6 @@
     transition: opacity 0.2s, background-color 0.2s;
 }
 
-.code-block-wrapper:hover .copy-button {
-    opacity: 1;
-}
 
 .copy-button:hover {
     background-color: rgba(255, 255, 255, 0.2);
