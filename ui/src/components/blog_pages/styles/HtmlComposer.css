@@ -7,6 +7,8 @@
     border-radius: var(--radius-md);
     color: var(--text-primary);
     transition: var(--transition-all);
+    min-height: 50vh;
+    background-color: var(--bg-secondary);
 }
 
 .editor-content:focus {

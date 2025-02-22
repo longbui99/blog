@@ -5,6 +5,9 @@ import { blogContentProcessor } from '../../processor/blogContentProcessor';
 import { useDispatch, useSelector } from 'react-redux';
 import { setEditing, setCreating } from '../../redux/slices/editingSlice';
 import storageRegistry from '../../storage/storage_registry';
+import { useNavigate } from 'react-router-dom';
+import { fetchRoutes } from '../../redux/slices/routesSlice';
+import { setActiveRoute } from '../../redux/slices/routesSlice';
 
 function EditPageContent() {
   const dispatch = useDispatch();
@@ -13,78 +16,119 @@ function EditPageContent() {
   const activeRoute = useSelector(state => state.routes.activeRoute);
   const routes = useSelector(state => state.routes.items);
   const blogPost = useSelector(state => state.blog.content);
+  const navigate = useNavigate();
 
   const [title, setTitle] = useState('');
-  const [parent, setParent] = useState(null);
-  const [previous, setPrevious] = useState(null);
-  const [next, setNext] = useState(null);
+  const [selectedParent, setSelectedParent] = useState(null);
+  const [selectedPrevious, setSelectedPrevious] = useState(null);
+  const [selectedNext, setSelectedNext] = useState(null);
   const [error, setError] = useState(null);
+  const [urlPath, setUrlPath] = useState('');
   const [validationErrors, setValidationErrors] = useState({
     title: false,
     urlPath: false
   });
 
-  // Initialize form with blog content from Redux
-  useEffect(() => {
-    if (blogPost && !isCreating) {
-      setTitle(blogPost.title || '');
-      
-      // Find parent, previous, and next from routes
-      const currentPath = activeRoute;
-      
-      // Find the current route
-      const currentRoute = routes.find(route => route.path === currentPath);
-      
-      if (currentRoute) {
-        // Set parent
-        setParent(currentRoute.parent);
-        
-        // Find siblings (routes with same parent)
-        const siblings = routes
-          .filter(route => route.parent === currentRoute.parent)
-          .sort((a, b) => a.sequence - b.sequence);
-        
-        // Find current index
-        const currentIndex = siblings.findIndex(route => route.path === currentPath);
-        
-        // Set previous and next
-        setPrevious(currentIndex > 0 ? siblings[currentIndex - 1].path : null);
-        setNext(currentIndex < siblings.length - 1 ? siblings[currentIndex + 1].path : null);
-      }
-    } else {
-      setTitle('');
-      setParent(null);
-      setPrevious(null);
-      setNext(null);
-    }
-  }, [blogPost, isCreating, routes, activeRoute]);
-
   const routeOptions = useMemo(() => routes.map(route => ({
     value: route.path,
     label: route.title || route.path
   })), [routes]);
+  
+  // Initialize form with blog content from Redux
+  useEffect(() => {
+    if (isCreating) {
+      setTitle('');
+      // Set current route as parent when creating
+      const currentRouteOption = routeOptions.find(option => option.value === activeRoute);
+      setSelectedParent(currentRouteOption || null);
+      setSelectedPrevious(null);
+      setSelectedNext(null);
+      setUrlPath('');
+      setError(null);
+      setValidationErrors({
+        title: false,
+        urlPath: false
+      });
+    } else if (blogPost && !isCreating) {
+      setTitle(blogPost.title || '');
+      
+      // Find parent, previous, and next from routes
+      const currentRoute = routes.find(route => route.path === activeRoute);
+      
+      if (currentRoute) {
+        const parentRoute = routeOptions.find(option => option.value === currentRoute.parent);
+        setSelectedParent(parentRoute || null);
+        
+        const siblings = routes
+          .filter(route => route.parent === currentRoute.parent)
+          .sort((a, b) => a.sequence - b.sequence);
+        
+        const currentIndex = siblings.findIndex(route => route.path === activeRoute);
+        
+        const prevRoute = currentIndex > 0 ? routeOptions.find(option => option.value === siblings[currentIndex - 1].path) : null;
+        setSelectedPrevious(prevRoute);
+
+        const nextRoute = currentIndex < siblings.length - 1 ? routeOptions.find(option => option.value === siblings[currentIndex + 1].path) : null;
+        setSelectedNext(nextRoute);
+        setUrlPath(currentRoute.path);
+      }
+    }
+  }, [blogPost, isCreating, routes, activeRoute, routeOptions]);
+
 
   if (!isEditing && !isCreating) return null;
 
   const handleTitleChange = (e) => {
-    setTitle(e.target.value);
+    const newTitle = e.target.value;
+    setTitle(newTitle);
+    
+    // Convert title to URL-friendly format
+    const computedPath = newTitle
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, '') // Remove special characters
+      .replace(/\s+/g, '-')         // Replace spaces with hyphens
+      .replace(/-+/g, '-')          // Replace multiple hyphens with single hyphen
+      .trim();                      // Remove leading/trailing spaces
+    
+    setUrlPath("/" + computedPath);
   };
 
   const handleParentChange = (selectedOption) => {
-    setParent(selectedOption ? selectedOption.value : null);
-    setPrevious(null);
-    setNext(null);
+    setSelectedParent(selectedOption);
+    setSelectedPrevious(null);
+    setSelectedNext(null);
+    setValidationErrors(prev => ({
+      ...prev,
+      urlPath: false
+    }));
   };
 
   const handlePreviousChange = (selectedOption) => {
-    setPrevious(selectedOption ? selectedOption.value : null);
+    setSelectedPrevious(selectedOption);
   };
 
   const handleNextChange = (selectedOption) => {
-    setNext(selectedOption ? selectedOption.value : null);
+    setSelectedNext(selectedOption);
+  };
+
+  const handleUrlPathChange = (e) => {
+    setUrlPath(e.target.value);
   };
 
   const handleSave = async () => {
+    if (isCreating) {
+      const errors = {
+        title: !title,
+        urlPath: !selectedParent
+      };
+      setValidationErrors(errors);
+
+      if (errors.title || errors.urlPath) {
+        setError('Please fill in all required fields');
+        return;
+      }
+    }
+
     setValidationErrors({
       title: false,
       urlPath: false
@@ -103,23 +147,22 @@ function EditPageContent() {
     try {
       if (storageRegistry.has('currentContent')) {
         const updatedContent = {
-          content: storageRegistry.get('currentContent'),
-          path: activeRoute,
+          content: storageRegistry.get('currentContent') || '',
+          path: urlPath,
           title: title,
-          parent: parent,
-          previous: previous,
-          next: next
+          parent: selectedParent ? selectedParent.value : null,
+          previous: selectedPrevious ? selectedPrevious.value : null,
+          next: selectedNext ? selectedNext.value : null
         };
-        await blogContentProcessor.saveOrUpdateContent(updatedContent);
+        const response = await blogContentProcessor.saveOrUpdateContent(updatedContent);
+        
         if (isCreating) {
-          dispatch(setEditing(false));
+          navigate(urlPath);
+          window.location.reload()
         } else if (isEditing) {
-          dispatch(setCreating(false));
-          window.location.pathname = activeRoute;
-          window.location.reload();
+          dispatch(setEditing(false));
         }
       }
-
     } catch (error) {
       console.error('Error saving content:', error);
       setError('Error saving content. Please try again later.');
@@ -127,8 +170,17 @@ function EditPageContent() {
   };
 
   const handleCancel = () => {
-    // Reset form state
-    // Close the popup by dispatching the appropriate action
+    setTitle('');
+    setSelectedParent(null);
+    setSelectedPrevious(null);
+    setSelectedNext(null);
+    setError(null);
+    setValidationErrors({
+      title: false,
+      urlPath: false
+    });
+    
+    storageRegistry.remove('currentContent');
     if (isEditing) {
       dispatch(setEditing(false));
     } else if (isCreating) {
@@ -198,34 +250,32 @@ function EditPageContent() {
   };
 
   return (
-    <div className={`edit-page-content ${(isEditing || isCreating) ? 'visible' : ''}`}>
-      {error && <p className="error">{error}</p>}
+    <form 
+      onSubmit={(e) => e.preventDefault()}
+      className={`edit-page-content ${(isEditing || isCreating) ? 'visible' : ''}`}
+    >
       
       <div className="edit-header">
         <div className="edit-title-group">
           <div className="title-input-container">
-            {validationErrors.title && (
-              <span className="validation-error">Title is required</span>
-            )}
             <input
               type="text"
               value={title}
               onChange={handleTitleChange}
               placeholder="Enter page title *"
               className={`title-input ${validationErrors.title ? 'input-error' : ''}`}
+              required
             />
           </div>
 
           <div className="url-input-container">
-            {validationErrors.urlPath && (
-              <span className="validation-error">URL path is required</span>
-            )}
             <input
               type="text"
-              value={activeRoute}
-              readOnly
+              value={urlPath}
+              onChange={handleUrlPathChange}
               placeholder="URL path"
               className="url-path-input"
+              required
             />
           </div>
         </div>
@@ -237,7 +287,7 @@ function EditPageContent() {
             <label>Parent:</label>
             <Select
               options={routeOptions}
-              value={routeOptions.find(option => option.value === parent)}
+              value={selectedParent}
               onChange={handleParentChange}
               isClearable
               styles={selectStyles}
@@ -248,7 +298,7 @@ function EditPageContent() {
             <label>Previous:</label>
             <Select
               options={routeOptions}
-              value={routeOptions.find(option => option.value === previous)}
+              value={selectedPrevious}
               onChange={handlePreviousChange}
               isClearable
               styles={selectStyles}
@@ -259,7 +309,7 @@ function EditPageContent() {
             <label>Next:</label>
             <Select
               options={routeOptions}
-              value={routeOptions.find(option => option.value === next)}
+              value={selectedNext}
               onChange={handleNextChange}
               isClearable
               styles={selectStyles}
@@ -282,7 +332,8 @@ function EditPageContent() {
           Cancel
         </button>
       </div>
-    </div>
+      {error && <p className="error">{error}</p>}
+    </form>
   );
 }
 

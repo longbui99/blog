@@ -8,9 +8,8 @@ import { useMenuContext } from '../../contexts/MenuContext';
 import { useDispatch, useSelector } from 'react-redux';
 import { setActiveRoute } from '../../redux/slices/routesSlice';
 import SidebarToggle from '../toggle/SidebarToggle';
-import ChatToggle from '../toggle/SearchToggle';
-import AIBotToggle from '../toggle/AIBotToggle';
 import "./styles/Sidebar.css";
+
 const MenuItem = ({ id, title, path, index, is_published, children, searchTerm, onItemClick, level = 0 }) => {
     const activeRoute = useSelector(state => state.routes.activeRoute);
     const isLoggedIn = useSelector(state => state.login.isLoggedIn);
@@ -52,22 +51,14 @@ const MenuItem = ({ id, title, path, index, is_published, children, searchTerm, 
             ${hasActiveChild() ? "has-active-child" : ""}
         `}>
             <div className={`menu-item ${!isPublished ? 'unpublished' : ''}`} 
-                 title={title} >
+                 title={title} 
+                 onClick={handleClick}>
                 {isLoggedIn && (
                     <span className={`status-dot ${isPublished ? 'published' : 'unpublished'}`} />
                 )}
                 <NavLink to={path} onClick={handleClick}>
                     {title}
                 </NavLink>
-                {isLoggedIn && (
-                    <span 
-                        className="add-child-icon"
-                        onClick={handleAddChild}
-                        title="Add child page"
-                    >
-                        +
-                    </span>
-                )}
             </div>
             {children && children.length > 0 && (
                 <ul>

@@ -6,7 +6,8 @@ import './styles/Toggle.css';
 function EditToggle() {
   const dispatch = useDispatch();
   const isEditing = useSelector(state => state.editing.isEditing);
-
+  const isCreating = useSelector(state => state.editing.isCreating);
+  
   const handleEditClick = () => {
     dispatch(setEditing(!isEditing));
   };
@@ -16,6 +17,7 @@ function EditToggle() {
       className={`action-toggle edit-toggle ${isEditing ? 'active' : ''}`}
       onClick={handleEditClick}
       title={isEditing ? "Exit Edit Mode (Esc)" : "Edit Page (E)"}
+      disabled={isCreating}
     >
       <span className="text">
         <svg 

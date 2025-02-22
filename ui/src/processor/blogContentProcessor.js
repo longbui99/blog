@@ -23,8 +23,7 @@ class BlogContentProcessor extends BaseProcessor {
   }
 
   async saveOrUpdateContent(blogContentUpdate) {
-
-    return await this.makeRequest('put', `${this.baseEndpoint}/update_or_create`, blogContentUpdate);
+    return await this.makeRequest('post', `${this.baseEndpoint}/update_or_create`, blogContentUpdate);
   }
 }
 

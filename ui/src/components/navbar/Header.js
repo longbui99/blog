@@ -19,7 +19,7 @@ import RawEditorToggle from '../toggle/RawEditorToggle.js';
 function Header() {
   const isLoggedIn = useSelector(state => state.login.isLoggedIn);
   const isEditing = useSelector(state => state.editing.isEditing);
-
+  const isCreating = useSelector(state => state.editing.isCreating);
   return (
     <>
       <header className="app-bar">
@@ -44,7 +44,7 @@ function Header() {
               <EditToggle />
               <DeleteToggle />
               <PublishToggle />
-              {isEditing && <RawEditorToggle />}
+              <RawEditorToggle />
             </>
           )}
         </div>

@@ -6,6 +6,7 @@ import './styles/Toggle.css';
 function RawEditorToggle() {
   const dispatch = useDispatch();
   const isEditing = useSelector(state => state.editing.isEditing);
+  const isCreating = useSelector(state => state.editing.isCreating);
   const isRawEditor = useSelector(state => state.editing.isRawEditor);
 
   const handleRawEditorClick = () => {
@@ -14,10 +15,9 @@ function RawEditorToggle() {
 
   return (
     <button
-      className={`action-toggle raw-editor-toggle ${isRawEditor ? 'active' : ''} ${isEditing ? 'visible' : ''}`}
+      className={`action-toggle raw-editor-toggle ${isRawEditor ? 'active' : ''} ${isEditing || isCreating ? 'visible' : ''}`}
       onClick={handleRawEditorClick}
       title={isRawEditor ? "Switch to Rich Editor" : "Switch to HTML Editor"}
-      style={{ display: isEditing ? 'block' : 'none' }}
     >
       <span className="text">
         <svg 

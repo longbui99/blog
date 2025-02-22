@@ -45,8 +45,7 @@ async def list_blog_contents():
     published_menus = await BlogMenu.filter(is_published=True).values_list('id', flat=True)
     return await BlogContentSchema.from_queryset(BlogContent.filter(blog_menu_id__in=published_menus).all())
 
-@router.put("/update_or_create", response_model=BlogContentSchema)
-@atomic()
+@router.post("/update_or_create", response_model=BlogContentSchema)
 async def update_or_create_blog_content(blog_content_data: BlogContentUpdate, current_user: Annotated[User, Depends(get_current_user)]):
     # Add validation for reserved paths
     if blog_content_data.path in RESERVED_PATHS:

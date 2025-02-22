@@ -9,11 +9,10 @@ import { setPublished } from '../../redux/slices/editingSlice';
 import { loadBlogContent } from '../../utils/blogContentUtils';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookReader } from '@fortawesome/free-solid-svg-icons';
+import RawEditor from './RawEditor';
 
-function BlogContent({ updateMainContentEditableContent, onContentLoaded }) {
+function BlogContent({ onContentLoaded }) {
     const [content, setContent] = useState('');
-    const [rawContent, setRawContent] = useState('');
-    const [contentReadonly, setContentReadonly] = useState('');
     const location = useLocation();
     const [pageTitle, setPageTitle] = useState("Long Bui's Blog | VectorDI");
     const [pageDescription, setPageDescription] = useState("Explore our latest blog posts on various topics including technology, programming, and web development.");
@@ -38,35 +37,39 @@ function BlogContent({ updateMainContentEditableContent, onContentLoaded }) {
                 
                 if (!isCreating && blogData) {
                     if (blogData) {
-                        const { content: blogContent, title, description, author, last_updated, total_views } = blogData;
+                        const { content: blogContent, title, description, author, updated_at, total_views } = blogData;
                         const parsedContent = parseContent(blogContent);
                         setContent(parsedContent);
-                        setRawContent(blogContent);
-                        setContentReadonly(blogContent);
                         setPageTitle(title ? `${title} | VectorDI` : "Long Bui's Blog | VectorDI");
                         setPageDescription(description || "Explore our latest blog posts on various topics including technology, programming, and web development.");
                         setAuthor(author || 'Long Bui');
-                        setLastUpdated(last_updated);
+                        setLastUpdated(updated_at);
                         setTotalViews(total_views);
-                        updateMainContentEditableContent(blogContent);
                     } else {
-                        setContent(<p>No content found for this path.</p>);
-                        updateMainContentEditableContent('');
+                        setContent('');
                     }
                     dispatch(setPublished(blogData?.is_published || false));
                 }
                 onContentLoaded?.();
             } catch (error) {
+                setContent('');
                 console.error('Error fetching blog content:', error);
-                setContent(<p>Error loading blog content. Please try again later.</p>);
-                updateMainContentEditableContent('');
             } finally {
                 setisLoading(false);
             }
         };
 
         fetchBlogContent();
-    }, [path, dispatch, onContentLoaded, updateMainContentEditableContent, isCreating]);
+    }, [path, dispatch, onContentLoaded, isCreating]);
+
+
+    const renderEditor = () => {
+        if (!isEditing && !isCreating) {
+            return <div className="content-body">{content}</div>;
+        }
+
+        return isRawEditor ? <RawEditor /> : <HTMLComposer />;
+    };
 
     if (!content && !isCreating) {
         return <div className="loading-panel">Loading...</div>;
@@ -148,19 +151,7 @@ function BlogContent({ updateMainContentEditableContent, onContentLoaded }) {
             </div>
 
             <div className="content-body">
-                {isEditing ? (
-                    isRawEditor ? (
-                        <textarea 
-                            className="raw-content-editor"
-                            value={rawContent} 
-                            placeholder="Enter raw HTML content..."
-                        />
-                    ) : (
-                        <HTMLComposer
-                            initialContent={contentReadonly}
-                        />
-                    )
-                ) : content}
+                {renderEditor()}
             </div>
             </article>
         }

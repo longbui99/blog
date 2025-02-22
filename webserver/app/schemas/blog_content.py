@@ -15,7 +15,7 @@ class BlogContentCreate(BlogContentBase):
 class BlogContentUpdate(BaseModel):
     path: str
     title: Optional[str] = None
-    content: Optional[str] = None
+    content: str
     author: Optional[str] = None
     parent: Optional[str] = None
     previous: Optional[str] = None

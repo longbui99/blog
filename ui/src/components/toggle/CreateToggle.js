@@ -1,5 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { setCreating } from '../../redux/slices/editingSlice';
 import './styles/Toggle.css';
 
 function CreateToggle() {
@@ -7,11 +8,18 @@ function CreateToggle() {
   const isEditing = useSelector(state => state.editing.isEditing);
   const isCreating = useSelector(state => state.editing.isCreating);
 
+  const handleCreateClick = () => {
+    if (!isEditing) {
+      dispatch(setCreating(!isCreating));
+    }
+  };
+
   return (
     <button
       className={`action-toggle create-toggle ${isCreating ? 'active' : ''}`}
+      onClick={handleCreateClick}
       title={isEditing ? "Finish editing first" : "Create New Page (C)"}
-      disabled={isEditing || isCreating}
+      disabled={isEditing}
     >
       <span className="text">
         <svg 
