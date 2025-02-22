@@ -6,8 +6,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setEditing, setCreating } from '../../redux/slices/editingSlice';
 import storageRegistry from '../../storage/storage_registry';
 import { useNavigate } from 'react-router-dom';
-import { fetchRoutes } from '../../redux/slices/routesSlice';
-import { setActiveRoute } from '../../redux/slices/routesSlice';
+import { setRouteItems } from '../../redux/slices/routesSlice';
+import { fetchRouteMap } from '../../const/routes';
 
 function EditPageContent() {
   const dispatch = useDispatch();
@@ -154,11 +154,12 @@ function EditPageContent() {
           previous: selectedPrevious ? selectedPrevious.value : null,
           next: selectedNext ? selectedNext.value : null
         };
-        const response = await blogContentProcessor.saveOrUpdateContent(updatedContent);
+        await blogContentProcessor.saveOrUpdateContent(updatedContent);
         
         if (isCreating) {
           navigate(urlPath);
-          window.location.reload()
+          let routes = await fetchRouteMap();
+          dispatch(setRouteItems(routes));
         } else if (isEditing) {
           dispatch(setEditing(false));
         }

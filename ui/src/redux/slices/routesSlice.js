@@ -27,6 +27,9 @@ const routesSlice = createSlice({
       if (state.items.some(route => route.path === path)) {
         state.activeRoute = path;
       }
+    },
+    setRouteItems: (state, action) => {
+      state.items = action.payload;
     }
   },
   extraReducers: (builder) => {
@@ -51,5 +54,5 @@ const routesSlice = createSlice({
   },
 });
 
-export const { setActiveRoute, updateActiveRouteFromPath } = routesSlice.actions;
+export const { setActiveRoute, updateActiveRouteFromPath, setRouteItems } = routesSlice.actions;
 export default routesSlice.reducer; 

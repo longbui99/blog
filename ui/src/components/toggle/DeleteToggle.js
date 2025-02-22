@@ -1,16 +1,62 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { blogContentProcessor } from '../../processor/blogContentProcessor';
+import { fetchRouteMap } from '../../const/routes';
+import { setRouteItems } from '../../redux/slices/routesSlice';
 import './styles/Toggle.css';
 
 function DeleteToggle() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const isEditing = useSelector(state => state.editing.isEditing);
   const isCreating = useSelector(state => state.editing.isCreating);
+  const activeRoute = useSelector(state => state.routes.activeRoute);
+  const routes = useSelector(state => state.routes.items);
+
+  const findNavigationTarget = () => {
+    const currentRoute = routes.find(route => route.path === activeRoute);
+    if (!currentRoute) return '/';
+
+    // Find siblings with same parent
+    const siblings = routes.filter(route => route.parent === currentRoute.parent);
+    const currentIndex = siblings.findIndex(route => route.path === activeRoute);
+
+    // Try to find previous sibling
+    if (currentIndex > 0) {
+      return siblings[currentIndex - 1].path;
+    }
+    // Try to find next sibling
+    if (currentIndex < siblings.length - 1) {
+      return siblings[currentIndex + 1].path;
+    }
+    // If no siblings, return parent or root
+    return currentRoute.parent || '/';
+  };
+
+  const handleDelete = async () => {
+    if (window.confirm('Are you sure you want to delete this page? This action cannot be undone.')) {
+      try {
+        const targetPath = findNavigationTarget();
+        await blogContentProcessor.deleteBlogContentByPath(activeRoute);
+        
+        // Fetch updated routes and navigate
+        const updatedRoutes = await fetchRouteMap();
+        dispatch(setRouteItems(updatedRoutes));
+        navigate(targetPath);
+      } catch (error) {
+        console.error('Error deleting page:', error);
+        alert('Failed to delete page. Please try again later.');
+      }
+    }
+  };
 
   return (
     <button
       className="action-toggle delete-toggle"
       title="Delete page"
       disabled={isEditing || isCreating}
+      onClick={handleDelete}
     >
       <span className="text">
         <svg 

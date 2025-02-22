@@ -31,6 +31,10 @@ const MenuItem = ({ id, title, path, index, is_published, children, searchTerm, 
     }, [children, activeRoute]);
 
     subscribeToEvent(path, setIsPublished);
+    
+    if (isActive) {
+        dispatch(setActiveRoute(path));
+    }
 
     const handleClick = () => {
         dispatch(setActiveRoute(path));
@@ -81,7 +85,6 @@ const MenuItem = ({ id, title, path, index, is_published, children, searchTerm, 
 function Sidebar({ className, onItemClick }) {
     const routes = useSelector(state => state.routes.items);
     const isSidebarOpen = useSelector(state => state.sidebar.isOpen);
-    const dispatch = useDispatch();
     const [menuItems, setMenuItems] = useState([]);
     const [isContentLoaded, setIsContentLoaded] = useState(false);
     const sidebarRef = useRef(null);
