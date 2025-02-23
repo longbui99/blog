@@ -4,22 +4,8 @@ import { isDeviceMobile } from '../../utils/responsive';
 import './styles/TableOfContents.css';
 import TOCToggle from '../toggle/TOCToggle';
 
-function TableOfContents({ items, isOpen, onToggle }) {
+function TableOfContents({ items, isOpen }) {
   const location = useLocation();
-
-  const handleItemClick = useCallback(() => {
-    // Auto-hide TOC on mobile after clicking an item
-    console.log("isDeviceMobile", isDeviceMobile())
-    console.log("onToggle", onToggle)
-    if (isDeviceMobile() && onToggle) {
-      console.log("PASSS")
-      onToggle(false);
-    }
-  }, [onToggle]);
-
-  if (items.length === 0) {
-    return null;
-  }
 
   return (
     <div className={`toc-container ${isOpen ? 'open' : ''}`}>
@@ -30,7 +16,6 @@ function TableOfContents({ items, isOpen, onToggle }) {
               <Link 
                 to={`${location.pathname}#${item.id}`}
                 className="toc-link"
-                onClick={handleItemClick}
               >
                 {item.text}
               </Link>

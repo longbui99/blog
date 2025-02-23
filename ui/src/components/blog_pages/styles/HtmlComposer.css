@@ -4,6 +4,7 @@
 }
 
 .editor-content {
+    margin-top: var(--spacing-2);
     border-radius: var(--radius-md);
     color: var(--text-primary);
     transition: var(--transition-all);
