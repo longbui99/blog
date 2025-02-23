@@ -45,7 +45,7 @@ For the full design system reference, see ui/src/styles/App.css
     writing-mode: vertical-rl;
     text-orientation: upright;
     padding: 0 var(--spacing-2);
-    color: var(--link-color);
+    color: var(--text-primary);
     opacity: 0.75;
     transition: var(--transition-all);
 }

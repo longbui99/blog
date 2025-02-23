@@ -4,7 +4,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.85);
+  background-color: rgba(0, 0, 0, 0.95);
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
@@ -106,7 +106,9 @@
   margin: 5px 0;
 }
 
-.highlight {
+.search-highlight {
+  font-weight: 700;
+  color: var(--link-color);
   background-color: rgba(var(--primary-color-rgb), 0.3);
 }
 

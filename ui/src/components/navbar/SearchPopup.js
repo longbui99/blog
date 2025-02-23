@@ -100,7 +100,7 @@ function SearchPopup() {
     return parts.map((part, i) => {
       // Check if this part matches any of the keywords
       if (keywords.some(keyword => part.toLowerCase() === keyword.toLowerCase())) {
-        return <span key={i} className="highlight">{part}</span>;
+        return <span key={i} className="search-highlight">{part}</span>;
       }
       return part;
     });

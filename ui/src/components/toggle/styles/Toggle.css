@@ -50,13 +50,13 @@ For the full design system reference, see ui/src/styles/App.css
 }
 
 /* Position for each toggle button */
-.create-toggle { right: calc(var(--spacing-4) + 150px); }
-.edit-toggle { right: calc(var(--spacing-4) + 200px); }
+.create-toggle { right: calc(var(--spacing-4) + 180px); }
+.edit-toggle { right: calc(var(--spacing-4) + 240px); }
 .delete-toggle { 
     right: calc(var(--spacing-4) + 0px);
     bottom: 80px;
 }
-.publish-toggle { right: calc(var(--spacing-4) + 100px); }
+.publish-toggle { right: calc(var(--spacing-4) + 120px); }
 .raw-editor-toggle {
     right: calc(var(--spacing-4) + 200px);
     bottom: 80px;

@@ -144,6 +144,9 @@
   --bg-primary: var(--neutral-50);
   --bg-secondary: var(--neutral-100);
   --bg-tertiary: var(--neutral-200);
+  --bg-reverse-primary: var(--primary-500);
+  --bg-reverse-secondary: var(--primary-700);
+  --bg-reverse-tertiary: var(--primary-900);
   
   --text-primary: var(--neutral-900);
   --text-secondary: var(--neutral-700);

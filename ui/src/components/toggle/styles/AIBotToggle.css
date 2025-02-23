@@ -9,12 +9,12 @@ This component uses the design system defined in App.css, which includes:
 For the full design system reference, see ui/src/styles/App.css
 */
 
-/* Sidebar Toggle Button */
+/* Base toggle styles */
 .ai-bot-toggle {
     position: fixed;
     border-radius: var(--radius-full);
     background-color: var(--bg-primary);
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--shadow-button);
     transition: var(--transition-all);
     z-index: 2;
     font-size: var(--text-xl);
@@ -22,16 +22,52 @@ For the full design system reference, see ui/src/styles/App.css
     width: 50px;
     height: 50px;
     bottom: var(--spacing-4);
-    right: calc(var(--spacing-4) + 50px);
-    padding: var(--spacing-2) 0 var(--spacing-2);
-    font-weight: 400;
-    letter-spacing: 1px;
-    text-transform: uppercase;
+    right: calc(var(--spacing-4) + 60px);
+    padding: var(--spacing-2) 0;
     cursor: pointer;
 }
 
-.ai-bot-toggle:hover .text {
-    opacity: 1;
+/* Light mode */
+.ai-bot-toggle svg {
+    stroke: var(--text-primary);
+    fill: none;
+    transition: var(--transition-all);
+}
+
+.ai-bot-toggle.active {
+    background-color: var(--text-primary);
+}
+
+.ai-bot-toggle.active svg {
+    stroke: var(--bg-primary);
+}
+
+/* Dark mode */
+.dark-mode .ai-bot-toggle {
+    background-color: var(--bg-primary);
+}
+
+.dark-mode .ai-bot-toggle svg {
+    stroke: var(--text-primary);
+}
+
+.dark-mode .ai-bot-toggle.active {
+    background-color: var(--text-primary);
+}
+
+.dark-mode .ai-bot-toggle.active svg {
+    stroke: var(--bg-primary);
+}
+
+/* Hover effects */
+.ai-bot-toggle:hover {
+    background-color: var(--text-primary);
+    box-shadow: var(--shadow-xl);
+    transform: translateY(-2px);
+}
+
+.ai-bot-toggle:hover svg {
+    stroke: var(--bg-primary);
 }
 
 /* Text styling */
@@ -40,9 +76,13 @@ For the full design system reference, see ui/src/styles/App.css
     writing-mode: vertical-rl;
     text-orientation: upright;
     padding: 0 var(--spacing-2);
-    color: var(--link-color);
+    color: var(--text-primary);
     opacity: 0.75;
     transition: var(--transition-all);
+}
+
+.ai-bot-toggle:hover .text {
+    opacity: 1;
 }
 
 /* Gradient background effect */
@@ -60,8 +100,28 @@ For the full design system reference, see ui/src/styles/App.css
     z-index: -1;
 }
 
-/* Hover effect */
+/* Hover gradient effect */
 .ai-bot-toggle:hover::after {
     opacity: 0.9;
     background: linear-gradient(to right bottom, var(--primary-500), var(--primary-700));
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .ai-bot-toggle {
+        width: 40px;
+        height: 40px;
+        font-size: var(--text-base);
+        padding: var(--spacing-2) 0;
+    }
+}
+
+/* Small screens */
+@media (max-width: 480px) {
+    .ai-bot-toggle {
+        width: 35px;
+        height: 35px;
+        font-size: var(--text-sm);
+        padding: var(--spacing-1) 0;
+    }
 }
