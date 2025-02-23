@@ -37,8 +37,9 @@ export const insertContent = (text, range) => {
     // Create temporary container
     const temp = document.createElement('div');
     
-    // Convert text to paragraphs if it's not HTML
-    temp.innerHTML = /<[a-z][\s\S]*>/i.test(text) 
+    // Check if text is HTML and convert if needed
+    const isHTML = /<[a-z][\s\S]*>/i.test(text);
+    temp.innerHTML = isHTML 
         ? text 
         : text.split('\n')
               .map(line => line.trim() ? `<p>${line}</p>` : '<br>')

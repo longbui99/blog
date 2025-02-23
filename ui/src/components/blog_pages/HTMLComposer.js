@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import DOMPurify from 'dompurify';
 import storageRegistry from '../../store/storage_registry';
 import './styles/HTMLComposer.css';
-import { isHTML, plainToHTML, insertContent } from './utils/PlainToHTML';
+import { isHTML, insertContent } from './utils/PlainToHTML';
 
 const HTMLComposer = () => {
     const editorRef = useRef(null);
@@ -51,11 +51,12 @@ const HTMLComposer = () => {
         
         const text = e.clipboardData.getData('text/plain');
         const range = selection.getRangeAt(0);
-        
-        const updatedRange = insertContent(text, range);
-        if (updatedRange) {
-            selection.removeAllRanges();
-            selection.addRange(updatedRange);
+        if (isHTML(text)) {
+            const updatedRange = insertContent(text, range);
+            if (updatedRange) {
+                selection.removeAllRanges();
+                selection.addRange(updatedRange);
+            }
         }
         
         handleInput();
