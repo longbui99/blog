@@ -101,6 +101,7 @@ For the full design system reference, see ui/src/styles/App.css
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 200px;
+    transition: none;
 }
 
 /* Status Icon */
@@ -277,7 +278,8 @@ ul.collapsed {
 
 /* Unpublished items */
 .menu-item.unpublished a {
-    border-bottom: 1px dashed var(--error-500);
+    border-bottom: 1px dotted var(--error-500);
+    padding-bottom: calc(var(--spacing-2) - 1px);
 }
 
 /* Move button when sidebar is visible */
