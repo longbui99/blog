@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import storageRegistry from '../../storage/storage_registry';
+import storageRegistry from '../../store/storage_registry';
 import './styles/RawEditor.css';
 
 const RawEditor = () => {

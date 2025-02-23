@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import DOMPurify from 'dompurify';
-import storageRegistry from '../../storage/storage_registry';
+import storageRegistry from '../../store/storage_registry';
 import './styles/HTMLComposer.css';
 
 const HTMLComposer = () => {

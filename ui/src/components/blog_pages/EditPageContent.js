@@ -4,7 +4,7 @@ import './styles/EditPageContent.css';
 import { blogContentProcessor } from '../../processor/blogContentProcessor';
 import { useDispatch, useSelector } from 'react-redux';
 import { setEditing, setCreating } from '../../redux/slices/editingSlice';
-import storageRegistry from '../../storage/storage_registry';
+import storageRegistry from '../../store/storage_registry';
 import { useNavigate } from 'react-router-dom';
 import { setRouteItems } from '../../redux/slices/routesSlice';
 import { fetchRouteMap } from '../../const/routes';
@@ -157,6 +157,7 @@ function EditPageContent() {
         await blogContentProcessor.saveOrUpdateContent(updatedContent);
         
         if (isCreating) {
+          dispatch(setCreating(false));
           navigate(urlPath);
           let routes = await fetchRouteMap();
           dispatch(setRouteItems(routes));

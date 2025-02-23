@@ -1,20 +1,16 @@
-import React, { useState, useMemo, useEffect, useRef, useCallback } from 'react';
-import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { NavLink, useLocation } from 'react-router-dom';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { isDeviceMobile } from '../../utils/responsive';
-import { ROUTES } from '../../utils/routeConstants';
 import { useMenuContext } from '../../contexts/MenuContext';
 import { useDispatch, useSelector } from 'react-redux';
 import { setActiveRoute } from '../../redux/slices/routesSlice';
 import SidebarToggle from '../toggle/SidebarToggle';
 import "./styles/Sidebar.css";
 
-const MenuItem = ({ id, title, path, index, is_published, children, searchTerm, onItemClick, level = 0 }) => {
-    const activeRoute = useSelector(state => state.routes.activeRoute);
-    const isLoggedIn = useSelector(state => state.login.isLoggedIn);
+const MenuItem = ({isLoggedIn, activeRoute, id, title, path, index, is_published, children, searchTerm, onItemClick, level = 0 }) => {
     const [isPublished, setIsPublished] = useState(is_published);
-    const navigate = useNavigate();
     const { subscribeToEvent } = useMenuContext();
     const dispatch = useDispatch();
 
@@ -30,6 +26,7 @@ const MenuItem = ({ id, title, path, index, is_published, children, searchTerm, 
         return isChildActive(children);
     }, [children, activeRoute]);
 
+
     subscribeToEvent(path, setIsPublished);
     
     if (isActive) {
@@ -41,12 +38,6 @@ const MenuItem = ({ id, title, path, index, is_published, children, searchTerm, 
         if (isDeviceMobile()) {
             onItemClick?.();
         }
-    };
-
-    const handleAddChild = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        navigate(ROUTES.NEW_PAGE, { state: { parentPath: path } });
     };
 
     return (
@@ -85,6 +76,8 @@ const MenuItem = ({ id, title, path, index, is_published, children, searchTerm, 
 function Sidebar({ className, onItemClick }) {
     const routes = useSelector(state => state.routes.items);
     const isSidebarOpen = useSelector(state => state.sidebar.isOpen);
+    const activeRoute = useSelector(state => state.routes.activeRoute);
+    const isLoggedIn = useSelector(state => state.login.isLoggedIn);
     const [menuItems, setMenuItems] = useState([]);
     const [isContentLoaded, setIsContentLoaded] = useState(false);
     const sidebarRef = useRef(null);
@@ -132,6 +125,8 @@ function Sidebar({ className, onItemClick }) {
                         {menuItems.map((item, index) => (
                             <MenuItem 
                                 key={item.path} 
+                                isLoggedIn={isLoggedIn}
+                                activeRoute={activeRoute}
                                 {...item} 
                                 index={index}
                                 onItemClick={onItemClick}
