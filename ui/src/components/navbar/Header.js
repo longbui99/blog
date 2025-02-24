@@ -30,14 +30,14 @@ function Header() {
           <h1 className="site-title"><a href="https://longbui.net" target="_blank" rel="noopener noreferrer">Long Bui</a></h1>
         </div>
         <p className="motto">You, not others</p>
-        <div>
+        <div style={{position: 'absolute'}}>
           <ChatToggle />
           <AIBotToggle />
           <SearchPopup />
           <ChatPopup />
           <ControlPanelPopup />
         </div>
-        <div>
+        <div style={{position: 'absolute'}}>
           {isLoggedIn && (
             <>
               <CreateToggle />
