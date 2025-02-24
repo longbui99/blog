@@ -1,0 +1,68 @@
+.insertion-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.insertion-popup {
+    background: var(--bg-primary);
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+}
+
+.insertion-popup h3 {
+    margin: 0 0 1.5rem 0;
+    color: var(--text-primary);
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid var(--neutral-300);
+    border-radius: 4px;
+    background: var(--surface-secondary);
+    color: var(--text-primary);
+}
+
+.button-group {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+    margin-top: 1.5rem;
+}
+
+.button-group button {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    border: none;
+}
+
+.button-group button.primary {
+    background: var(--primary-500);
+    color: white;
+}
+
+.button-group button.secondary {
+    background: var(--neutral-200);
+    color: var(--text-primary);
+} 

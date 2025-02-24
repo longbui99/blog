@@ -60,7 +60,7 @@ function BlogContent({ onContentLoaded }) {
         };
 
         fetchBlogContent();
-    }, [path, dispatch, onContentLoaded, isCreating]);
+    }, [path, dispatch, onContentLoaded, isCreating, isEditing]);
 
 
     const renderEditor = () => {

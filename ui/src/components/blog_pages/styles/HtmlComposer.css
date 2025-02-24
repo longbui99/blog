@@ -185,14 +185,6 @@
 }
 
 
-.editor-content pre {
-    background-color: #f5f5f5;
-    padding: 1em;
-    border-radius: 4px;
-    margin: 1em 0;
-    overflow-x: auto;
-}
-
 .editor-content code {
     font-family: 'Courier New', Courier, monospace;
     color: inherit;
@@ -210,10 +202,6 @@
     border-color: #555;
 }
 
-.dark-mode .editor-content pre {
-    background-color: #1d1d1d;
-    color: #e0e0e0;
-}
 
 /* Add smooth scrolling */
 .slash-menu::-webkit-scrollbar {
@@ -360,53 +348,60 @@
 
 /* Inline Code */
 .editor-content .inline-code {
-    background-color: #f1f5f9;
+    background-color: var(--bg-secondary);
     padding: 2px 6px;
     border-radius: 4px;
-    font-family: 'Fira Code', monospace;
+    font-family: var(--font-mono);
     font-size: 0.9em;
-    color: #334155;
+    color: var(--text-primary);
 }
 
 /* Code Block */
-
 .editor-content pre {
     background-color: #1e1e1e;
-    padding: 1em;
-    border-radius: 4px;
-    color: #cfd7e1;
-    min-width: 901px;
+    padding: var(--spacing-4);
+    border-radius: var(--radius-md);
+    margin: var(--spacing-4) 0;
+    color: var(--text-primary);
+    overflow-x: auto;
+    position: relative;
 }
 
-.editor-content code {
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 0.8em;
-    background-color: transparent;
-    color: inherit;
+.editor-content pre code {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    line-height: 1.5;
+    display: block;
+    color: var(--text-primary);
+}
+
+/* Dark mode adjustments */
+.dark-mode .editor-content .inline-code {
+    background-color: var(--bg-tertiary);
+}
+
+
+/* Add copy button for code blocks */
+.editor-content pre:hover .copy-button {
+    opacity: 1;
 }
 
 .copy-button {
     position: absolute;
-    top: 8px;
-    right: 8px;
-    padding: 6px;
-    background-color: rgba(255, 255, 255, 0.1);
-    border: none;
-    border-radius: 4px;
-    color: #94a3b8;
-    cursor: pointer;
+    top: var(--spacing-2);
+    right: var(--spacing-2);
+    padding: var(--spacing-1) var(--spacing-2);
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-sm);
     opacity: 0;
     transition: opacity 0.2s, background-color 0.2s;
+    cursor: pointer;
+    font-size: var(--text-sm);
 }
-
 
 .copy-button:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-}
-
-/* Dark Mode */
-.dark-mode .inline-code {
-    background-color: #1e293b;
+    background-color: var(--bg-tertiary);
 }
 
 /* Language-specific syntax highlighting */

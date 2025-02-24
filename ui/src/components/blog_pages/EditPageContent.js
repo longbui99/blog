@@ -8,6 +8,8 @@ import storageRegistry from '../../store/storage_registry';
 import { useNavigate } from 'react-router-dom';
 import { setRouteItems } from '../../redux/slices/routesSlice';
 import { fetchRouteMap } from '../../const/routes';
+import { DetermineAndSaveAttachments } from './utils/AttachmentManager';
+
 
 function EditPageContent() {
   const dispatch = useDispatch();
@@ -147,7 +149,7 @@ function EditPageContent() {
     try {
       if (storageRegistry.has('currentContent')) {
         const updatedContent = {
-          content: storageRegistry.get('currentContent') || '',
+          content: await DetermineAndSaveAttachments(storageRegistry.get('currentContent') || '', urlPath) || '',
           path: urlPath,
           title: title,
           parent: selectedParent ? selectedParent.value : null,
@@ -162,6 +164,7 @@ function EditPageContent() {
           let routes = await fetchRouteMap();
           dispatch(setRouteItems(routes));
         } else if (isEditing) {
+          
           dispatch(setEditing(false));
         }
       }

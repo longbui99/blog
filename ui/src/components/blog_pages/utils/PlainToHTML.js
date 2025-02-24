@@ -55,3 +55,38 @@ export const insertContent = (text, range) => {
 
     return range;
 };
+
+/**
+ * Checks if a string is a base64 encoded image
+ * @param {string} text - The text to check
+ * @returns {boolean} - True if the text is a base64 encoded image
+ */
+export const isBase64Image = (text) => {
+    const base64Regex = /^data:image\/(jpg|jpeg|png|gif|webp);base64,/i;
+    return base64Regex.test(text);
+};
+
+/**
+ * Checks if a string is an image URL or base64
+ * @param {string} text - The text to check
+ * @returns {boolean} - True if the text is an image URL or base64
+ */
+export const isImage = (text) => {
+    // Check for image URLs
+    const imageUrlRegex = /^https?:\/\/.*\.(jpg|jpeg|png|gif|webp)(\?.*)?$/i;
+    return imageUrlRegex.test(text) || isBase64Image(text);
+};
+
+/**
+ * Checks if a string is a URL
+ * @param {string} text - The text to check
+ * @returns {boolean} - True if the text is a URL
+ */
+export const isLink = (text) => {
+    try {
+        new URL(text);
+        return true;
+    } catch {
+        return false;
+    }
+};
