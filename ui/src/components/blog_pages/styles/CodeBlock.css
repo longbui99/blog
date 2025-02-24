@@ -43,7 +43,7 @@ code {
   min-width: 24px;
   min-height: 24px;
   justify-content: center;
-  color: var(--text-primary);
+  color: var(--color-white);
 }
 
 .copy-button:hover {

@@ -393,7 +393,7 @@
   width: 100%;
   top: 0;
   z-index: 1000;
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-lg);
 }
 .dark-mode .app-bar {
   background-color: var(--background-dark);
