@@ -18,11 +18,92 @@
 }
 
 .editor-toolbar {
-    margin-top: var(--spacing-4);
-    padding: var(--spacing-4);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--spacing-2);
+    padding: var(--spacing-2);
     background-color: var(--bg-secondary);
     border-radius: var(--radius-md);
     border: 1px solid var(--border-primary);
+    position: fixed;
+    top: 0;
+    z-index: 1001;
+    height: var(--spacing-10);
+}
+
+.toolbar-group {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--spacing-1);
+    padding: 0 var(--spacing-2);
+    border-right: 1px solid var(--border-primary);
+}
+
+.toolbar-group:last-child {
+    border-right: none;
+}
+
+.color-group {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+}
+
+.color-btn {
+    width: 20px;
+    height: 20px;
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: var(--transition-all);
+    padding: 0;
+}
+
+.color-btn:hover {
+    transform: scale(1.15);
+    box-shadow: 0 0 3px var(--primary-500);
+}
+
+/* Default blog colors from your design system */
+.color-btn:nth-child(1) { background-color: var(--text-primary); }      /* Default text */
+.color-btn:nth-child(2) { background-color: var(--primary-500); }       /* Primary red */
+.color-btn:nth-child(3) { background-color: #166534; }                  /* Forest */
+.color-btn:nth-child(4) { background-color: #1e3a8a; }                  /* Navy */
+.color-btn:nth-child(5) { background-color: #f59e0b; }                  /* Amber */
+.color-btn:nth-child(6) { background-color: #7c3aed; }                  /* Violet */
+.color-btn:nth-child(7) { background-color: #0ea5e9; }                  /* Sky */
+.color-btn:nth-child(8) { background-color: var(--neutral-400); }       /* Gray */
+.color-btn:nth-child(9) { background-color: #881337; }                  /* Wine */
+.color-btn:nth-child(10) { background-color: #10b981; }                 /* Emerald */
+
+.editor-toolbar button {
+    width: 32px;
+    height: 32px;
+    padding: 6px;
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: var(--transition-all);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.editor-toolbar button:hover {
+    background: var(--primary-500);
+    color: var(--color-white);
+}
+
+.editor-toolbar button:hover i {
+    color: var(--color-white);
+}
+
+.editor-toolbar i {
+    font-size: 14px;
+    color: var(--text-primary);
 }
 
 .keyboard-shortcuts {

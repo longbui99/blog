@@ -5,20 +5,20 @@
 
 .edit-page-content {
     position: fixed;
-    top: 0;
+    top: var(--spacing-16);
     border-radius: 20px;
-    right: -270px; /* Wider panel */
+    right: -270px;
     width: 270px;
-    height: calc(100vh - 200px);
+    height: calc(100vh 50px - var(--spacing-12));
     background-color: var(--bg-secondary);
     box-shadow: var(--shadow-xl);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 1000;
+    z-index: 997;
     padding: var(--spacing-8);
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-6);
+    gap: var( --spacing-6);
     border-left: 1px solid var(--border-primary);
 }
 

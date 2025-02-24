@@ -1,0 +1,119 @@
+/* Line Colors - Solid */
+.line-default {
+    border-color: var(--neutral-300);
+}
+
+/* Professional Colors */
+.line-navy {
+    border-color: #1e3a8a;
+}
+
+.line-forest {
+    border-color: #166534;
+}
+
+.line-wine {
+    border-color: #881337;
+}
+
+.line-slate {
+    border-color: #334155;
+}
+
+/* Vibrant Colors */
+.line-sky {
+    border-color: #0ea5e9;
+}
+
+.line-emerald {
+    border-color: #10b981;
+}
+
+.line-rose {
+    border-color: #e11d48;
+}
+
+.line-amber {
+    border-color: #f59e0b;
+}
+
+.line-violet {
+    border-color: #7c3aed;
+}
+
+/* Soft Colors */
+.line-lavender {
+    border-color: #e0e7ff;
+}
+
+.line-mint {
+    border-color: #dcfce7;
+}
+
+.line-coral {
+    border-color: #ffe4e6;
+}
+
+.line-sand {
+    border-color: #fef3c7;
+}
+
+/* Line Styles */
+.line-solid {
+    border-style: solid;
+}
+
+.line-dashed {
+    border-style: dashed;
+}
+
+.line-dotted {
+    border-style: dotted;
+}
+
+/* Line Weights */
+.line-thin {
+    border-width: 1px;
+}
+
+.line-medium {
+    border-width: 2px;
+}
+
+.line-thick {
+    border-width: 4px;
+}
+
+/* Line Directions */
+.line-bottom {
+    border-bottom-width: var(--border-width, 1px);
+    border-bottom-style: var(--border-style, solid);
+}
+
+.line-top {
+    border-top-width: var(--border-width, 1px);
+    border-top-style: var(--border-style, solid);
+}
+
+.line-left {
+    border-left-width: var(--border-width, 1px);
+    border-left-style: var(--border-style, solid);
+}
+
+.line-right {
+    border-right-width: var(--border-width, 1px);
+    border-right-style: var(--border-style, solid);
+}
+
+/* Line with Gradient */
+.line-gradient-warm {
+    border-image: linear-gradient(to right, #f97316, #db2777) 1;
+}
+
+.line-gradient-cool {
+    border-image: linear-gradient(to right, #0ea5e9, #6366f1) 1;
+}
+
+.line-gradient-earth {
+    border-image: linear-gradient(to right, #84cc16, #854d0e) 1;
+}

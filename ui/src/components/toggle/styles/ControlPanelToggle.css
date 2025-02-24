@@ -25,6 +25,7 @@ For the full design system reference, see ui/src/styles/App.css
     position: relative;
     overflow: hidden;
     box-shadow: var(--shadow-sm);
+    z-index: 1001;
 }
 
 .control-panel-toggle .text {
