@@ -37,6 +37,7 @@ For the full design system reference, see ui/src/styles/App.css
 
 .search-toggle:hover .text{
     opacity: 1;
+    color: var(--color-white);
 }
 
 /* Text styling */
