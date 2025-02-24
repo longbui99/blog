@@ -9,6 +9,8 @@ import './styles/CodeBlock.css';
 import BlogContent from './BlogContent';
 import BreadCrumbs from './BreadCrumbs';
 import EditPageContent from './EditPageContent';
+import { isDeviceDesktop } from '../../utils/responsive';
+
 // Add scroll helper function
 const scrollToElement = (elementId, offset = 80) => {
   const element = document.getElementById(elementId);
@@ -71,9 +73,12 @@ function MainContent() {
     setIsContentLoaded(true);
   }, []);
 
+  const isSidebarTransform = isSidebarOpen && isDeviceDesktop();
+  const isTOCTransform = isTOCOpen && isDeviceDesktop();
+
   return (
     <>
-      <main className={`main-content ${isSidebarOpen ? 'sidebar-open' : ''} ${isTOCOpen ? 'toc-open' : ''}`}>
+      <main className={`main-content ${isSidebarTransform ? 'sidebar-open' : ''} ${isTOCTransform ? 'toc-open' : ''}`}>
         <div className="content-wrapper" ref={contentRef}>
           <BreadCrumbs />
           <BlogContent

@@ -111,10 +111,14 @@
     border-radius: var(--radius-lg);
     position: relative;
     color: var(--text-primary);
+    width: 90%;
 }
 
 .message.user .message-content {
     background-color: var(--primary-500);
+
+}
+.message.user .message-content * {
     color: var(--color-white);
 }
 

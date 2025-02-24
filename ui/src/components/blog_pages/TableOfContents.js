@@ -1,6 +1,5 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { isDeviceMobile } from '../../utils/responsive';
 import './styles/TableOfContents.css';
 import TOCToggle from '../toggle/TOCToggle';
 

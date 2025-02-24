@@ -143,35 +143,3 @@ For the full design system reference, see ui/src/styles/App.css
     background-color: var(--background-dark);
     border-color: rgba(255, 255, 255, 0.05);
 }
-
-/* Mobile adjustments */
-@media (max-width: 768px) {
-    .control-panel-popup {
-        position: fixed;
-        top: auto;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        width: 100%;
-        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-        transform: translateY(100%);
-    }
-
-    .control-panel-popup.open {
-        transform: translateY(0);
-    }
-
-    .submenu {
-        position: fixed;
-        top: auto;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        width: 100%;
-        transform: translateY(100%);
-    }
-
-    .menu-item:hover .submenu {
-        transform: translateY(0);
-    }
-} 

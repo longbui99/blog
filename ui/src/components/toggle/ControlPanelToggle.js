@@ -3,15 +3,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import './styles/ControlPanelToggle.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { toggleControlPanel } from '../../redux/slices/controlPanelSlice';
+import { setControlPanelOpen } from '../../redux/slices/controlPanelSlice';
 
 function ControlPanelToggle() {
   const dispatch = useDispatch();
   const isOpen = useSelector(state => state.controlPanel.isOpen);
 
   const handleClick = (e) => {
-    e.stopPropagation(); // Prevent click from bubbling to document
-    dispatch(toggleControlPanel());
+    e.stopPropagation();
+    dispatch(setControlPanelOpen(!isOpen));
   };
 
   return (

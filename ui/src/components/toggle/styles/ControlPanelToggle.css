@@ -25,7 +25,7 @@ For the full design system reference, see ui/src/styles/App.css
     position: relative;
     overflow: hidden;
     box-shadow: var(--shadow-sm);
-    z-index: 999;
+    z-index: 998;
 }
 
 .control-panel-toggle .text {
@@ -78,18 +78,6 @@ For the full design system reference, see ui/src/styles/App.css
     display: flex;
     align-items: center;
     gap: var(--spacing-2);
-}
-
-/* Mobile adjustments */
-@media (max-width: 768px) {
-    .control-panel-toggle {
-        height: 32px;
-        width: 32px;
-    }
-
-    .control-panel-toggle .text {
-        font-size: var(--text-base);
-    }
 }
 
 /* Add these new styles */

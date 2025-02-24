@@ -136,39 +136,16 @@ For the full design system reference, see ui/src/styles/App.css
     background: linear-gradient(to right bottom, var(--primary-500), var(--primary-700));
 }
 
-/* Mobile responsiveness */
-@media (max-width: 768px) {
-    .action-toggle {
-        width: 40px;
-        height: 40px;
-        font-size: var(--text-base);
-        padding: var(--spacing-2) 0;
-    }
-
-    .create-toggle { right: calc(var(--spacing-4) + 120px); }
-    .edit-toggle { right: calc(var(--spacing-4) + 160px); }
-    .delete-toggle { right: calc(var(--spacing-4) + 80px); }
-    .publish-toggle { right: calc(var(--spacing-4) + 40px); }
-    .raw-editor-toggle { right: var(--spacing-4); }
-}
-
-/* Small screens */
-@media (max-width: 480px) {
-    .action-toggle {
-        width: 35px;
-        height: 35px;
-        font-size: var(--text-sm);
-        padding: var(--spacing-1) 0;
-    }
-
-    .create-toggle { right: calc(var(--spacing-4) + 90px); }
-    .edit-toggle { right: calc(var(--spacing-4) + 120px); }
-    .delete-toggle { right: calc(var(--spacing-4) + 60px); }
-    .publish-toggle { right: calc(var(--spacing-4) + 30px); }
-    .raw-editor-toggle { right: var(--spacing-4); }
-}
-
 /* Show raw editor toggle only when editing */
 .raw-editor-toggle.visible {
     display: block;
 }
+
+/* Media query for small screens */
+@media screen and (max-width: 768px) {
+    .toggle-container,
+    .action-toggle {
+        display: none !important;  /* Use !important to override .raw-editor-toggle.visible */
+    }
+}
+

@@ -75,19 +75,3 @@
 .dark-mode .toc-link:hover {
   color: #ffffff;
 }
-
-/* Responsive styles */
-@media (max-width: 768px) {
-  .table-of-contents {
-    width: 100%;
-    box-shadow: var(--shadow-lg);
-  }
-
-  .table-of-contents:not(.open) {
-    transform: translateY(-100%);
-  }
-
-  .main-content.toc-open .content-wrapper {
-    padding-right: 20px;
-  }
-}

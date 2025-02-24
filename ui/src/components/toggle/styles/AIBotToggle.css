@@ -106,23 +106,3 @@ For the full design system reference, see ui/src/styles/App.css
     opacity: 0.9;
     background: linear-gradient(to right bottom, var(--primary-500), var(--primary-700));
 }
-
-/* Mobile responsiveness */
-@media (max-width: 768px) {
-    .ai-bot-toggle {
-        width: 40px;
-        height: 40px;
-        font-size: var(--text-base);
-        padding: var(--spacing-2) 0;
-    }
-}
-
-/* Small screens */
-@media (max-width: 480px) {
-    .ai-bot-toggle {
-        width: 35px;
-        height: 35px;
-        font-size: var(--text-sm);
-        padding: var(--spacing-1) 0;
-    }
-}

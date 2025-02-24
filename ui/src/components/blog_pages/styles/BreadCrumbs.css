@@ -2,17 +2,23 @@
     width: fit-content;
     max-width: 100%;
     display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-2);
     border-bottom: 1px solid var(--border-primary);
     margin-bottom: var(--spacing-4);
+    padding-bottom: var(--spacing-2);
 }
 
 .breadcrumbs .breadcrumb-segment{
     color: var(--text-tertiary);
     text-decoration: none;
-    margin-left: var(--spacing-3);
+    margin-left: 0;
     font-weight: 300;
     letter-spacing: 0;
     transition: var(--transition-all);
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
 }
 
 .breadcrumbs .breadcrumb-segment.active{
@@ -31,8 +37,12 @@
 
 .breadcrumbs .breadcrumb-segment::before{
     content: "/";
-    margin-right: var(--spacing-1);
+    margin: 0 var(--spacing-1);
     color: var(--text-tertiary);
+}
+
+.breadcrumbs .breadcrumb-segment:first-child::before {
+    display: none;
 }
 
 .dark-mode .breadcrumbs{

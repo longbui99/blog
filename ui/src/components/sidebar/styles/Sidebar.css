@@ -204,20 +204,6 @@ For the full design system reference, see ui/src/styles/App.css
     color: #ecf0f1;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-    .sidebar {
-        width: 100%;
-        max-width: none;
-        height: auto;
-    }
-
-    .sidebar.hidden {
-        display: none;
-    }
-
-}
-
 /* Active item styling */
 .menu-item.active {
     background-color: var(--bg-secondary);

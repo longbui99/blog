@@ -16,7 +16,9 @@ function ControlPanelPopup() {
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (isOpen && popupRef.current && !popupRef.current.contains(event.target)) {
-        dispatch(setControlPanelOpen(false));
+        setTimeout(() => {
+          dispatch(setControlPanelOpen(false));
+        }, 100);
       }
     };
 
@@ -44,8 +46,6 @@ function ControlPanelPopup() {
     dispatch(toggleLoginModal());
     dispatch(setControlPanelOpen(false));
   };
-
-  if (!isOpen) return null;
 
   return (
     <div 
