@@ -404,3 +404,9 @@
   align-items: center;
   margin-right: var(--spacing-2);
 }
+
+.nav-container-invisible{
+  position: absolute;
+  top: var(--spacing-16);
+  right: 0;
+}
