@@ -1,67 +1,26 @@
 /* Base styles for code blocks */
 .code-block-container {
   position: relative;
-  margin: var(--spacing-4) 0;
-  background-color: var(--code-bg);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
+  margin: 1em 0;
 }
 
 .code-block-container pre {
-  border-radius: var(--radius-lg);
-  padding: var(--spacing-4);
+  background-color: #f0f0f0;
+  border: 1px solid #d0d0d0;
+  border-radius: 4px;
+  padding: 1em;
   overflow-x: auto;
-  background-color: var(--code-bg);
-  color: var(--code-color);
 }
 
 .code-block-container code,
 code {
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
-  color: var(--code-color);
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.8em;
+  color: #333;
+  background-color: transparent;
 }
 
-/* Inline code */
-code {
-  background-color: transparent; /* Matching background for inline code */
-  border-radius: 3px;
-}
-
-/* Copy button styles */
-.copy-button {
-  position: absolute;
-  top: var(--spacing-2);
-  right: var(--spacing-2);
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-primary);
-  border-radius: var(--radius-md);
-  color: var(--text-secondary);
-  padding: var(--spacing-2) var(--spacing-3);
-  font-size: var(--text-sm);
-  cursor: pointer;
-  transition: var(--transition-all);
-  z-index: 20000;
-}
-
-.copy-button:hover {
-  background: var(--bg-tertiary);
-  border-color: var(--border-secondary);
-}
-
-.copy-button:active {
-  background: rgba(255, 255, 255, 0.3);
-}
-
-/* New styles */
-:root {
-}
-
-.code-block-wrapper {
-  position: relative;
-  margin: 1em 0;
-}
-
+/* Code header and copy button */
 .code-header {
   position: absolute;
   top: 0.5em;
@@ -75,78 +34,25 @@ code {
   border-radius: 4px;
   color: #d4d4d4;
   padding: 4px 8px;
+  font-size: 12px;
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 4px;
   transition: all 0.2s ease;
+  min-width: 24px;
+  min-height: 24px;
+  justify-content: center;
+  color: var(--text-primary);
 }
 
 .copy-button:hover {
   background: rgba(255, 255, 255, 0.2);
 }
 
-.code-container {
-  position: relative;
-  overflow-x: auto;
-}
-
-/* Dark mode adjustments */
-.dark-mode .copy-button {
-  color: #d4d4d4;
-}
-
-/* Light mode adjustments */
-:not(.dark-mode) .copy-button {
-  background: rgba(0, 0, 0, 0.1);
-  border-color: rgba(0, 0, 0, 0.2);
-}
-
-:not(.dark-mode) .copy-button:hover {
-  background: rgba(0, 0, 0, 0.2);
-}
-
-.code-block-wrapper pre {
-  background-color: #f4f4f4;
-  border: none;
-  padding: 1em;
-  overflow-x: auto;
-}
-
-.code-block-wrapper code {
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 0.8em;
-  background-color: transparent;
-  color: inherit;
-}
-
-.inline-code {
-  background-color: var(--inline-code-bg-light);
-  color: var(--code-color-light);
-  padding: 2px 4px;
-  border-radius: 3px;
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 0.9em;
-}
-
-pre code {
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 0.9em;
-}
-
-/* Dark mode styles */
-.dark-mode .inline-code {
-  background-color: var(--inline-code-bg-dark);
-  color: var(--code-color-dark);
-}
-
-.dark-mode pre {
-  background: transparent;
-  border-color: #444;
-}
-
-.dark-mode .copy-button {
-  color: var(--code-color-dark);
+.copy-button svg {
+  width: 14px;
+  height: 14px;
 }
 
 .code-container {
@@ -178,7 +84,46 @@ pre code {
   font-size: 12px;
   text-align: right;
   min-width: 1em;
-  line-height: 1.875
+  line-height: 1.875;
+}
+
+/* Python-specific syntax colors */
+.token.keyword { color: #ed8c3c; }
+.token.dunder { color: #ce00ce; }
+.token.builtin { color: #8888c6; }
+.token.decorator { color: #d9d229; }
+.token.number { color: #79acd2; }
+.token.inherit { color: #8888c6; }
+.token.function { color: #ffc66d; }
+.token.self { color: #c466b9; }
+.token.string { color: #6c9951; }
+.token.comment { color: #808080; }
+.token.method { color: #cfd7e1; }
+.token.punctuation { color: #cfd7e1; }
+
+.code-block-wrapper {
+  position: relative;
+}
+/* Code block background */
+.code-block-wrapper pre {
+  background-color: #1e1e1e;
+  padding: 1em;
+  border-radius: 4px;
+  color: #cfd7e1;
+  width: -webkit-fill-available;
+  min-width: 901px;
+}
+
+.python-code .line-numbers {
+  color: #cfd7e1;
+  background-color: #1e1e1e;
+  padding-right: 1em;
+  border-right: 1px solid #404040;
+}
+
+/* Light mode overrides */
+:not(.dark-mode) .python-code .line-numbers {
+  border-right-color: #e0e0e0;
 }
 
 .python-code pre {
@@ -192,37 +137,4 @@ pre code {
   tab-size: 4;
   -moz-tab-size: 4;
   color: inherit;
-}
-
-/* Python-specific syntax colors */
-.token.keyword { color: var(--primary-500); }
-.token.string { color: var(--success-500); }
-.token.comment { color: var(--text-tertiary); }
-.token.function { color: var(--warning-500); }
-.token.number { color: var(--error-500); }
-.token.operator { color: var(--primary-400); }
-.token.punctuation { color: var(--text-secondary); }
-
-/* Code block background */
-.code-block-wrapper pre {
-  background-color: #1e1e1e;  /* dark grey background */
-  padding: 1em;
-  border-radius: 4px;
-  color: #cfd7e1;
-  min-width: 901px;
-}
-
-.python-code .line-numbers {
-  color: #cfd7e1;  /* grey for line numbers */
-  background-color: #1e1e1e;
-  padding-right: 1em;
-  border-right: 1px solid #404040;
-}
-
-/* Light mode overrides */
-:not(.dark-mode) .python-code pre {
-}
-
-:not(.dark-mode) .python-code .line-numbers {
-  border-right-color: #e0e0e0;
 }

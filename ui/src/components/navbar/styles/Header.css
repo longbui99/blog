@@ -368,29 +368,6 @@
   margin-right: 1rem;
 }
 
-/* Ensure consistent button styling */
-.header-controls button,
-.search-button,
-.chat-button,
-.control-panel-toggle {
-  background: none;
-  border: none;
-  color: var(--text-primary);
-  cursor: pointer;
-  padding: var(--spacing-2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--radius-md);
-  transition: var(--transition-all);
-}
-
-.header-controls button:hover,
-.search-button:hover,
-.chat-button:hover,
-.control-panel-toggle:hover {
-  background-color: var(--bg-secondary);
-}
 
 /* Responsive adjustments */
 @media (max-width: 768px) {

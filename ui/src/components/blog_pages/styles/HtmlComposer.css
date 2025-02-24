@@ -394,7 +394,6 @@
     background-color: var(--bg-primary);
     border: 1px solid var(--border-primary);
     border-radius: var(--radius-sm);
-    opacity: 0;
     transition: opacity 0.2s, background-color 0.2s;
     cursor: pointer;
     font-size: var(--text-sm);

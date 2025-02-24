@@ -7,6 +7,7 @@
   transition: var(--transition-all);
   background-color: var(--bg-primary);
   border-left: 1px solid var(--border-primary);
+  box-shadow: var(--shadow-sm);
 }
 .toc-container:not(.open) {
   transform: translateX(100%);

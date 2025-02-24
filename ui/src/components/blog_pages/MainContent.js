@@ -5,6 +5,7 @@ import { updateActiveRouteFromPath } from '../../redux/slices/routesSlice';
 import TableOfContents from './TableOfContents';
 import { generateTOC } from '../../utils/contentUtils';
 import './styles/MainContent.css';
+import './styles/CodeBlock.css';
 import BlogContent from './BlogContent';
 import BreadCrumbs from './BreadCrumbs';
 import EditPageContent from './EditPageContent';

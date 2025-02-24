@@ -1,6 +1,5 @@
 import React, { useState, useContext } from 'react';
 import { FaCopy } from 'react-icons/fa';
-import './styles/CodeBlock.css';
 import tokenizeCode  from '../../utils/syntaxHighlighter';
 
 // Import ThemeContext if it exists, otherwise create a dummy context
