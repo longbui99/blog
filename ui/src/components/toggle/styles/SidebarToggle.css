@@ -12,7 +12,6 @@ For the full design system reference, see ui/src/styles/App.css
 /* Sidebar Toggle Button */
 .sidebar-toggle-right {
     position: absolute;
-    border-radius: 0 var(--radius-md) var(--radius-md) 0;
     background-color: var(--bg-primary);
     box-shadow: var(--shadow-button);
     transition: all 0.3s ease;
@@ -33,8 +32,7 @@ For the full design system reference, see ui/src/styles/App.css
 
 .sidebar-toggle-right:hover {
     opacity: 1;
-    box-shadow: var(--shadow-xl);
-    transform: translateX(2px);
+    color: var(--color-white);
 }
 
 /* Text styling */
@@ -52,7 +50,7 @@ For the full design system reference, see ui/src/styles/App.css
     transition: var(--transition-all);
     width: 100%;
     height: 100%;
-    border-radius: var(--radius-md);
+    border-radius: 0px var(--radius-md) var(--radius-md) 0;
     top: 0;
     left: 0;
     background: linear-gradient(to right bottom, var(--bg-secondary), var(--bg-tertiary));
