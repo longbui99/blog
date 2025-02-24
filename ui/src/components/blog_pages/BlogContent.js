@@ -127,22 +127,24 @@ function BlogContent({ onContentLoaded }) {
                         />
                     </div>
                     <div className="author-details">
-                        <span className="author-name">{author}</span>
-                        <span className="post-date">
-                            Last updated: {
-                                lastUpdated ? 
-                                new Date(lastUpdated).toLocaleDateString('en-US', {
-                                    year: 'numeric',
-                                    month: 'long',
-                                    day: 'numeric',
-                                    hour: '2-digit',
-                                    minute: '2-digit',
-                                    timeZone: 'Asia/Saigon',
-                                    timeZoneName: 'short',
-                                }) : 
-                                'Unknown date'
-                            }
-                        </span>
+                        <div className='author-tooltip'>
+                            <a className="author-name" target='_blank' href='https://longbui.net'>{author}</a>
+                            <span className="post-date">
+                                Last updated: {
+                                    lastUpdated ? 
+                                    new Date(lastUpdated).toLocaleDateString('en-US', {
+                                        year: 'numeric',
+                                        month: 'long',
+                                        day: 'numeric',
+                                        hour: '2-digit',
+                                        minute: '2-digit',
+                                        timeZone: 'Asia/Saigon',
+                                        timeZoneName: 'short',
+                                    }) : 
+                                    'Unknown date'
+                                }
+                            </span>
+                        </div>
                         <span className="total-views">
                             <FontAwesomeIcon icon={faBookReader} /> {totalViews || 0}
                         </span>

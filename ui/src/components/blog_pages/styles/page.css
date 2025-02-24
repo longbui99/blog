@@ -510,8 +510,9 @@ li {
 }
 
 .author-avatar {
-    width: 48px;
+    width: auto;
     height: 48px;
+    max-width: 48px;
     border-radius: 50%;
     overflow: hidden;
     border: 2px solid var(--border-color);
@@ -525,8 +526,16 @@ li {
 
 .author-details {
     display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
+    flex-direction: row;
+    gap: 2rem;
+}
+.author-details .author-tooltip{
+    display: flex;
+    flex-flow: column;
+}
+
+.author-info img{
+    height: 100%;
 }
 
 .author-name {
@@ -561,11 +570,6 @@ li {
 @media (max-width: 768px) {
     .blog-meta {
         margin-bottom: 1.5rem;
-    }
-
-    .author-avatar {
-        width: 40px;
-        height: 40px;
     }
 
     .author-name {
