@@ -593,3 +593,29 @@
     width: var(--spacing-4);
     height: var(--spacing-4);
 }
+
+.heading-group button {
+    width: 32px;
+    height: 32px;
+    padding: 6px;
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: var(--transition-all);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    min-width: 35px;
+    color: var(--text-primary);
+}
+
+.heading-group button:hover {
+    background: var(--primary-500);
+    color: var(--color-white);
+}
+
+.heading-group button:hover i {
+    color: var(--color-white);
+}

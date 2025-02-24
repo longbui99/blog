@@ -250,6 +250,30 @@ const HTMLComposer = () => {
         }
     };
 
+    const handleHeading = (tag) => {
+        const selection = window.getSelection();
+        if (!selection.rangeCount) return;
+
+        // Get the current block element
+        let node = selection.anchorNode;
+        while (node && node.nodeType !== 1) {
+            node = node.parentNode;
+        }
+
+        // If we're already in a heading, remove it
+        if (node && /^H[1-5]$/.test(node.tagName)) {
+            const p = document.createElement('p');
+            p.innerHTML = node.innerHTML;
+            node.parentNode.replaceChild(p, node);
+        } else {
+            // Apply the heading
+            document.execCommand('formatBlock', false, tag);
+        }
+
+        editorRef.current?.focus();
+        handleInput();
+    };
+
     return (
         <div className="html-composer">
             <EditorToolbar 
@@ -260,6 +284,7 @@ const HTMLComposer = () => {
                 onImage={handleImage}
                 onInlineCode={handleInlineCode}
                 onCodeBlock={handleCodeBlock}
+                onHeading={handleHeading}
             />
             <div
                 ref={editorRef}
