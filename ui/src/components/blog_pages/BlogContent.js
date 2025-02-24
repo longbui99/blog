@@ -40,7 +40,7 @@ function BlogContent({ onContentLoaded }) {
                         const { content: blogContent, title, description, author, updated_at, total_views } = blogData;
                         const parsedContent = parseContent(blogContent);
                         setContent(parsedContent);
-                        setPageTitle(title ? `${title} | VectorDI` : "Long Bui's Blog | VectorDI");
+                        setPageTitle(title ? `${title} | Long Bui's Blog` : "Long Bui's Blog | VectorDI");
                         setPageDescription(description || "Explore our latest blog posts on various topics including technology, programming, and web development.");
                         setAuthor(author || 'Long Bui');
                         setLastUpdated(updated_at);
