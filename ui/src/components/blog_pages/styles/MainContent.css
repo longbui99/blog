@@ -76,7 +76,14 @@
 
 .main-content li {
   margin-bottom: 0.5em;
+  margin-top: 0.25em;
 }
+
+.main-content li.checklist-item{
+  display: flex;
+  align-items: center;
+}
+
 
 .content-wrapper {
   margin: 0 auto;

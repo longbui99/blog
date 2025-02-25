@@ -66,4 +66,45 @@
 .dark-mode .toolbar-popup {
     background: var(--bg-secondary);
     border-color: var(--border-secondary);
+}
+
+.dropdown-button {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.dropdown-icon {
+    font-size: 0.7em;
+    margin-left: 2px;
+    opacity: 0.7;
+}
+
+.toolbar-button.active .dropdown-icon {
+    transform: rotate(180deg);
+    transition: transform 0.2s ease;
+}
+
+.rainbow-border-button {
+    position: relative;
+}
+
+.rainbow-border-button::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0%;
+    right: 10%;
+    height: 2px;
+    background: linear-gradient(
+        to right,
+        #ff0000, /* Red */
+        #ff8000, /* Orange */
+        #ffff00, /* Yellow */
+        #00ff00, /* Green */
+        #0000ff, /* Blue */
+        #4b0082, /* Indigo */
+        #9400d3  /* Violet */
+    );
+    border-radius: 1px;
 } 

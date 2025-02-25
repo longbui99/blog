@@ -6,7 +6,8 @@ import {
     faCode, 
     faFileCode,
     faListUl,
-    faListOl
+    faListOl,
+    faCheckSquare
 } from '@fortawesome/free-solid-svg-icons';
 
 const InsertGroup = ({ 
@@ -15,7 +16,8 @@ const InsertGroup = ({
     onInlineCode, 
     onCodeBlock,
     onBulletList,
-    onNumberList 
+    onNumberList,
+    onCheckList
 }) => {
     return (
         <div className="toolbar-group insert-group">
@@ -60,6 +62,13 @@ const InsertGroup = ({
                 className="toolbar-button"
             >
                 <FontAwesomeIcon icon={faListOl} />
+            </button>
+            <button 
+                onClick={onCheckList} 
+                title="Check List"
+                className="toolbar-button"
+            >
+                <FontAwesomeIcon icon={faCheckSquare} />
             </button>
         </div>
     );

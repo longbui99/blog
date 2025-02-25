@@ -77,7 +77,14 @@ const HTMLComposer = () => {
         if (!selection.rangeCount) return;
         
         const range = selection.getRangeAt(0);
-        const listItem = range.commonAncestorContainer.closest('li');
+        
+        // Get the closest li element - safely handling text nodes
+        let node = range.commonAncestorContainer;
+        if (node.nodeType === 3) { // Text node
+            node = node.parentNode;
+        }
+        
+        const listItem = node.closest('li');
         
         if (listItem) {
             if (e.shiftKey) {
@@ -164,7 +171,6 @@ const HTMLComposer = () => {
 
     const handleColorChange = (color) => {
         const selection = window.getSelection();
-        const range = selection.getRangeAt(0);
         
         // Convert CSS variable to actual color value
         const tempElement = document.createElement('div');
@@ -173,11 +179,30 @@ const HTMLComposer = () => {
         const computedColor = window.getComputedStyle(tempElement).color;
         document.body.removeChild(tempElement);
         
-        // Apply color using execCommand (maintains undo stack)
+        // Apply text color using execCommand (maintains undo stack)
         document.execCommand('foreColor', false, computedColor);
         
         // Restore focus
         editorRef.current?.focus();
+        handleInput();
+    };
+
+    const handleBackgroundColorChange = (color) => {
+        const selection = window.getSelection();
+        
+        // Convert CSS variable to actual color value
+        const tempElement = document.createElement('div');
+        tempElement.style.backgroundColor = color;
+        document.body.appendChild(tempElement);
+        const computedColor = window.getComputedStyle(tempElement).backgroundColor;
+        document.body.removeChild(tempElement);
+        
+        // Apply background color using execCommand (maintains undo stack)
+        document.execCommand('hiliteColor', false, computedColor);
+        
+        // Restore focus
+        editorRef.current?.focus();
+        handleInput();
     };
 
     const handleAlignment = (alignment) => {
@@ -346,11 +371,237 @@ const HTMLComposer = () => {
         handleInput();
     };
 
+    const handleTextStyle = (style) => {
+        const selection = window.getSelection();
+        if (!selection.rangeCount) return;
+        
+        switch (style) {
+            case 'bold':
+                document.execCommand('bold', false, null);
+                break;
+            case 'italic':
+                document.execCommand('italic', false, null);
+                break;
+            case 'underline':
+                document.execCommand('underline', false, null);
+                break;
+            case 'strikeThrough':
+                document.execCommand('strikeThrough', false, null);
+                break;
+            case 'subscript':
+                document.execCommand('subscript', false, null);
+                break;
+            case 'superscript':
+                document.execCommand('superscript', false, null);
+                break;
+            case 'code':
+                handleInlineCode();
+                return; // handleInlineCode already handles focus and input
+            case 'removeFormat':
+                document.execCommand('removeFormat', false, null);
+                break;
+            default:
+                break;
+        }
+        
+        editorRef.current?.focus();
+        handleInput();
+    };
+
+    const handleCheckList = () => {
+        const selection = window.getSelection();
+        if (!selection.rangeCount) return;
+        
+        const range = selection.getRangeAt(0);
+        let spanToFocus = null;
+        
+        // First, check if we're already in a list
+        let node = range.commonAncestorContainer;
+        if (node.nodeType === 3) { // Text node
+            node = node.parentNode;
+        }
+        
+        const existingList = node.closest('ul, ol');
+        
+        if (existingList) {
+            // Convert existing list to checklist
+            existingList.className = 'checklist';
+            
+            // Add checkboxes to each list item
+            Array.from(existingList.querySelectorAll('li')).forEach((li, index) => {
+                li.className = 'checklist-item';
+                
+                // Create checkbox if it doesn't exist
+                if (!li.querySelector('.checklist-checkbox')) {
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.className = 'checklist-checkbox';
+                    
+                    // Wrap existing content in a span
+                    const textContent = li.innerHTML;
+                    li.innerHTML = '';
+                    
+                    const span = document.createElement('span');
+                    span.className = 'checklist-text';
+                    span.innerHTML = textContent;
+                    
+                    li.appendChild(checkbox);
+                    li.appendChild(span);
+                    
+                    // Store the span of the current item for focus
+                    if (index === 0) {
+                        spanToFocus = span;
+                    }
+                    
+                    // Add change event listener
+                    checkbox.addEventListener('change', () => {
+                        if (checkbox.checked) {
+                            span.style.textDecoration = 'line-through';
+                            span.style.opacity = '0.7';
+                        } else {
+                            span.style.textDecoration = 'none';
+                            span.style.opacity = '1';
+                        }
+                        handleInput();
+                    });
+                }
+            });
+        } else {
+            // Create a new checklist
+            // First try to use execCommand to create a list structure
+            document.execCommand('insertUnorderedList', false, null);
+            
+            // Now find the newly created list
+            const newSelection = window.getSelection();
+            let listNode = newSelection.anchorNode;
+            if (listNode.nodeType === 3) {
+                listNode = listNode.parentNode;
+            }
+            
+            const newList = listNode.closest('ul');
+            
+            if (newList) {
+                // Convert to checklist
+                newList.className = 'checklist';
+                
+                // Add checkboxes to each list item
+                Array.from(newList.querySelectorAll('li')).forEach((li, index) => {
+                    li.className = 'checklist-item';
+                    
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.className = 'checklist-checkbox';
+                    
+                    // Wrap existing content in a span
+                    const textContent = li.innerHTML;
+                    li.innerHTML = '';
+                    
+                    const span = document.createElement('span');
+                    span.className = 'checklist-text';
+                    span.innerHTML = textContent;
+                    
+                    li.appendChild(checkbox);
+                    li.appendChild(span);
+                    
+                    // Store the span of the current item for focus
+                    if (index === 0) {
+                        spanToFocus = span;
+                    }
+                    
+                    // Add change event listener
+                    checkbox.addEventListener('change', () => {
+                        if (checkbox.checked) {
+                            span.style.textDecoration = 'line-through';
+                            span.style.opacity = '0.7';
+                        } else {
+                            span.style.textDecoration = 'none';
+                            span.style.opacity = '1';
+                        }
+                        handleInput();
+                    });
+                });
+            } else {
+                // Fallback to manual creation if execCommand didn't work
+                const ul = document.createElement('ul');
+                ul.className = 'checklist';
+                
+                // Create list items with checkboxes
+                const items = ['', '', ''];  // Default 3 empty items
+                
+                items.forEach((item, index) => {
+                    const li = document.createElement('li');
+                    li.className = 'checklist-item';
+                    
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.className = 'checklist-checkbox';
+                    
+                    const span = document.createElement('span');
+                    span.className = 'checklist-text';
+                    span.contentEditable = true;
+                    span.textContent = item;
+                    
+                    li.appendChild(checkbox);
+                    li.appendChild(span);
+                    ul.appendChild(li);
+                    
+                    // Store the span of the first item for focus
+                    if (index === 0) {
+                        spanToFocus = span;
+                    }
+                    
+                    // Add change event listener
+                    checkbox.addEventListener('change', () => {
+                        if (checkbox.checked) {
+                            span.style.textDecoration = 'line-through';
+                            span.style.opacity = '0.7';
+                        } else {
+                            span.style.textDecoration = 'none';
+                            span.style.opacity = '1';
+                        }
+                        handleInput();
+                    });
+                });
+                
+                // Insert the checklist
+                range.deleteContents();
+                range.insertNode(ul);
+            }
+        }
+        
+        // Set focus on the first span element
+        if (spanToFocus) {
+            // Create a new range and set it to the beginning of the span
+            const newRange = document.createRange();
+            
+            // If the span has text content, place cursor at the beginning
+            if (spanToFocus.firstChild && spanToFocus.firstChild.nodeType === 3) {
+                newRange.setStart(spanToFocus.firstChild, 0);
+                newRange.setEnd(spanToFocus.firstChild, 0);
+            } else {
+                // If span is empty, just place cursor inside the span
+                newRange.setStart(spanToFocus, 0);
+                newRange.setEnd(spanToFocus, 0);
+            }
+            
+            // Apply the new selection
+            selection.removeAllRanges();
+            selection.addRange(newRange);
+            
+            // Ensure the span gets focus
+            spanToFocus.focus();
+        }
+        
+        editorRef.current?.focus();
+        handleInput();
+    };
+
     return (
         <div className="html-composer">
             <EditorToolbar 
                 ref={toolbarRef}
                 onColorChange={handleColorChange}
+                onBackgroundColorChange={handleBackgroundColorChange}
                 onAlignment={handleAlignment}
                 onLink={handleLink}
                 onImage={handleImage}
@@ -359,6 +610,8 @@ const HTMLComposer = () => {
                 onHeading={handleHeading}
                 onBulletList={handleBulletList}
                 onNumberList={handleNumberList}
+                onTextStyle={handleTextStyle}
+                onCheckList={handleCheckList}
             />
             <div
                 ref={editorRef}

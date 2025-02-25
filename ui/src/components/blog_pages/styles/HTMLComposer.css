@@ -615,3 +615,31 @@
 .heading-group button:hover i {
     color: var(--color-white);
 }
+
+/* Add these styles to your existing HTMLComposer.css */
+
+.checklist {
+    list-style-type: none;
+    padding-left: 0;
+    margin: 1em 0;
+}
+
+.checklist-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 0.5em;
+}
+
+.checklist-checkbox {
+    margin: unset;
+    margin-right: 0.5em;
+}
+
+.checklist-text {
+    flex: 1;
+    min-height: 1.5em;
+}
+
+.checklist-text:focus {
+    outline: none;
+}
