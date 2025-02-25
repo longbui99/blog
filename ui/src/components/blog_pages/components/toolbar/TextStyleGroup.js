@@ -17,7 +17,7 @@ const TextStyleGroup = ({ onTextStyle }) => {
         { command: 'subscript', label: 'Subscript', icon: faSubscript },
         { command: 'superscript', label: 'Superscript', icon: faSuperscript },
         { command: 'code', label: 'Code', icon: faCode },
-        { command: 'removeFormat', label: 'Clear formatting', icon: faEraser }
+        { command: 'removeFormat', label: 'Clear', icon: faEraser }
     ];
 
     return (

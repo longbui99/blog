@@ -3,16 +3,6 @@
     right: -40%;
 }
 
-.text-style-menu {
-    display: flex;
-    flex-direction: column;
-    background-color: white;
-    border-radius: 6px;
-    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.15);
-    overflow: hidden;
-    padding: 4px 0;
-}
-
 .text-style-item {
     display: flex;
     justify-content: center;
@@ -23,7 +13,7 @@
     font-size: 14px;
     color: var(--text-primary);
     transition: background-color 0.2s ease;
-    width: fit-content!important;
+    width: 100%!important;
 }
 
 .text-style-content {
@@ -67,15 +57,9 @@
     font-size: smaller;
 }
 
-.text-style-item[title="Code"] .text-style-label {
-    font-family: monospace;
-    background-color: var(--neutral-100);
-    padding: 2px 4px;
-    border-radius: 3px;
-}
 
 /* Add a divider before the Clear formatting option */
-.text-style-item[title="Clear formatting"] {
+.text-style-item[title="Clear"] {
     margin-top: 4px;
     border-top: 1px solid var(--neutral-200);
     padding-top: 10px;
