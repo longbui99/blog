@@ -1,0 +1,63 @@
+.color-picker {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-4);
+    padding: var(--spacing-2);
+    background-color: transparent;
+    max-width: 400px;
+}
+
+.color-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.color-group-title {
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    margin: 0;
+    padding: 0;
+}
+
+.color-buttons {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: var(--spacing-1);
+    width: fit-content;
+}
+
+.color-btn {
+    width: 36px;
+    height: 36px;
+    border: 2px solid var(--border-primary);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    position: relative;
+    transition: var(--transition-all);
+}
+
+.color-btn:hover {
+    transform: scale(1.1);
+    box-shadow: var(--shadow-lg);
+    z-index: 1;
+}
+
+.color-label {
+    display: none;
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    padding: var(--spacing-1) var(--spacing-2);
+    border-radius: var(--radius-sm);
+    font-size: var(--text-xs);
+    white-space: nowrap;
+    z-index: 1;
+    margin-bottom: var(--spacing-1);
+}
+
+.color-btn:hover .color-label {
+    display: block;
+} 

@@ -26,10 +26,7 @@
     background-color: var(--bg-secondary);
     border-radius: var(--radius-md);
     border: 1px solid var(--border-primary);
-    position: fixed;
-    top: 0;
     z-index: 1001;
-    height: var(--spacing-10);
 }
 
 .toolbar-group {
@@ -372,7 +369,7 @@
     font-size: 0.9em;
     line-height: 1.5;
     display: block;
-    color: var(--text-primary);
+    color: var(--color-white);
 }
 
 /* Dark mode adjustments */

@@ -34,6 +34,8 @@ function MainContent() {
   const location = useLocation();
   const isSidebarOpen = useSelector((state) => state.sidebar.isOpen);
   const isTOCOpen = useSelector((state) => state.toc.isOpen);
+  const isEditing = useSelector(state => state.editing.isEditing);
+  const isCreating = useSelector(state => state.editing.isCreating);
   const [tocItems, setTocItems] = useState([]);
   const contentRef = useRef(null);
   const [isContentLoaded, setIsContentLoaded] = useState(false);
@@ -75,10 +77,11 @@ function MainContent() {
 
   const isSidebarTransform = isSidebarOpen && isDeviceDesktop();
   const isTOCTransform = isTOCOpen && isDeviceDesktop();
+  const isEditorTransform = (isEditing || isCreating) && isDeviceDesktop();
 
   return (
     <>
-      <main className={`main-content ${isSidebarTransform ? 'sidebar-open' : ''} ${isTOCTransform ? 'toc-open' : ''}`}>
+      <main className={`main-content ${isSidebarTransform ? 'sidebar-open' : ''} ${isTOCTransform ? 'toc-open' : ''} ${isEditorTransform ? 'editor-open' : ''}`}>
         <div className="content-wrapper" ref={contentRef}>
           <BreadCrumbs />
           <BlogContent

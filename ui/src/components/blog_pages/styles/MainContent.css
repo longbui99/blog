@@ -16,6 +16,10 @@
   margin-right: 300px;
 }
 
+.main-content.editor-open {
+  margin-right: 300px;
+}
+
 .main-content p {
   margin-bottom: 1em; /* Add more space between paragraphs */
   margin-top: 0;;
@@ -66,7 +70,7 @@
 /* Improve list readability */
 .main-content ul, 
 .main-content ol {
-  margin-bottom: 1.5em;
+  margin: unset;
   padding-left: 2em;
 }
 

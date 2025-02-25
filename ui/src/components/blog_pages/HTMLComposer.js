@@ -50,8 +50,54 @@ const HTMLComposer = () => {
         }
     }, [blogContent, isCreating, isEditing]);
 
-    const handleInput = (e) => {
+    useEffect(() => {
+        const editor = editorRef.current;
+        if (editor) {
+            editor.addEventListener('keydown', handleKeyDown);
+        }
+        return () => {
+            if (editor) {
+                editor.removeEventListener('keydown', handleKeyDown);
+            }
+        };
+    }, []);
+
+    const handleKeyDown = (e) => {
+        if (e.key === 'Tab') {
+            e.preventDefault(); // Prevent focus moving
+            handleTab(e);
+        }
+    };
+
+    const handleTab = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
         
+        const selection = window.getSelection();
+        if (!selection.rangeCount) return;
+        
+        const range = selection.getRangeAt(0);
+        const listItem = range.commonAncestorContainer.closest('li');
+        
+        if (listItem) {
+            if (e.shiftKey) {
+                // Outdent on Shift+Tab
+                document.execCommand('outdent', false, null);
+            } else {
+                // Indent on Tab
+                document.execCommand('indent', false, null);
+            }
+            handleInput();
+            return;
+        }
+
+        // Default tab behavior for non-list elements
+        document.execCommand('insertText', false, '\t');
+        handleInput();
+    };
+
+    const handleInput = (e) => {
+        // Regular content handling
         if (editorRef.current) {
             const newContent = editorRef.current.innerHTML;
             const sanitizedContent = DOMPurify.sanitize(newContent);
@@ -117,18 +163,20 @@ const HTMLComposer = () => {
     };
 
     const handleColorChange = (color) => {
-        // Save current selection
         const selection = window.getSelection();
         const range = selection.getRangeAt(0);
-
-        // Apply color to selection
-        document.execCommand('foreColor', false, color);
-
-        // Restore selection
-        selection.removeAllRanges();
-        selection.addRange(range);
         
-        // Ensure editor maintains focus
+        // Convert CSS variable to actual color value
+        const tempElement = document.createElement('div');
+        tempElement.style.color = color;
+        document.body.appendChild(tempElement);
+        const computedColor = window.getComputedStyle(tempElement).color;
+        document.body.removeChild(tempElement);
+        
+        // Apply color using execCommand (maintains undo stack)
+        document.execCommand('foreColor', false, computedColor);
+        
+        // Restore focus
         editorRef.current?.focus();
     };
 
@@ -274,6 +322,30 @@ const HTMLComposer = () => {
         handleInput();
     };
 
+    const handleBulletList = () => {
+        const selection = window.getSelection();
+        const range = selection.getRangeAt(0);
+        
+        document.execCommand('insertUnorderedList', false, null);
+        
+        // Restore cursor position
+        selection.removeAllRanges();
+        selection.addRange(range);
+        handleInput();
+    };
+
+    const handleNumberList = () => {
+        const selection = window.getSelection();
+        const range = selection.getRangeAt(0);
+        
+        document.execCommand('insertOrderedList', false, null);
+        
+        // Restore cursor position
+        selection.removeAllRanges();
+        selection.addRange(range);
+        handleInput();
+    };
+
     return (
         <div className="html-composer">
             <EditorToolbar 
@@ -285,6 +357,8 @@ const HTMLComposer = () => {
                 onInlineCode={handleInlineCode}
                 onCodeBlock={handleCodeBlock}
                 onHeading={handleHeading}
+                onBulletList={handleBulletList}
+                onNumberList={handleNumberList}
             />
             <div
                 ref={editorRef}
