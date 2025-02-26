@@ -9,7 +9,7 @@ class GeminiService:
     instance = None
     def initialization(self):
         genai.configure(api_key=settings.GEMINI_API_KEY)
-        self.model = genai.GenerativeModel('gemini-pro')
+        self.model = genai.GenerativeModel('gemini-1.5-pro')
         
     def __new__(cls):
         if not cls.instance:
@@ -49,7 +49,8 @@ class GeminiService:
                     'title': content.title,
                     'author': getattr(content, 'author', 'Unknown'),
                     'date': getattr(content, 'created_at', 'Unknown'),
-                    'tags': getattr(content, 'tags', [])
+                    'tags': getattr(content, 'tags', []),
+                    'url': content.blog_menu.path if hasattr(content, 'blog_menu') and content.blog_menu else None
                 }
                 combined_content.append(
                     f"""
@@ -58,6 +59,7 @@ class GeminiService:
                     Author: {metadata['author']}
                     Date: {metadata['date']}
                     Tags: {', '.join(metadata['tags']) if metadata['tags'] else 'None'}
+                    URL: {metadata['url']}
                     ---
                     {clean_text}
                     ---
@@ -87,23 +89,6 @@ class GeminiService:
                 3. Include relevant code snippets if present
                 4. Provide actionable insights
                 5. Structure response in Markdown format:
-
-                # Summary
-                [Brief overview of key findings]
-
-                ## Best Practices & Insights
-                - Recommended approaches
-                - Common pitfalls
-                - Performance considerations
-
-                ## Practical Applications
-                - Real-world use cases
-                - Implementation steps
-                - Code examples (if applicable)
-
-                ## Key Takeaways
-                - Action items
-                - Next steps
                 """
             else:
                 prompt = f"""Task: {command}

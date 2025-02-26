@@ -4,6 +4,7 @@ import { setChatOpen } from '../../redux/slices/chatSlice';
 import './styles/AIBotToggle.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRobot } from '@fortawesome/free-solid-svg-icons';
+import TargetIcon from '../../icons/TargetIcon';
 
 function AIBotToggle() {
   const dispatch = useDispatch();
@@ -20,7 +21,7 @@ function AIBotToggle() {
       title={isOpen ? "Close AI Bot" : "Open AI Bot"}
     >
       <span className="text">
-        <FontAwesomeIcon icon={faRobot} />
+        <TargetIcon />
       </span>
     </button>
   );

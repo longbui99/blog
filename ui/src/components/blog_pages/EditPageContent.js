@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import Select from 'react-select';
 import './styles/EditPageContent.css';
 import { blogContentProcessor } from '../../processor/blogContentProcessor';
+import { blogMenuProcessor } from '../../processor/blogMenuProcessor';
 import { useDispatch, useSelector } from 'react-redux';
 import { setEditing, setCreating } from '../../redux/slices/editingSlice';
 import storageRegistry from '../../store/storage_registry';
@@ -113,21 +114,34 @@ function EditPageContent() {
     setSelectedNext(selectedOption);
   };
 
-  const handleUrlPathChange = (e) => {
+  const handleUrlPathChange = async(e) => {
     setUrlPath(e.target.value);
+    if (isCreating) {
+      const isPathExists = await blogMenuProcessor.checkPathExists(e.target.value);
+      if (isPathExists?.exists) {
+        setError('Path already exists');
+      } else {
+        setError(null);
+      }
+    }
   };
 
   const handleSave = async () => {
+    if (error){
+      return;
+    }
     if (isCreating) {
       const errors = {
         title: !title,
-        urlPath: !selectedParent
+        urlPath: !urlPath
       };
       setValidationErrors(errors);
 
       if (errors.title || errors.urlPath) {
         setError('Please fill in all required fields');
         return;
+      } else {
+        setError(null);
       }
     }
 
@@ -145,6 +159,7 @@ function EditPageContent() {
       setValidationErrors(errors);
       return;
     }
+
 
     try {
       if (storageRegistry.has('currentContent')) {

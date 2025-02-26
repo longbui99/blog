@@ -1,8 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ReactComponent as Logo } from '../..//static/logo.svg';
-import TOCToggle from '../toggle/TOCToggle.js';
-import ChatToggle from '../toggle/SearchToggle.js';
+import SearchToggle from '../toggle/SearchToggle.js';
 import AIBotToggle from '../toggle/AIBotToggle.js';
 import CreateToggle from '../toggle/CreateToggle.js';
 import EditToggle from '../toggle/EditToggle.js';
@@ -18,8 +17,6 @@ import RawEditorToggle from '../toggle/RawEditorToggle.js';
 
 function Header() {
   const isLoggedIn = useSelector(state => state.login.isLoggedIn);
-  const isEditing = useSelector(state => state.editing.isEditing);
-  const isCreating = useSelector(state => state.editing.isCreating);
   return (
     <>
       <header className="app-bar">
@@ -31,7 +28,7 @@ function Header() {
         </div>
         <p className="motto">You, not others</p>
         <div className="nav-container-invisible">
-          <ChatToggle />
+          <SearchToggle />
           <AIBotToggle />
           <SearchPopup />
           <ChatPopup />

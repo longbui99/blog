@@ -107,7 +107,7 @@ function Sidebar({ className, onItemClick }) {
         if (isContentLoaded) {
             const activeItem = sidebarRef.current.querySelector('.active');
             if (activeItem) {
-                activeItem.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                activeItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
         }
     }, [location.pathname, isContentLoaded]);

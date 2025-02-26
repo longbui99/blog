@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes, faRobot, faUser, faPaperPlane, faUndo } from '@fortawesome/free-solid-svg-icons';
+import { faTimes, faComments, faUser, faPaperPlane, faUndo } from '@fortawesome/free-solid-svg-icons';
 import './styles/ChatPopup.css';
 import { aiBotProcessor } from '../../processor/aiBotProcessor';
 import { marked } from 'marked';
 import { useDispatch, useSelector } from 'react-redux';
 import { setChatOpen } from '../../redux/slices/chatSlice';
+import { indexDbManager } from '../../store/indexdb_manager';
 
 function ChatPopup() {
   const [messages, setMessages] = useState([]);
@@ -21,7 +22,7 @@ function ChatPopup() {
   const isOpen = useSelector(state => state.chat.isChatOpen);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
   };
 
   useEffect(() => {
@@ -46,6 +47,7 @@ function ChatPopup() {
           inputRef.current.focus();
         }
       }, 100);
+      messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
       return () => clearTimeout(timer);
     }
   }, [isOpen]);
@@ -106,11 +108,48 @@ function ChatPopup() {
     }
   }, [messages]);
 
+  // Load chat data from IndexedDB when component mounts
+  useEffect(() => {
+    const loadChatData = async () => {
+      try {
+        const chatData = await indexDbManager.chat.getChat();
+        
+        if (chatData) {
+          setMessages(chatData.messages || []);
+          setHistory(chatData.history || []);
+          setIsLimited(chatData.messages && chatData.messages.length >= 14);
+        }
+      } catch (error) {
+        console.error('Error loading chat data:', error);
+      }
+    };
+    
+    loadChatData();
+  }, []);
+
+  // Save chat data to IndexedDB whenever messages or history change
+  useEffect(() => {
+    const saveChatData = async () => {
+      try {
+        await indexDbManager.chat.saveChat({ messages, history });
+      } catch (error) {
+        console.error('Error saving chat data:', error);
+      }
+    };
+    
+    if (messages.length > 0 || history.length > 0) {
+      saveChatData();
+    }
+  }, [messages, history]);
+
   const resetChat = () => {
     setMessages([]);
     setHistory([]);
     setInputMessage('');
     setIsLimited(false);
+    indexDbManager.chat.clearChat().catch(error => {
+      console.error('Error clearing chat data:', error);
+    });
   };
 
   if (!isOpen) return null;
@@ -137,7 +176,7 @@ function ChatPopup() {
           {messages.map((message, index) => (
             <div key={index} className={`message ${message.sender}`}>
               <FontAwesomeIcon 
-                icon={message.sender === 'bot' ? faRobot : faUser} 
+                icon={message.sender === 'bot' ? faComments : faUser} 
                 className="message-icon"
               />
               <div className="message-content">
@@ -166,7 +205,7 @@ function ChatPopup() {
           ))}
           {isLoading && (
             <div className="message bot loading">
-              <FontAwesomeIcon icon={faRobot} className="message-icon" />
+              <FontAwesomeIcon icon={faComments} className="message-icon" />
               <div className="message-content">
                 <div className="typing-indicator">
                   <span></span>

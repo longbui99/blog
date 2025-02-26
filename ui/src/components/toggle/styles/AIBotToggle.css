@@ -61,7 +61,7 @@ For the full design system reference, see ui/src/styles/App.css
 
 /* Hover effects */
 .ai-bot-toggle:hover {
-    background-color: var(--text-primary);
+    background-color: var(--color-white);
     box-shadow: var(--shadow-xl);
     transform: translateY(-2px);
 }
@@ -105,4 +105,27 @@ For the full design system reference, see ui/src/styles/App.css
 .ai-bot-toggle:hover::after {
     opacity: 0.9;
     background: linear-gradient(to right bottom, var(--primary-500), var(--primary-700));
+}
+
+/* Animation for circling effect */
+@keyframes circle-rotation {
+  0% {
+    transform: rotate(360deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+/* Apply animation to the toggle always */
+.ai-bot-toggle svg {
+  animation: circle-rotation 1.5s infinite linear;
+}
+
+/* Ensure hover transform doesn't conflict with animation */
+.ai-bot-toggle:hover {
+  transform: translateY(-2px);
+}
+.ai-bot-toggle:hover svg {
+  animation: circle-rotation 1.5s infinite linear;
 }
