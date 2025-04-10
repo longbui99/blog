@@ -68,10 +68,6 @@ const MenuItem = ({isLoggedIn, activeRoute, id, title, path, index, is_published
         }
     }, [isActive, path, isExpanded, setExpandedPath, collapseAllExcept, parentsMap]);
 
-    if (isActive) {
-        dispatch(setActiveRoute(path));
-    }
-
     return (
         <li className={`
             ${isActive ? "active" : ""} 
@@ -151,23 +147,25 @@ function Sidebar({ className, onItemClick }) {
 
     // Function to collapse all menu items except for a provided list of paths
     const collapseAllExcept = useCallback((exceptPaths = []) => {
-        const newState = {};
-        
-        // Mark only the excepted paths as expanded
-        exceptPaths.forEach(path => {
-            newState[path] = true;
-            localStorage.setItem(`sidebar-expanded-${path}`, true);
+        setExpandedPaths(prev => {
+            const newState = {};
+            
+            // Mark only the excepted paths as expanded
+            exceptPaths.forEach(path => {
+                newState[path] = true;
+                localStorage.setItem(`sidebar-expanded-${path}`, true);
+            });
+            
+            // Collapse all other items and update localStorage
+            Object.keys(prev).forEach(path => {
+                if (!exceptPaths.includes(path)) {
+                    localStorage.setItem(`sidebar-expanded-${path}`, false);
+                }
+            });
+            
+            return newState;
         });
-        
-        // Collapse all other items and update localStorage
-        Object.keys(expandedPaths).forEach(path => {
-            if (!exceptPaths.includes(path)) {
-                localStorage.setItem(`sidebar-expanded-${path}`, false);
-            }
-        });
-        
-        setExpandedPaths(newState);
-    }, [expandedPaths]);
+    }, []);
 
     // Function to set the expanded state of a path and all its parents
     const setExpandedPath = useCallback((path, isExpanded) => {
