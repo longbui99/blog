@@ -24,7 +24,7 @@ function Header() {
           <Link to="/" className="logo">
             <Logo />
           </Link>
-          <h1 className="site-title"><a href="https://longbui.net" target="_blank" rel="noopener noreferrer">Long Bui</a></h1>
+          <h1 className="site-title"><a href="/" >Long Bui</a></h1>
         </div>
         <p className="motto">You, not others</p>
         <div className="nav-container-invisible">

@@ -110,7 +110,7 @@ function Sidebar({ className, onItemClick }) {
                 activeItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
         }
-    }, [location.pathname, isContentLoaded]);
+    }, [location.pathname, isContentLoaded, activeRoute]);
 
 
     return (

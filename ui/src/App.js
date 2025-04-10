@@ -82,14 +82,8 @@ function AppContent() {
             <RouteTracker />
             <div className="App">
               <Header isLoggedIn={isLoggedIn} />
-              <Sidebar 
-              />
+              <Sidebar />
               <MainContent >
-                <Routes>
-                  {routesRedux.map(route => (
-                    <Route key={route.path} path={route.path} element={<route.component />} />
-                  ))}
-                </Routes>
               </MainContent>
               <LoginModal />
             </div>

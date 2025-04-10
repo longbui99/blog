@@ -1,6 +1,7 @@
 import React from 'react';
 import CodeBlock from '../components/blog_pages/CodeBlock';
 import { H1, H2, H3, H4, H5, H6, H7 } from '../components/blog_pages/ContentHeaders';
+import Category from '../components/blog_pages/components/category/Category';
 
 function htmlToElement(html) {
   if (typeof html !== 'string') {
@@ -71,6 +72,11 @@ function processNode(node, currentRoute) {
 
   if (node.nodeType === Node.ELEMENT_NODE) {
     const tagName = node.tagName.toLowerCase();
+
+    // Return Category component when <category> tag is found
+    if (tagName === 'category') {
+      return <Category key={Math.random()} />;
+    }
 
     if (tagName === 'pre' && node.firstChild && node.firstChild.tagName?.toLowerCase() === 'code') {
       const code = node.firstChild;

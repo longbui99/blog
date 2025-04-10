@@ -1,11 +1,12 @@
 import React, { useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSun, faMoon, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faSun, faMoon, faUser, faBlog } from '@fortawesome/free-solid-svg-icons';
 import './styles/ControlPanelPopup.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { setControlPanelOpen } from '../../redux/slices/controlPanelSlice';
 import { toggleTheme } from '../../redux/slices/themeSlice';
 import { toggleLoginModal } from '../../redux/slices/loginSlice';
+import { FaBlogger } from 'react-icons/fa';
 
 function ControlPanelPopup() {
   const dispatch = useDispatch();
@@ -55,6 +56,13 @@ function ControlPanelPopup() {
       aria-label="Control Panel"
     >
       <div className="control-panel-content">
+        <a 
+          className="menu-button"
+          href="https://longbui.net" target="_blank" rel="noopener noreferrer"
+        >
+          <FontAwesomeIcon icon={faBlog} />
+          <span>Porfolio</span>
+        </a>
         <button 
           className="menu-button"
           onClick={handleThemeToggle}
