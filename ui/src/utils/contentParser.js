@@ -2,6 +2,7 @@ import React from 'react';
 import CodeBlock from '../components/blog_pages/CodeBlock';
 import { H1, H2, H3, H4, H5, H6, H7 } from '../components/blog_pages/ContentHeaders';
 import Category from '../components/blog_pages/components/category/Category';
+import PageTree from '../components/blog_pages/components/pagetree/PageTree';
 
 function htmlToElement(html) {
   if (typeof html !== 'string') {
@@ -72,10 +73,15 @@ function processNode(node, currentRoute) {
 
   if (node.nodeType === Node.ELEMENT_NODE) {
     const tagName = node.tagName.toLowerCase();
-
-    // Return Category component when <category> tag is found
-    if (tagName === 'category') {
+    const classList = node.classList ? Array.from(node.classList) : [];
+    
+    // Check both tag name AND class for more reliable identification
+    if (tagName === 'category' || classList.includes('category-widget')) {
       return <Category key={Math.random()} />;
+    }
+
+    if (tagName === 'pagetree' || classList.includes('pagetree-widget')) {
+      return <PageTree key={Math.random()} />;
     }
 
     if (tagName === 'pre' && node.firstChild && node.firstChild.tagName?.toLowerCase() === 'code') {

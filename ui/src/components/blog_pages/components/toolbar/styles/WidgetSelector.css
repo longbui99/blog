@@ -1,0 +1,68 @@
+.widget-selector-menu {
+    display: flex;
+    flex-direction: column;
+    min-width: 180px;
+    background-color: var(--background-secondary);
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+    padding: 6px;
+}
+
+.widget-selector-item {
+    display: flex;
+    justify-content: center;
+    padding: 10px 16px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--text-primary);
+    transition: all 0.2s ease;
+    width: 100%!important;
+    border-radius: 4px;
+    margin: 2px 0;
+}
+
+.widget-selector-content {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.widget-selector-icon {
+    width: 16px;
+    margin-right: 12px;
+    color: var(--text-secondary);
+    flex-shrink: 0;
+}
+
+.widget-selector-label {
+    flex: 1;
+    text-align: left;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.widget-selector-item:hover {
+    background-color: var(--primary-color);
+}
+
+.widget-selector-item:hover .widget-selector-icon,
+.widget-selector-item:hover .widget-selector-label {
+    color: white;
+}
+
+/* Icon-specific styling */
+.widget-selector-item[title="Insert Page Tree"] .widget-selector-icon {
+    color: #ff3366;
+}
+
+.widget-selector-item[title="Insert Category"] .widget-selector-icon {
+    color: #44aaff;
+}
+
+/* Separator styling */
+.widget-selector-item:not(:last-child) {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}

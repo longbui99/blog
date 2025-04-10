@@ -1,0 +1,101 @@
+.pagetree-container {
+    width: 100%;
+    padding: 0.75rem;
+    margin-bottom: 1.5rem;
+    background-color: var(--background-secondary);
+    border-radius: 8px;
+    box-shadow: var(--shadow-sm);
+}
+
+.pagetree-header {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.25rem;
+    padding-left: 0px;
+}
+
+.pagetree {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+}
+
+.pagetree-item {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0.1rem;
+}
+
+.pagetree-item.active > .pagetree-item-title {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.pagetree-item.ancestor > .pagetree-item-title {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.pagetree-item-title {
+    padding: 0.25rem 0.5rem;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    font-size: 0.9rem;
+}
+
+.pagetree-item-title:hover {
+    background-color: var(--bg-hover);
+    color: var(--primary-color);
+}
+
+.pagetree-children {
+    display: flex;
+    flex-direction: column;
+    padding-left: 0.75rem;
+    border-left: 1px dashed var(--border-color);
+    margin-left: 0.25rem;
+}
+
+.pagetree-item-header {
+    display: flex;
+    align-items: center;
+}
+
+.pagetree-expand-icon {
+    display: inline-block;
+    margin-right: 5px;
+    width: 16px;
+    height: 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    transform: rotate(90deg);
+}
+
+.pagetree-expand-icon.expanded {
+    transform: rotate(90deg);
+}
+
+.pagetree-expand-icon:not(.expanded) {
+    transform: rotate(0deg);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .pagetree-container {
+        padding: 0.5rem;
+    }
+    
+    .pagetree-header {
+        font-size: 1rem;
+        margin-bottom: 0.4rem;
+    }
+    
+    .pagetree-item-title {
+        font-size: 0.85rem;
+        padding: 0.2rem 0.4rem;
+    }
+}

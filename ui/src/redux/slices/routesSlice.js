@@ -16,6 +16,7 @@ const routesSlice = createSlice({
     isLoading: false,
     error: null,
     activeRoute: window.location.pathname, // Initialize with current path
+    expandedItems: {},
   },
   reducers: {
     setActiveRoute: (state, action) => {
@@ -36,6 +37,9 @@ const routesSlice = createSlice({
       if (index !== -1) {
         state.items[index] = action.payload;
       }
+    },
+    setExpandedItems: (state, action) => {
+      state.expandedItems = action.payload;
     }
   },
   extraReducers: (builder) => {

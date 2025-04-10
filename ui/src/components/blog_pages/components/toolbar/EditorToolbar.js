@@ -13,8 +13,10 @@ import {
     faEllipsisH, 
     faFont,
     faChevronDown,
-    faPen
+    faPen,
+    faSitemap
 } from '@fortawesome/free-solid-svg-icons';
+import WidgetSelector from './WidgetSelector';
 import './styles/EditorToolbar.css';
 
 const EditorToolbar = forwardRef(({ 
@@ -29,7 +31,8 @@ const EditorToolbar = forwardRef(({
     onBulletList,
     onNumberList,
     onTextStyle,
-    onCheckList
+    onCheckList,
+    onWidgetInsert
 }, ref) => {
     const [activePopup, setActivePopup] = useState(null);
 
@@ -49,6 +52,26 @@ const EditorToolbar = forwardRef(({
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, []);
+
+    const handleWidgetInsert = (widgetType) => {
+        let widgetHTML = '';
+        if (widgetType === 'pagetree') {
+            widgetHTML = `
+                <div class="widget pagetree-widget" contenteditable="false">
+                    <div class="widget-content">Page Tree will be displayed here</div>
+                </div>
+            `;
+        } else if (widgetType === 'category') {
+            widgetHTML = `
+                <div class="widget category-widget" contenteditable="false">
+                    <div class="widget-content">Category will be displayed here</div>
+                </div>
+            `;
+        }
+        
+        // Insert at cursor position
+        document.execCommand('insertHTML', false, widgetHTML);
+    };
 
     return (
         <div className="editor-manager">
@@ -170,6 +193,24 @@ const EditorToolbar = forwardRef(({
                                     onAlignment(align);
                                     setActivePopup(null);
                                 }} 
+                            />
+                        </div>
+                    )}
+                </div>
+
+                <div className="toolbar-group">
+                    <button 
+                        className={`toolbar-button dropdown-button ${activePopup === 'widgets' ? 'active' : ''}`}
+                        onClick={() => togglePopup('widgets')}
+                    >
+                        <FontAwesomeIcon icon={faSitemap} />
+                        <FontAwesomeIcon icon={faChevronDown} className="dropdown-icon" />
+                    </button>
+                    {activePopup === 'widgets' && (
+                        <div className="toolbar-popup">
+                            <WidgetSelector 
+                                onWidgetInsert={handleWidgetInsert}
+                                setActivePopup={setActivePopup}
                             />
                         </div>
                     )}
