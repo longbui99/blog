@@ -15,7 +15,7 @@ export const fetchRouteMap = async () => {
 };
 
 // In routes.js
-const STORAGE_KEY = 'viewed_routes';
+const STORAGE_KEY = 'lbblog_viewed_routes';
 
 // Function to mark a route as viewed in localStorage
 export const markRouteAsViewed = (path) => {
@@ -49,14 +49,13 @@ export const checkNewRoute = (routes) => {
     if (Object.keys(viewedRoutes).length === 0) {
       const initialViewedRoutes = {};
       routes.forEach(route => {
-        initialViewedRoutes[route.path] = true;
+        initialViewedRoutes[route.path] = route.updated_at;
         route.isNew = false;
       });
       localStorage.setItem(STORAGE_KEY, JSON.stringify(initialViewedRoutes));
     } else{
       for (const route of routes) {
-        const isNew = !viewedRoutes[route.path];
-        route.isNew = isNew;
+        route.isNew = route.updated_at !== viewedRoutes[route.path];
       }
     }
     
