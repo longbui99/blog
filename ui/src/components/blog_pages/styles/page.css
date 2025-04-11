@@ -659,17 +659,14 @@ li {
     font-style: italic;
     font-weight: 200;
     letter-spacing: 0px;
-    color: var(--link-light);
-}
-.dark-mode .content-wrapper a {
-    color: var(--link-dark);
+    color: var(--link-color);
 }
 
 h1, h2, h3, h4, h5, h6 {
     font-style: italic;
     font-weight: 200;
     letter-spacing: 0px;
-    color: var(--link-light);
+    color: var(--link-color);
 }
 h1 {
     margin-left: 0px;
@@ -686,7 +683,7 @@ h3 {
 .dark-mode h4,
 .dark-mode h5,
 .dark-mode h6 {
-    color: var(--link-dark);
+    color: var(--link-color);
 }
 
 .content-wrapper h1 a,
@@ -730,7 +727,7 @@ h3 {
 .loading-panel::before {
     content: ''; /* Empty content for the spinner */
     border: 8px solid #f3f3f3; /* Light gray border */
-    border-top: 8px solid var(--link-light); /* Blue top border */
+    border-top: 8px solid var(--link-color); /* Blue top border */
     border-radius: 50%; /* Circular shape */
     width: 50px; /* Spinner width */
     height: 50px; /* Spinner height */
@@ -741,7 +738,7 @@ h3 {
     transform: translate(-50%, -50%); /* Adjust for the spinner's size */
 }
 .dark-mode .loading-panel::before {
-    border-top: 8px solid var(--link-dark);
+    border-top: 8px solid var(--link-color);
 }
 
 /* Keyframes for the spin animation */

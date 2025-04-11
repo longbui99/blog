@@ -225,7 +225,7 @@
 }
 
 .dark-mode .search-input:focus {
-  border-color: var(--link-dark);
+  border-color: var(--link-color);
   box-shadow: 0 0 0 2px rgba(179, 152, 0, 0.1);
 }
 
@@ -260,10 +260,10 @@
 }
 
 .search-results .highlight {
-  color: var(--link-light);
+  color: var(--link-color);
   font-weight: 700;
 }
 
 .dark-mode .search-results .highlight {
-  color: var(--link-dark);
+  color: var(--link-color);
 } 

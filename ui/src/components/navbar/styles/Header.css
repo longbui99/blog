@@ -85,7 +85,7 @@
 }
 
 .dark-mode .top-nav a::after {
-  background-color: var(--link-dark);
+  background-color: var(--link-color);
 }
 
 .dark-mode .top-nav a:hover {
@@ -270,7 +270,7 @@
 }
 
 .dark-mode .search-input:focus {
-  border-color: var(--link-dark);
+  border-color: var(--link-color);
   box-shadow: 0 0 0 2px rgba(179, 152, 0, 0.1);
 }
 

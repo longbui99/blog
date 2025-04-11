@@ -50,5 +50,5 @@
 
 /* Dark theme styles */
 .dark-mode .copy-link-button svg {
-  color: var(--link-dark);
+  color: var(--link-color);
 }

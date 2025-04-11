@@ -52,11 +52,11 @@
     color: var(--text-dark);
 }
 .dark-mode .breadcrumbs .breadcrumb-segment.active{
-    color: var(--link-dark);
+    color: var(--link-color);
 }
 
 .dark-mode .breadcrumbs .breadcrumb-segment:hover{
-    color: var(--link-dark);
+    color: var(--link-color);
 }
 .dark-mode .breadcrumbs .breadcrumb-segment.active:hover{
     cursor: default;

@@ -195,7 +195,7 @@ For the full design system reference, see ui/src/styles/App.css
 }
 
 .dark-mode .sidebar-nav:hover::-webkit-scrollbar-thumb {
-    background-color: var(--link-dark);
+    background-color: var(--link-color);
 }
 
 .dark-mode .sidebar-search input {
