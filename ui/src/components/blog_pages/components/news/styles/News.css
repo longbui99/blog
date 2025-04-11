@@ -91,13 +91,17 @@
     gap: 0.5rem;
 }
 
-.recent-updates-date {
+.recent-updates-date {    
     font-size: 1.1rem;
     font-weight: 700;
     color: var(--text-primary);
     padding-left: 0.25rem;
     margin-bottom: 0.5rem;
     padding-left: 0.75rem;
+    background-color: var(--bg-primary);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
 
 .recent-updates-items {
