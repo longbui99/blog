@@ -6,7 +6,7 @@ class BlogMenuBase(BaseModel):
     title: str
     parent: Optional[str] = None
     sequence: int
-    component: str
+    description: Optional[str] = None
     short_name: str
     is_published: bool
 
@@ -17,7 +17,7 @@ class BlogMenuUpdate(BaseModel):
     title: Optional[str] = None
     parent: Optional[str] = None
     sequence: Optional[int] = None
-    component: Optional[str] = None
+    description: Optional[str] = None
     short_name: Optional[str] = None
 
 class BlogMenuInDB(BlogMenuBase):
@@ -36,8 +36,11 @@ class BlogMenuItem(BaseModel):
     title: str
     parent: Optional[str]
     sequence: int
-    component: str
+    description: Optional[str] = None
     is_published: bool
+    total_views: int
+    created_at: datetime
+    updated_at: datetime
 
 class PublishMenuRequest(BaseModel):
     path: str  # Ensure this is a string

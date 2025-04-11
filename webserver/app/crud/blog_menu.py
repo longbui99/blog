@@ -18,8 +18,11 @@ async def get_blog_menus():
             "title": menu.title,
             "parent": menu.parent,
             "sequence": menu.sequence,
-            "component": menu.component,
-            "is_published": bool(menu.is_published)
+            "description": menu.description,
+            "is_published": bool(menu.is_published),
+            "total_views": menu.total_views,
+            "created_at": menu.created_at,
+            "updated_at": menu.updated_at
         }
         for menu in menus
     ]

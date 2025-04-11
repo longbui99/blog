@@ -6,6 +6,7 @@ from app.models.blog_content import BlogContent as BlogContentModel
 from app.models.blog_menu import BlogMenu as BlogMenuModel
 from app.models.search import SearchResult
 from app.crud.blog_menu import create_blog_menu, get_blog_menu, get_blog_menus, update_blog_menu, delete_blog_menu
+from app.crud.blog_content import get_blog_content_by_menu_id
 from app.api.v1.auth import get_current_user, check_authorized_user
 from app.services.blogpost_elastic import BlogpostElasticService
 from app.schemas.search import SearchQuery
@@ -145,13 +146,11 @@ async def delete_menu_item(menu_id: int, current_user: dict = Depends(get_curren
 
 @router.get("/{menu_id}/content", response_model=BlogContentSchema)
 async def read_blog_content_by_menu(menu_id: int, current_user: dict = Depends(check_authorized_user)):
-    content = await BlogContentModel.get(blog_menu_id=menu_id)
+    content = await get_blog_content_by_menu_id(menu_id)
     if not content:
         raise HTTPException(status_code=404, detail="Blog content not found for this menu")
     if not content.is_published and current_user is None:
         raise HTTPException(status_code=403, detail="This content is not published")
-    
-    await content.increment_views()
     
     return await BlogContentSchema.from_tortoise_orm(content)
 
@@ -162,11 +161,11 @@ async def read_blog_content_by_menu_path(path: str):
     if not menu_item:
         raise HTTPException(status_code=404, detail="Blog menu not found for this path")
     
-    content = await BlogContentModel.get_or_none(blog_menu_id=menu_item.id)
+    content = await get_blog_content_by_menu_id(menu_item.id)
     if not content:
         raise HTTPException(status_code=404, detail="Blog content not found for this menu path")
     
-    await content.increment_views()
+    await menu_item.increment_views()
     
     return content
 
@@ -177,11 +176,11 @@ async def add_blog_content_home_by_menu_path():
     if not menu_item:
         raise HTTPException(status_code=404, detail="Blog menu not found for this path")
     
-    content = await BlogContentModel.get_or_none(blog_menu_id=menu_item.id)
+    content = await get_blog_content_by_menu_id(menu_item.id)
     if not content:
         raise HTTPException(status_code=404, detail="Blog content not found for this menu path")
     
-    await content.increment_views()
+    await menu_item.increment_views()
 
     return content
 

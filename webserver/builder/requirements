@@ -17,3 +17,6 @@ tenacity>=8.0.0
 sentence-transformers
 grpcio==1.59.0
 google-generativeai==0.3.2
+aerich
+tomlkit
+tomli
