@@ -273,3 +273,22 @@ ul.collapsed {
 .sidebar:not(.hidden) .sidebar-toggle-right {
     left: 270px;
 }
+
+.new-indicator {
+    position: absolute;
+    color: var(--link-color);
+    font-size: 0.6rem;
+    font-weight: bold;
+    padding: 2px 4px;
+    border-radius: 3px;
+    transform: rotate(-5deg);
+    z-index: 1;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--primary-color);
+    top: -12px;
+    left: -10px;
+}
+
+.menu-item {
+    position: relative; /* Make sure this is present for absolute positioning of new-indicator */
+}

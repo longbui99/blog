@@ -47,6 +47,9 @@ const PageTree = () => {
                     onClick={() => navigate(path)}
                 >
                     {route.title}
+                    {route.isNew && (
+                        <span className="pagetree-new-indicator">NEW</span>
+                    )}
                 </div>
                 
                 {children.length > 0 && (

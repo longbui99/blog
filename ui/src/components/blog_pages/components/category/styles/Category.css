@@ -25,8 +25,8 @@
     cursor: pointer;
     position: relative;
     border: 1px solid rgba(255, 255, 255, 0.05);
-    overflow: hidden;
-    box-shadow: var(--shadow-lg);
+    overflow: visible;
+    box-shadow: var(--shadow-2xl);
 }
 
 .category-card:hover {
@@ -74,16 +74,120 @@
 .category-tag {
     background-color: var(--bg-tertiary);
     color: var(--text-secondary);
-    font-size: 0.75rem;
-    padding: 0.25rem 0.5rem;
+    font-size: 0.85rem;
+    padding: 0.35rem 0.7rem;
     border-radius: 4px;
     transition: all 0.2s ease;
+    position: relative;
+    overflow: visible;
+    margin-top: 8px;
 }
 
 .category-tag:hover {
     background-color: var(--color-primary);
     color: white;
     transform: translateY(-2px);
+}
+
+.category-views-count {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    opacity: 0.8;
+    margin-top: 2px;
+    margin-left: 0.2rem;
+    padding: 2px 2px;
+    border-radius: 10px;
+}
+.category-tag:hover .category-views-count {
+    color: white;
+}
+
+/* Card NEW indicator - visible in both modes */
+.card-new-indicator {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: var(--primary-color);
+    color: white;
+    font-size: 0.7rem;
+    font-weight: bold;
+    padding: 3px 6px;
+    border-radius: 4px;
+    transform: rotate(3deg);
+    z-index: 2;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    letter-spacing: 0.5px;
+    display: inline-block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Child tag NEW indicator - visible in both modes */
+.child-new-indicator {
+    position: absolute;
+    background-color: var(--primary-color);
+    color: white;
+    font-size: 0.6rem;
+    font-weight: bold;
+    padding: 2px 4px;
+    border-radius: 3px;
+    transform: rotate(-5deg);
+    z-index: 1;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    top: -12px;
+    left: -10px;
+    display: inline-block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Light mode specific fixes */
+:root:not(.dark-mode) .card-new-indicator,
+:root:not(.dark-mode) .child-new-indicator,
+:root:not(.dark-mode) .sidebar .new-indicator {
+    display: inline-block !important;
+    background-color: #ff3366 !important; /* Use a specific color rather than var() */
+    color: white !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    z-index: 5 !important; /* Higher z-index for light mode */
+}
+
+/* Dark mode specific styling */
+:root.dark-mode .card-new-indicator,
+:root.dark-mode .child-new-indicator,
+:root.dark-mode .sidebar .new-indicator {
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Sidebar NEW indicator */
+.new-indicator,
+.sidebar .new-indicator {
+    position: absolute;
+    color: white !important;
+    background-color: #ff3366 !important;
+    font-size: 0.6rem;
+    font-weight: bold;
+    padding: 2px 5px;
+    border-radius: 3px;
+    transform: rotate(-5deg);
+    z-index: 1;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    top: -12px;
+    left: -10px;
+    display: inline-block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Remove the old styles that might conflict */
+
+.position-relative {
+    position: relative;
+    padding-right: 5px;
 }
 
 /* Responsive adjustments */

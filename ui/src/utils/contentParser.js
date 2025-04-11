@@ -3,6 +3,7 @@ import CodeBlock from '../components/blog_pages/CodeBlock';
 import { H1, H2, H3, H4, H5, H6, H7 } from '../components/blog_pages/ContentHeaders';
 import Category from '../components/blog_pages/components/category/Category';
 import PageTree from '../components/blog_pages/components/pagetree/PageTree';
+import News from '../components/blog_pages/components/news/News';
 
 function htmlToElement(html) {
   if (typeof html !== 'string') {
@@ -74,6 +75,10 @@ function processNode(node, currentRoute) {
   if (node.nodeType === Node.ELEMENT_NODE) {
     const tagName = node.tagName.toLowerCase();
     const classList = node.classList ? Array.from(node.classList) : [];
+
+    if (tagName === 'news' || classList.includes('news-widget')) {
+      return <News key={Math.random()} />;
+    }
     
     // Check both tag name AND class for more reliable identification
     if (tagName === 'category' || classList.includes('category-widget')) {

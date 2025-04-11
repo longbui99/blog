@@ -58,6 +58,9 @@ const Category = () => {
                             onClick={() => handleCardClick(category.path)}
                         >
                             <div className="category-card-content">
+                                {category.isNew && (
+                                    <span className="card-new-indicator">NEW</span>
+                                )}
                                 <div className="category-card-body">
                                     <h3 className="category-card-title">{category.title}</h3>
                                     
@@ -66,10 +69,16 @@ const Category = () => {
                                             {childPages.map(child => (
                                                 <span 
                                                     key={child.path} 
-                                                    className="category-tag"
+                                                    className={`category-tag ${child.isNew ? 'position-relative' : ''}`}
                                                     onClick={(e) => handleChildClick(e, child.path)}
                                                 >
-                                                    {child.title}
+                                                    {child.isNew && (
+                                                        <span className="child-new-indicator tag-new">NEW</span>
+                                                    )}
+                                                    {child.title} 
+                                                    <small className="category-views-count">
+                                                        ({child.total_views})
+                                                    </small>
                                                 </span>
                                             ))}
                                         </div>

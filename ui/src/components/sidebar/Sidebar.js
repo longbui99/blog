@@ -17,8 +17,10 @@ const MenuExpandContext = createContext({
     parentsMap: {}
 });
 
-const MenuItem = ({isLoggedIn, activeRoute, id, title, path, index, is_published, children, searchTerm, onItemClick, level = 0, parentPath = null}) => {
+const MenuItem = ({ item, isLoggedIn, activeRoute, searchTerm, onItemClick, level = 0, parentPath = null }) => {
+    const { id, title, path, index, is_published, children, isNew } = item;
     const [isPublished, setIsPublished] = useState(is_published);
+    const [isNew_, setIsNew] = useState(isNew);
     const { subscribeToEvent } = useMenuContext();
     const dispatch = useDispatch();
     
@@ -38,6 +40,7 @@ const MenuItem = ({isLoggedIn, activeRoute, id, title, path, index, is_published
         if (isDeviceMobile()) {
             onItemClick?.();
         }
+        setIsNew(false);
     };
 
     const toggleExpand = (e) => {
@@ -58,13 +61,16 @@ const MenuItem = ({isLoggedIn, activeRoute, id, title, path, index, is_published
 
     // Auto expand when this item becomes active
     useEffect(() => {
-        if (isActive && !isExpanded) {
+        if (isActive){
+            setIsNew(false);
+            if (!isExpanded) {
             // Collapse all menus except the path to this active item
-            const pathToExpand = getPathToRoot(path, parentsMap);
-            collapseAllExcept(pathToExpand);
-            
-            // Expand this item
-            setExpandedPath(path, true);
+                const pathToExpand = getPathToRoot(path, parentsMap);
+                collapseAllExcept(pathToExpand);
+                
+                // Expand this item
+                setExpandedPath(path, true);
+            }
         }
     }, [isActive, path, isExpanded, setExpandedPath, collapseAllExcept, parentsMap]);
 
@@ -78,6 +84,9 @@ const MenuItem = ({isLoggedIn, activeRoute, id, title, path, index, is_published
                  onClick={handleClick}>
                 {isLoggedIn && (
                     <span className={`status-dot ${isPublished ? 'published' : 'unpublished'}`} />
+                )}
+                {isNew_ && (
+                    <span className="new-indicator">NEW</span>
                 )}
                 <NavLink to={path} onClick={handleClick}>
                     {title}
@@ -96,8 +105,9 @@ const MenuItem = ({isLoggedIn, activeRoute, id, title, path, index, is_published
                     {children.map((child, childIndex) => (
                         <MenuItem
                             key={child.path}
-                            {...child}
-                            index={childIndex}
+                            item={child}
+                            isLoggedIn={isLoggedIn}
+                            activeRoute={activeRoute}
                             searchTerm={searchTerm}
                             onItemClick={onItemClick}
                             level={level + 1}
@@ -286,11 +296,11 @@ function Sidebar({ className, onItemClick }) {
                         <ul>
                             {menuItems.map((item, index) => (
                                 <MenuItem 
-                                    key={item.path} 
+                                    key={item.path}
+                                    item={item}
                                     isLoggedIn={isLoggedIn}
                                     activeRoute={activeRoute}
-                                    {...item} 
-                                    index={index}
+                                    searchTerm=""
                                     onItemClick={onItemClick}
                                 />
                             ))}

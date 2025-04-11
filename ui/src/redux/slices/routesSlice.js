@@ -1,13 +1,24 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { fetchRouteMap } from '../../const/routes';
+import { fetchRouteMap, checkNewRoute, markRouteAsViewed } from '../../const/routes';
 
 export const fetchRoutes = createAsyncThunk(
   'routes/fetchRoutes',
   async () => {
     const routes = await fetchRouteMap();
+    checkNewRoute(routes);
     return routes;
   }
 );
+
+// Helper function to handle marking route as viewed
+const markRouteAsViewedAndUpdateState = (state, path) => {
+  // Find the route and check if it's new
+  const activeRoute = state.items.find(route => route.path === path);
+  if (activeRoute && activeRoute.isNew) {
+    // Call the localStorage function
+    markRouteAsViewed(path);
+  }
+};
 
 const routesSlice = createSlice({
   name: 'routes',
@@ -15,18 +26,25 @@ const routesSlice = createSlice({
     items: [],
     isLoading: false,
     error: null,
-    activeRoute: window.location.pathname, // Initialize with current path
+    activeRoute: window.location.pathname,
     expandedItems: {},
   },
   reducers: {
     setActiveRoute: (state, action) => {
-      state.activeRoute = action.payload;
+      const path = action.payload;
+      state.activeRoute = path;
+      
+      // Mark as viewed in localStorage and update state
+      markRouteAsViewedAndUpdateState(state, path);
     },
     updateActiveRouteFromPath: (state, action) => {
       const path = action.payload || window.location.pathname;
       // Only update if the path exists in our routes
       if (state.items.some(route => route.path === path)) {
         state.activeRoute = path;
+        
+        // Mark as viewed in localStorage and update state
+        markRouteAsViewedAndUpdateState(state, path);
       }
     },
     setRouteItems: (state, action) => {
@@ -55,6 +73,9 @@ const routesSlice = createSlice({
         const currentPath = window.location.pathname;
         if (action.payload.some(route => route.path === currentPath)) {
           state.activeRoute = currentPath;
+          
+          // Mark the initial route as viewed
+          markRouteAsViewedAndUpdateState(state, currentPath);
         }
       })
       .addCase(fetchRoutes.rejected, (state, action) => {
@@ -64,5 +85,5 @@ const routesSlice = createSlice({
   },
 });
 
-export const { setActiveRoute, updateActiveRouteFromPath, setRouteItems, updateRouteItem } = routesSlice.actions;
+export const { setActiveRoute, updateActiveRouteFromPath, setRouteItems, updateRouteItem, setExpandedItems } = routesSlice.actions;
 export default routesSlice.reducer; 

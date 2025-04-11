@@ -1,12 +1,13 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSitemap, faFolder } from '@fortawesome/free-solid-svg-icons';
+import { faSitemap, faFolder, faNewspaper } from '@fortawesome/free-solid-svg-icons';
 import './styles/WidgetSelector.css';
 
 const WidgetSelector = ({ onWidgetInsert }) => {
     const widgets = [
         { type: 'pagetree', label: 'Page Tree', icon: faSitemap },
-        { type: 'category', label: 'Category', icon: faFolder }
+        { type: 'category', label: 'Category', icon: faFolder },
+        { type: 'news', label: 'News', icon: faNewspaper }
     ];
 
     return (

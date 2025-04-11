@@ -67,6 +67,12 @@ const EditorToolbar = forwardRef(({
                     <div class="widget-content">Category will be displayed here</div>
                 </div>
             `;
+        } else if (widgetType === 'news') {
+            widgetHTML = `
+                <div class="widget news-widget" contenteditable="false">
+                    <div class="widget-content">News will be displayed here</div>
+                </div>
+            `;
         }
         
         // Insert at cursor position

@@ -41,10 +41,14 @@
   font-size: var(--text-sm);
 }
 
-.toc-link {
+.toc-link {    
   text-decoration: none;
   color: var(--text-tertiary);
   transition: var(--transition-all);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
 }
 
 .toc-link:hover {
