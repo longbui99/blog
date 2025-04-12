@@ -18,8 +18,8 @@ export const fetchRouteMap = async () => {
 const STORAGE_KEY = 'lbblog_viewed_routes';
 
 // Function to mark a route as viewed in localStorage
-export const markRouteAsViewed = (path) => {
-  if (!path) return false;
+export const markRouteAsViewed = (route) => {
+  if (!route) return false;
   
   try {
     // Get currently stored viewed routes
@@ -27,7 +27,7 @@ export const markRouteAsViewed = (path) => {
     const viewedRoutes = JSON.parse(viewedRoutesJson);
     
     // Mark this route as viewed
-    viewedRoutes[path] = true; // false means not new
+    viewedRoutes[route.path] = route.updated_at; // false means not new
     
     // Save back to localStorage
     localStorage.setItem(STORAGE_KEY, JSON.stringify(viewedRoutes));

@@ -16,7 +16,7 @@ const markRouteAsViewedAndUpdateState = (state, path) => {
   const activeRoute = state.items.find(route => route.path === path);
   if (activeRoute && activeRoute.isNew) {
     // Call the localStorage function
-    markRouteAsViewed(path);
+    markRouteAsViewed(activeRoute);
   }
 };
 
