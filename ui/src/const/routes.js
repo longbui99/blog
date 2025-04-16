@@ -55,7 +55,7 @@ export const checkNewRoute = (routes) => {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(initialViewedRoutes));
     } else{
       for (const route of routes) {
-        route.isNew = route.updated_at !== viewedRoutes[route.path];
+        route.isNew = String(route.updated_at)?.slice(0, 16) !== String(viewedRoutes[route.path])?.slice(0, 16);
       }
     }
     

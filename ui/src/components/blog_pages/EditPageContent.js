@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setEditing, setCreating } from '../../redux/slices/editingSlice';
 import storageRegistry from '../../store/storage_registry';
 import { useNavigate } from 'react-router-dom';
-import { setRouteItems } from '../../redux/slices/routesSlice';
+import { setActiveRoute, setRouteItems, updateRouteItem } from '../../redux/slices/routesSlice';
 import { fetchRouteMap } from '../../const/routes';
 import { DetermineAndSaveAttachments } from './utils/AttachmentManager';
 
@@ -85,15 +85,17 @@ function EditPageContent() {
     const newTitle = e.target.value;
     setTitle(newTitle);
     
-    // Convert title to URL-friendly format
-    const computedPath = newTitle
-      .toLowerCase()
-      .replace(/[^a-z0-9\s-]/g, '') // Remove special characters
-      .replace(/\s+/g, '-')         // Replace spaces with hyphens
-      .replace(/-+/g, '-')          // Replace multiple hyphens with single hyphen
-      .trim();                      // Remove leading/trailing spaces
+    if (isCreating) {
+      // Convert title to URL-friendly format
+      const computedPath = newTitle
+        .toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, '') // Remove special characters
+        .replace(/\s+/g, '-')         // Replace spaces with hyphens
+        .replace(/-+/g, '-')          // Replace multiple hyphens with single hyphen
+        .trim();                      // Remove leading/trailing spaces
     
-    setUrlPath("/" + computedPath);
+      setUrlPath("/" + computedPath);
+    }
   };
 
   const handleParentChange = (selectedOption) => {
@@ -171,15 +173,22 @@ function EditPageContent() {
           previous: selectedPrevious ? selectedPrevious.value : null,
           next: selectedNext ? selectedNext.value : null
         };
-        await blogContentProcessor.saveOrUpdateContent(updatedContent);
-        
+        let response =await blogContentProcessor.saveOrUpdateContent(updatedContent);
+        let currentRoute = routes.find(route => route.path === activeRoute);
+        if (currentRoute) {
+          let newRoute = {
+            ...currentRoute,
+            updated_at: response.updated_at
+          };
+          dispatch(updateRouteItem(newRoute));
+          dispatch(setActiveRoute(activeRoute));
+        }
         if (isCreating) {
           dispatch(setCreating(false));
           navigate(urlPath);
           let routes = await fetchRouteMap();
           dispatch(setRouteItems(routes));
         } else if (isEditing) {
-          
           dispatch(setEditing(false));
         }
       }
@@ -292,6 +301,7 @@ function EditPageContent() {
             <input
               type="text"
               value={urlPath}
+              disabled={isEditing}
               onChange={handleUrlPathChange}
               placeholder="URL path"
               className="url-path-input"
