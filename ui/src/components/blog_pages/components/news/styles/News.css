@@ -318,3 +318,9 @@
         padding: 0.3rem 0.5rem;
     }
 }
+
+.recent-updates-content .card-new-indicator{
+    top: 0;
+    right: 5px;
+    transform: rotate(-5deg);
+}
