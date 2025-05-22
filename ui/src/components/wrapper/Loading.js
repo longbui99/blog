@@ -8,7 +8,7 @@ const Loading = ({ isLoading }) => {
         <div className="loading-overlay">
             <div className="loading-spinner">
                 <div className="spinner"></div>
-                <div className="loading-text">Loading...</div>
+                <div className="loading-text">Loadsding...</div>
             </div>
         </div>
     );

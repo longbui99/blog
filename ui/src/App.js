@@ -18,7 +18,7 @@ import { setSidebar } from './redux/slices/sidebarSlice';
 import { setTOC } from './redux/slices/tocSlice';
 import { fetchRoutes } from './redux/slices/routesSlice';
 import './App.css';
-
+import { ReactComponent as Logo } from './static/logo.svg';
 // Initialize GA
 ReactGA.initialize("G-9VQG6QJLEK");
 
@@ -64,10 +64,6 @@ function AppContent() {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, [dispatch]);
-
-  if (routesLoading) {
-    return <div className="loading-panel">Loading...</div>;
-  }
 
   if (routesError) {
     return <div className="error-panel">Error loading routes: {routesError}</div>;

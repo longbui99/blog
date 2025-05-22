@@ -10,6 +10,7 @@ import { loadBlogContent } from '../../utils/blogContentUtils';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookReader } from '@fortawesome/free-solid-svg-icons';
 import RawEditor from './RawEditor';
+import { ReactComponent as Logo } from '../../static/logo.svg';
 
 function BlogContent({ onContentLoaded }) {
     const [content, setContent] = useState('');
@@ -71,13 +72,17 @@ function BlogContent({ onContentLoaded }) {
         return isRawEditor ? <RawEditor /> : <HTMLComposer />;
     };
 
+    const renderLoading = () => {
+        return <div className="loading-panel"><Logo/></div>;
+    }
+
     if (!content && !isCreating) {
-        return <div className="loading-panel">Loading...</div>;
+        return renderLoading();
     }
 
     return (
         <>{
-            isLoading ? <div className="loading-panel">Loading...</div> :
+            isLoading ? renderLoading() :
             <article className="blog-content">
             <Helmet>
                 <title>{pageTitle}</title>

@@ -286,14 +286,6 @@
     color: var(--warning-500);
 }
 
-/* Loading State */
-.loading-panel {
-    text-align: center;
-    padding: var(--spacing-6);
-    color: var(--text-secondary);
-    font-size: var(--text-base);
-}
-
 /* Error Panel */
 .error {
     background-color: var(--error-50);
