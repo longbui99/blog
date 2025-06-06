@@ -88,12 +88,12 @@ class GeminiService:
                 2. Support claims with specific examples from articles
                 3. Include relevant code snippets if present
                 4. Provide actionable insights
-                5. Structure response in Markdown format:
+                5. Structure response in text format:
                 """
             else:
                 prompt = f"""Task: {command}
 
-                Please provide a detailed response following Markdown format."""
+                Please provide a detailed response following text format."""
             
             if history:
                 prompt = f"""Previous Context:
