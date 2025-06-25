@@ -181,7 +181,9 @@ function EditPageContent() {
             updated_at: response.updated_at
           };
           dispatch(updateRouteItem(newRoute));
-          dispatch(setActiveRoute(urlPath));
+          if (urlPath !== activeRoute) {
+            dispatch(setActiveRoute(urlPath));
+          }
         }
         if (isCreating) {
           dispatch(setCreating(false));
